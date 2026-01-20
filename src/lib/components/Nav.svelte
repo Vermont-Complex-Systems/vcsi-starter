@@ -1,63 +1,73 @@
 <script lang="ts">
-    import { base } from '$app/paths';
-    import Menu from "./Nav.Menu.svelte";
-    import { Menu as MenuIcon } from "@lucide/svelte";
+  import { base } from '$app/paths';
+  import Menu from "./Nav.Menu.svelte";
+  import { Menu as MenuIcon } from "@lucide/svelte";
 
-    let isMenuOpen = $state(false);
-    let menuButtonRef: HTMLButtonElement | undefined;
-    let scrollY = $state(0);
-    let isScrolled = $derived(scrollY > 0);
+  let isMenuOpen = $state(false);
+  let menuButtonRef: HTMLButtonElement | undefined;
+  let scrollY = $state(0);
+  let isScrolled = $derived(scrollY > 0);
 
-    function closeMenu(skipFocus = false) {
-        isMenuOpen = false;
-        if (!skipFocus) menuButtonRef?.focus();
-    }
+  function closeMenu(skipFocus = false) {
+    isMenuOpen = false;
+    if (!skipFocus) menuButtonRef?.focus();
+  }
 </script>
 
 <svelte:window bind:scrollY />
 
 <header class="header" class:scrolled={isScrolled}>
+  <div class="header-inner page">
     <div class="header-left">
-        <a href="{base}/" class="title-link">
-            <h1 class="site-title">Site logo</h1>
-        </a>
+      <a href="{base}/" class="title-link">
+        <h1 class="site-title">Site logo</h1>
+      </a>
     </div>
 
     <div class="header-right">
-        <a href="{base}/about" class="about-button">About</a>
+      <a href="{base}/about" class="about-button">About</a>
 
-        <button
-            onclick={() => isMenuOpen = !isMenuOpen}
-            bind:this={menuButtonRef}
-            class="icon-button mobile-menu-button"
-        >
-            <MenuIcon size={28} />
-            <span class="sr-only">Open menu</span>
-        </button>
+      <button
+        onclick={() => isMenuOpen = !isMenuOpen}
+        bind:this={menuButtonRef}
+        class="icon-button mobile-menu-button"
+      >
+        <MenuIcon size={28} />
+        <span class="sr-only">Open menu</span>
+      </button>
     </div>
+  </div>
 </header>
 
 <Menu visible={isMenuOpen} close={closeMenu} />
 
 <style>
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
     width: 100%;
-    padding: 1rem var(--margin-left) 0.5rem;
     background: var(--color-bg);
     border-bottom: 2px solid transparent;
     z-index: 100;
-    transition: all 200ms ease;
+    transition: border-color 200ms ease;
   }
 
   .header.scrolled {
     border-bottom-color: var(--color-gray-400);
+  }
+
+  /* Inner container aligns nav content with page */
+  .header-inner {
+    width: 100%;
+    max-width: var(--page-max-width);
+    margin-inline: auto;
+    padding-inline: var(--page-padding);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--nav-height);
   }
 
   .header-left,
@@ -143,6 +153,7 @@
     border: 0;
   }
 
+  /* Mobile adjustments */
   @media (max-width: 960px) {
     .mobile-menu-button {
       display: flex;
@@ -150,8 +161,8 @@
   }
 
   @media (max-width: 768px) {
-    .header {
-      padding: 1rem;
+    .header-inner {
+      padding-inline: var(--page-padding);
     }
 
     .header-left {
@@ -166,6 +177,5 @@
       width: 3.5rem;
       height: 3.5rem;
     }
-
   }
 </style>

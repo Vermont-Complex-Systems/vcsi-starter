@@ -1,10 +1,8 @@
 <script>
-
-	import Nav from '$lib/components/Nav.svelte'
-	import Footer from '$lib/components/Footer.svelte'
-	import { ModeWatcher } from "mode-watcher";
-	
-	import "$styles/app.css";
+	import Nav from '$lib/components/Nav.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import { ModeWatcher } from 'mode-watcher';
+	import '$styles/app.css';
 
 	let { children } = $props();
 </script>
@@ -17,6 +15,7 @@
 <Nav />
 
 <ModeWatcher defaultMode="light" />
+
 <main id="content">
 	{@render children?.()}
 </main>
@@ -24,21 +23,20 @@
 <Footer />
 
 <style>
-	#content {
-		flex: 1;
-		padding: 5rem 0 5rem; /* Account for fixed nav height */
-	}
-
 	:global(body) {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
 	}
 
+	main {
+		flex: 1;
+		padding: 5rem 0; /* space for fixed nav */
+	}
+	
 	@media (max-width: 768px) {
-		#content {
-			padding: 6rem 0 3rem; /* Account for fixed nav height */
+		main {
+			padding: 6rem 0 3rem;
 		}
-
 	}
 </style>

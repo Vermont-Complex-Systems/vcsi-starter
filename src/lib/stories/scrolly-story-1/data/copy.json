@@ -4,6 +4,16 @@
 	"author1": "<a target=_blank rel=noreferrer href=https://vermont-complex-systems.github.io/complex-stories/author/jonathan-st-onge>Jonathan St-Onge</a>",
 	"date": "Aug 15, 2025",
 	"SectionTitle": "Hello world",
+	"introduction": [
+		{
+			"type": "markdown",
+			"value": "There are many different ways to structure code to do visual data essays."
+		},
+		{
+			"type": "markdown",
+			"value": "We use snippets combined with a copy.json to facilitate non-technical users to share their stories without knowing everything there is to know to get started."
+		}
+	],
 	"steps": [
 		{
 			"type": "markdown",
