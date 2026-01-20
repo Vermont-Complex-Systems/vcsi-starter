@@ -42,6 +42,7 @@
 
 <style>
 .story-header {
+  background: rgba(255, 13, 0, 0.15);
   margin-bottom: 5rem;
   text-align: center;
 }
