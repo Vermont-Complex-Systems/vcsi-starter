@@ -45,7 +45,7 @@
   display: flex;
   align-items: center; /* vertical centering */
   justify-content: center; /* horizontal centering */
-  min-height: calc(100vh - var(--nav-height)); /* full viewport minus nav */
+  min-height: calc(100vh - 2 * var(--nav-height)); /* full viewport minus nav (main already has nav offset) */
   padding: 0 var(--page-padding);
   box-sizing: border-box;
 }

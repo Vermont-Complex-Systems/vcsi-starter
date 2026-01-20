@@ -21,22 +21,3 @@
 </main>
 
 <Footer />
-
-<style>
-	:global(body) {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		padding: 5rem 0; /* space for fixed nav */
-	}
-	
-	@media (max-width: 768px) {
-		main {
-			padding: 6rem 0 3rem;
-		}
-	}
-</style>

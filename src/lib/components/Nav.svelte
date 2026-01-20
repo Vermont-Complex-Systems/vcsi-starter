@@ -17,7 +17,7 @@
 <svelte:window bind:scrollY />
 
 <header class="header" class:scrolled={isScrolled}>
-  <div class="header-inner page">
+  <div class="header-inner">
     <div class="header-left">
       <a href="{base}/" class="title-link">
         <h1 class="site-title">Site logo</h1>

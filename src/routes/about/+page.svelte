@@ -2,7 +2,7 @@
     import Meta from "$lib/components/Meta.svelte";
     import Spinner from "$lib/components/helpers/Spinner.svelte";
     import About from "$lib/components/About.svelte";
-    
+
     import { getMembers } from '$lib/data.remote'
 
      const preloadFont = [
@@ -15,30 +15,28 @@
 </script>
 
 
-<Meta 
+<Meta
   title="About"
   description="Description of the group."
   {preloadFont}
 />
 
-<div class="about-container">
-    <div class="content-container">
-        <div class="page-header no-logo">
-            <div class="page-header-text">
-                <h1>Who We Are</h1>
-            </div>
+<div class="page">
+    <div class="page-header no-logo">
+        <div class="page-header-text">
+            <h1>Who We Are</h1>
         </div>
-        
-        {#await getMembers()}
-            <Spinner text="Loading members..." />
-        {:then members}
-            <About {members} />
-        {:catch error} 
-            <div>
-                <p>Error loading members: {error.message}</p>
-            </div>
-        {/await}
     </div>
+
+    {#await getMembers()}
+        <Spinner text="Loading members..." />
+    {:then members}
+        <About {members} />
+    {:catch error}
+        <div>
+            <p>Error loading members: {error.message}</p>
+        </div>
+    {/await}
 </div>
 
 <style>

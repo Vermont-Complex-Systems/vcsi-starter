@@ -7,18 +7,40 @@ This is an experimental Template to scaffold web applications with data-driven v
 ## Project structure
 
 ```zsh
+src/
+├── styles/
+│   ├── app.css              # Global tokens, base styles, .page class
+│   └── scrolly.css          # Scrolly patterns (.scrolly-with-chart, .scrolly-fullscreen)
+│
+├── routes/
+│   └── +layout.svelte       # App shell: Nav + main + Footer (no constraints)
+│
+└── lib/
+    ├── layouts/
+    │   ├── PageLayout.svelte    # Centered pages (max-width, padding, nav offset)
+    │   └── ScrollyLayout.svelte # Full-width stories (nav offset, .prose centering, section spacing)
+    │
+    └── components/
+        ├── StoryHeader.svelte           # Reusable title/subtitle/authors/date block
+        └── helpers/
+            └── ScrollySnippets.svelte   # Scrolly content snippets (imports scrolly.css)
 
-src/                 # main folder
-  lib/               # special directory, import from $lib. Reusable components.
-    components/
-    assets/
-  routes/            # page routing
-    +page.svelte
-    +layout.svelte
-  styles/             # global CSS
-static/               # available publicly
-.env                  # secret variables, e.g. passwords, API tokens, etc.
-svelte.config.js      # sveltekit features
+```
+
+flow 
+
+```zsh
++layout.svelte (shell)
+    │
+    ├── PageLayout         → About page, etc.
+    │   └── .page class from app.css
+    │
+    └── ScrollyLayout      → Stories
+        ├── StoryHeader
+        ├── .prose sections (intro, conclusion)
+        └── .scrolly-with-chart (from scrolly.css)
+            ├── .scrolly-chart
+            └── scrollyContent snippet
 ```
 
 ## Features

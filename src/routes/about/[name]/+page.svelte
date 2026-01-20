@@ -16,16 +16,18 @@
 
 </script>
 
-{#await getMember(page.params.name)}
-  <Spinner text="Loading member..." />
-{:then author} 
-    <Meta 
-      title={author.name}
-      description="Author bio"
-      {preloadFont}
-    />
+<Meta
+  title="Member"
+  description="Author bio"
+  {preloadFont}
+/>
 
+<div class="page">
+  {#await getMember(page.params.name)}
+    <Spinner text="Loading member..." />
+  {:then author}
     <Member {author}/>
-{:catch error}
-  <p>Error loading member: {error.message || 'Unknown error'}</p>
-{/await}
+  {:catch error}
+    <p>Error loading member: {error.message || 'Unknown error'}</p>
+  {/await}
+</div>

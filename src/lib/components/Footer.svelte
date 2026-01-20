@@ -4,7 +4,7 @@
 </script>
 
 <footer class="footer">
-	<div class="footer-inner page">
+	<div class="footer-inner">
 		<div class="footer-logo">
 			<img src="{base}/UVM_Logo_Primary_Horiz_W_PunchOut.png" alt="Logo" class="logo-img" />
 			<ul class="social-icons">
@@ -79,9 +79,15 @@
 		gap: 0.5rem;
 	}
 
+	.logo-img {
+		width: 200px;
+		height: auto;
+	}
+
 	.footer-bottom {
 		grid-column: 1 / -1;
 		display: flex;
+		flex-wrap: nowrap;
 		gap: 1.5rem;
 		align-items: center;
 		padding-top: 1.5rem;
@@ -103,7 +109,7 @@
 
 	.social-icons a {
 		text-decoration: none;
-		color: var(--color-white);
+		color: var(--color-uvm-gold);
 	}
 
 	.cc-footer-copy {
@@ -111,6 +117,14 @@
 		font-weight: 500;
 		font-size: 1rem;
 		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.cc-footer-copy .link-text,
+	.cc-footer-copy .privacy-text {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
 	}
 
 	.cc-footer-copy:last-child {

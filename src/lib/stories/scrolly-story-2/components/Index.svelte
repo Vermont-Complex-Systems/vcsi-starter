@@ -2,16 +2,21 @@
 
 <script>
 /**
- * Scrolly story with side-by-side layout:
- * - Text content on the left
- * - Sticky chart on the right (40% width)
- * - Responsive: stacks on mobile/tablet
+ * Scrolly story with fullscreen layout:
+ * - Full-viewport chart fixed in background
+ * - Text content overlaid on top, centered
  */
 import { ArrowDown } from "@lucide/svelte";
 
 import BackgroundPlot from './BackgroundPlot.svelte';
+import StoryHeader from '$lib/components/StoryHeader.svelte';
 
 import { renderTextContent, scrollyContent } from '$lib/components/helpers/ScrollySnippets.svelte';
+
+const authors = [
+    { name: 'Jonathan St-Onge', url: 'https://vermont-complex-systems.github.io/complex-stories/author/jonathan-st-onge' },
+    { name: 'Juniper Lovato', url: 'https://vermont-complex-systems.github.io/complex-stories/author/juniper-lisa-lovato' }
+];
 
 let { story, data } = $props();
 
@@ -41,23 +46,15 @@ $effect(() => {
     </div>
 {/if}
 
-<article id="scrolly-story-2" class="story-fullwidth">
+<article id="scrolly-story-2" class="story">
+    <StoryHeader
+        title={data.title}
+        subtitle={data.subtitle}
+        {authors}
+        date={data.date}
+    />
 
-    <div class="title">
-        <h1>{data.title}</h1>
-        <h2>{data.subtitle}</h2>
-
-        <div class="article-meta">
-            <p class="author">
-                By <a target=_blank rel=noreferrer href=https://vermont-complex-systems.github.io/complex-stories/author/jonathan-st-onge>Jonathan St-Onge</a> and <a target=_blank rel=noreferrer href=https://vermont-complex-systems.github.io/complex-stories/author/juniper-lisa-lovato>Juniper Lovato</a>
-            </p>
-            <p class="date">
-                {data.date}
-            </p>
-        </div>
-    </div>
-
-    <section id="intro" class="scrolly-with-chart">
+    <section id="intro" class="scrolly-fullscreen">
         <div class="scrolly-chart">
             <BackgroundPlot scrollyIndex={scrollyIndex.value} />
         </div>
@@ -67,8 +64,8 @@ $effect(() => {
         </div>
     </section>
 
-    <h2>Conclusion</h2>
-    <section id="conclusion">
+    <h2 class="prose">Conclusion</h2>
+    <section id="conclusion" class="prose">
         {#each data.conclusion as item}
             {@render renderTextContent(item)}
         {/each}
@@ -77,58 +74,6 @@ $effect(() => {
 
 
 <style>
-/* -----------------------------
-   Story Layout
------------------------------ */
-/* Break out of centered main container to align with Nav */
-article.story-fullwidth {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-}
-
-/* -----------------------------
-   Title & Headings
------------------------------ */
-.title {
-    margin: 0 auto 5rem auto;
-    padding: 0 var(--margin-left);
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .title {
-        padding: 0 var(--margin-left-mobile);
-    }
-}
-
-.title h1 {
-    font-size: var(--font-size-giant);
-}
-
-.title h2 {
-    font-size: var(--font-size-medium);
-    font-weight: 400;
-}
-
-.article-meta {
-    margin: -1rem auto 2rem auto;
-    text-align: center;
-}
-
-.article-meta .author a {
-    color: var(--color-gray-300);
-}
-
-.article-meta .date {
-    font-size: var(--font-size-small);
-    color: var(--color-tertiary-gray);
-}
-
-/* -----------------------------
-   Scrolly Section
------------------------------ */
-/* Layout handled by .scrolly-with-chart class from ScrollySnippets */
-
 /* Story-specific text box styling */
 :global(#scrolly-story-2 .scrolly-content .step > *) {
     padding: 1.5rem;
@@ -155,24 +100,7 @@ article.story-fullwidth {
     transform: scale(1) translateZ(0);
 }
 
-/* -----------------------------
-   Conclusion Section
------------------------------ */
-article > h2 {
-    max-width: 600px;
-    margin: 4rem auto 0;
-    padding: 0 1rem;
-}
-
-#conclusion {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-/* -----------------------------
-   Scroll Indicator
------------------------------ */
+/* Scroll Indicator */
 .scroll-indicator {
     position: fixed;
     bottom: 2rem;
@@ -186,20 +114,5 @@ article > h2 {
 @keyframes bounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
     50% { transform: translateX(-50%) translateY(-10px); }
-}
-
-/* -----------------------------
-   Responsive Adjustments
------------------------------ */
-/* Layout responsive behavior handled by .scrolly-with-chart class */
-
-@media (max-width: 768px) {
-    .title h1 {
-        font-size: 4rem;
-    }
-
-    .title h2 {
-        font-size: 2rem;
-    }
 }
 </style>

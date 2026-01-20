@@ -1,8 +1,17 @@
 {
 	"title": "Scrolly story",
-	"subtitle": "Centering with plot on the right",
-	"author1": "<a target=_blank rel=noreferrer href=https://vermont-complex-systems.github.io/complex-stories/author/jonathan-st-onge>Jonathan St-Onge</a>",
-	"date": "Aug 15, 2025",
+	"subtitle": "Left-right layout",
+	"authors": [
+        { 
+			"name": "Jonathan St-Onge", 
+			"url": "https://complexstories.uvm.edu/author/jonathan-st-onge" 
+		},
+        { 
+			"name": "Ben Cooley", 
+			"url": "https://complexstories.uvm.edu/author/ben-dexter-cooley" 
+		}
+    ],
+	"date": "Jan 20, 2026",
 	"SectionTitle": "Hello world",
 	"introduction": [
 		{
