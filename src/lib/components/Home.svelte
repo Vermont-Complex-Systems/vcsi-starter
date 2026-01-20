@@ -42,6 +42,7 @@
 <style>
 /* ---------------- Hero Section ---------------- */
 .hero {
+  background: rgba(191, 255, 0, 0.15);
   display: flex;
   align-items: center; /* vertical centering */
   justify-content: center; /* horizontal centering */
@@ -51,6 +52,7 @@
 }
 
 .hero-inner {
+  background: rgba(255, 200, 0, 0.15);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,6 +62,7 @@
 }
 
 .hero-text {
+  background: rgba(255, 132, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;

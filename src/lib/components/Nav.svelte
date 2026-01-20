@@ -42,12 +42,14 @@
 <Menu visible={isMenuOpen} close={closeMenu} />
 
 <style>
+  /* Header container */
   .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: var(--color-bg);
+    /* background: var(--color-bg); */
+    background: rgba(140, 0, 255, 0.15);
     border-bottom: 2px solid transparent;
     z-index: 100;
     transition: border-color 200ms ease;
@@ -59,6 +61,7 @@
 
   /* Inner container aligns nav content with page */
   .header-inner {
+    background: rgba(255, 0, 0, 0.15);
     width: 100%;
     max-width: var(--page-max-width);
     margin-inline: auto;
@@ -72,16 +75,9 @@
 
   .header-left,
   .header-right {
+    background: rgba(0, 255, 123, 0.15);
     display: flex;
     align-items: center;
-  }
-
-  .header-left {
-    gap: 3rem;
-  }
-
-  .header-right {
-    gap: 1rem;
   }
 
   .title-link {
