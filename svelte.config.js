@@ -7,6 +7,9 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 const membersCSV = readFileSync('src/data/members.csv', 'utf-8');
 const memberIds = membersCSV.split('\n').slice(1).filter(line => line.trim()).map(line => line.split(',')[0]);
 
+const storiesCSV = readFileSync('src/data/stories.csv', 'utf-8');
+const storiesIds = storiesCSV.split('\n').slice(1).filter(line => line.trim()).map(line => line.split(',')[0]);
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: vitePreprocess(),
@@ -14,7 +17,8 @@ const config = {
 		prerender: {
 			entries: [
 				'*',
-				...memberIds.map(id => `/about/${id}`)
+				...memberIds.map(id => `/about/${id}`),
+				...storiesIds.map(id => `/${id}`)
 			]
 		},
 		adapter: adapter(),

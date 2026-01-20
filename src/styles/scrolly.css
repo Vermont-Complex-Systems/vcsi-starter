@@ -149,13 +149,13 @@
 }
 
 .scrolly-fullscreen .scrolly-chart {
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1;
+    z-index: 0;
 }
+
 
 
 .scrolly-fullscreen .scrolly-content {
@@ -163,6 +163,11 @@
     z-index: 1;
     max-width: 600px;
     margin: 0 auto;
+    pointer-events: none;
+}
+
+.scrolly-fullscreen .scrolly-content .step > * {
+    pointer-events: auto;
 }
 
 .scrolly-fullscreen .scrolly-content .step {

@@ -1,8 +1,10 @@
 <script>
     import { scaleLinear, scaleOrdinal } from 'd3';
+    import { Tween } from 'svelte/motion';
+    import { cubicOut } from 'svelte/easing';
     import rawData from '../data/life-expectancy-vs-electoral-democracy-index-modern.csv';
 
-    let { scrollyIndex } = $props();
+    let { scrollyIndex, tooltip = $bindable({ visible: false, x: 0, y: 0, content: '' }) } = $props();
 
     // Chart dimensions - bind to container for responsiveness
     let width = $state(800);
@@ -41,8 +43,8 @@
             region: regionLookup[d.Entity] || 'Unknown'
         }));
 
-    // Get unique years for scrolling
-    const years = [...new Set(allData.map(d => d.year))].sort((a, b) => a - b);
+    // Years matching the steps in copy.json (every 3 years)
+    const years = [2001, 2004, 2007, 2010, 2013, 2016, 2019, 2022];
 
     // Map scrollyIndex to year
     let currentYear = $derived(years[Math.min(scrollyIndex ?? 0, years.length - 1)] ?? years[0]);
@@ -61,20 +63,75 @@
         .domain([0, 1])
         .range([0, innerWidth]));
 
+    // Filter state - null means show all, otherwise show only selected regions
+    let selectedRegions = $state(new Set());
+
+    function toggleRegion(region) {
+        if (selectedRegions.has(region)) {
+            selectedRegions.delete(region);
+            selectedRegions = new Set(selectedRegions);
+        } else {
+            selectedRegions.add(region);
+            selectedRegions = new Set(selectedRegions);
+        }
+    }
+
+    // Filtered data based on selected regions
+    let filteredData = $derived(
+        selectedRegions.size === 0
+            ? currentData
+            : currentData.filter(d => selectedRegions.has(d.region))
+    );
+
+    // Compute min/max life expectancy for filtered data with padding
+    let lifeExpExtent = $derived.by(() => {
+        const data = filteredData.length > 0 ? filteredData : currentData;
+        return [
+            Math.floor(Math.min(...data.map(d => d.lifeExpectancy))) - 5,
+            Math.ceil(Math.max(...data.map(d => d.lifeExpectancy))) + 5
+        ];
+    });
+
+    // Tweened values for smooth scale transitions
+    const yMin = Tween.of(() => lifeExpExtent[0], { duration: 800, easing: cubicOut });
+    const yMax = Tween.of(() => lifeExpExtent[1], { duration: 800, easing: cubicOut });
+
     let yScale = $derived(scaleLinear()
-        .domain([15, 90])
+        .domain([yMin.current, yMax.current])
         .range([innerHeight, 0]));
 
-    // Axis ticks
+    // Fixed tick values that cover the full range across all years
     const xTicks = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
-    const yTicks = [15, 30, 40, 50, 60, 70, 80, 90];
+    const yTicks = [20, 30, 40, 50, 60, 70, 80, 90];
 
     // Tooltip state
     let hoveredCountry = $state(null);
+
+    // Update tooltip content when hovered country changes
+    $effect(() => {
+        if (!hoveredCountry) {
+            tooltip.visible = false;
+            tooltip.content = '';
+        } else {
+            const d = filteredData.find(c => c.entity === hoveredCountry);
+            if (d) {
+                tooltip.visible = true;
+                tooltip.content = `${d.entity}\nLife exp: ${d.lifeExpectancy.toFixed(1)}\nDemocracy: ${d.democracy.toFixed(2)}`;
+            }
+        }
+    });
 </script>
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
     <svg viewBox={`0 0 ${width} ${height-navHeight}`}>
+        <defs>
+            <clipPath id="chart-area">
+                <rect x={0} y={0} width={innerWidth} height={innerHeight} />
+            </clipPath>
+            <clipPath id="chart-area-y">
+                <rect x={-60} y={0} width={60} height={innerHeight} />
+            </clipPath>
+        </defs>
         <g transform={`translate(${margin.left},${margin.top})`}>
             <!-- Grid lines -->
             {#each xTicks as tick}
@@ -87,19 +144,21 @@
                     stroke-width="1"
                 />
             {/each}
-            {#each yTicks as tick}
-                <line
-                    x1={0}
-                    x2={innerWidth}
-                    y1={yScale(tick)}
-                    y2={yScale(tick)}
-                    stroke="#e0e0e0"
-                    stroke-width="1"
-                />
-            {/each}
+            <g clip-path="url(#chart-area)">
+                {#each yTicks as tick (tick)}
+                    <line
+                        x1={0}
+                        x2={innerWidth}
+                        y1={yScale(tick)}
+                        y2={yScale(tick)}
+                        stroke="#e0e0e0"
+                        stroke-width="1"
+                    />
+                {/each}
+            </g>
 
             <!-- Dots -->
-            {#each currentData as d (d.entity)}
+            {#each filteredData as d (d.entity)}
                 <circle
                     cx={xScale(d.democracy)}
                     cy={yScale(d.lifeExpectancy)}
@@ -109,11 +168,17 @@
                     stroke={hoveredCountry === d.entity ? '#333' : 'white'}
                     stroke-width={hoveredCountry === d.entity ? 2 : 0.5}
                     style="transition: cx 0.8s ease-in-out, cy 0.8s ease-in-out;"
-                    onmouseenter={() => hoveredCountry = d.entity}
+                    onmouseenter={(e) => {
+                        hoveredCountry = d.entity;
+                        tooltip.x = e.clientX;
+                        tooltip.y = e.clientY;
+                    }}
+                    onmousemove={(e) => {
+                        tooltip.x = e.clientX;
+                        tooltip.y = e.clientY;
+                    }}
                     onmouseleave={() => hoveredCountry = null}
-                >
-                    <title>{d.entity}: Life exp. {d.lifeExpectancy.toFixed(1)}, Democracy {d.democracy.toFixed(2)}</title>
-                </circle>
+                />
             {/each}
 
             <!-- X-axis -->
@@ -140,17 +205,19 @@
 
             <!-- Y-axis -->
             <line x1={0} x2={0} y1={0} y2={innerHeight} stroke="#333" stroke-width="1" />
-            {#each yTicks as tick}
-                <text
-                    x={-10}
-                    y={yScale(tick)}
-                    text-anchor="end"
-                    alignment-baseline="middle"
-                    font-size="12"
-                >
-                    {tick}
-                </text>
-            {/each}
+            <g clip-path="url(#chart-area-y)">
+                {#each yTicks as tick (tick)}
+                    <text
+                        x={-10}
+                        y={yScale(tick)}
+                        text-anchor="end"
+                        alignment-baseline="middle"
+                        font-size="12"
+                    >
+                        {tick}
+                    </text>
+                {/each}
+            </g>
             <text
                 x={-innerHeight / 2}
                 y={-45}
@@ -179,14 +246,44 @@
         <!-- Legend -->
         <g transform={`translate(${margin.left + 20}, 20)`}>
             {#each regions.filter(r => r !== 'Unknown') as region, i}
-                <g transform={`translate(${i * 110}, 0)`}>
-                    <circle cx={0} cy={0} r={6} fill={colorScale(region)} opacity={0.7} />
-                    <text x={12} y={4} font-size="10">{region}</text>
+                <g
+                    transform={`translate(${i * 110}, 0)`}
+                    class="legend-item"
+                    onclick={() => toggleRegion(region)}
+                    role="button"
+                    tabindex="0"
+                    onkeydown={(e) => e.key === 'Enter' && toggleRegion(region)}
+                >
+                    <circle
+                        cx={0}
+                        cy={0}
+                        r={6}
+                        fill={colorScale(region)}
+                        opacity={selectedRegions.size === 0 || selectedRegions.has(region) ? 0.7 : 0.2}
+                    />
+                    <text
+                        x={12}
+                        y={4}
+                        font-size="10"
+                        opacity={selectedRegions.size === 0 || selectedRegions.has(region) ? 1 : 0.4}
+                    >
+                        {region}
+                    </text>
                 </g>
             {/each}
+            <text
+                x={regions.filter(r => r !== 'Unknown').length * 110}
+                y={4}
+                font-size="12"
+                font-style="italic"
+                opacity="0.6"
+            >
+                (click region to filter, hover country to show details)
+            </text>
         </g>
     </svg>
 </div>
+
 
 <style>
     .chart-container {
@@ -206,5 +303,17 @@
 
     circle {
         cursor: pointer;
+    }
+
+    .legend-item {
+        cursor: pointer;
+    }
+
+    .legend-item:hover circle {
+        transform: scale(1.2);
+    }
+
+    .legend-item:hover text {
+        font-weight: bold;
     }
 </style>

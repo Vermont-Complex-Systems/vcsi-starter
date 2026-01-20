@@ -1,38 +1,16 @@
     <script>
-    import { ArrowDown } from "@lucide/svelte";
-
     import ScrollyPlot from './ScrollyPlot.svelte';
     import StoryHeader from '$lib/components/StoryHeader.svelte';
+    import ScrollIndicator from '$lib/components/helpers/ScrollIndicator.svelte';
 
     import { renderTextContent, scrollyContent } from '$lib/components/helpers/ScrollySnippets.svelte';
 
     let { story, data } = $props();
 
     let scrollyIndex = $state({ value: undefined });
+</script>
 
-    // Scroll indicator visibility
-    let showScrollIndicator = $state(true);
-
-    // Hide scroll indicator when user scrolls
-    $effect(() => {
-        if (typeof window !== 'undefined') {
-            const handleScroll = () => {
-                showScrollIndicator = window.scrollY < 100;
-            };
-
-            window.addEventListener('scroll', handleScroll);
-            return () => window.removeEventListener('scroll', handleScroll);
-        }
-    });
-
-    </script>
-
-    <!-- Scroll indicator -->
-    {#if showScrollIndicator}
-        <div class="scroll-indicator">
-            <ArrowDown size={32} strokeWidth={2} />
-        </div>
-    {/if}
+<ScrollIndicator />
 
     <article class="story">
         <StoryHeader
@@ -67,20 +45,4 @@
     </article>
 
 
-    <style>
-    /* Scroll Indicator */
-    .scroll-indicator {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-        opacity: 0.7;
-        animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(-10px); }
-    }
-    </style>
+    
