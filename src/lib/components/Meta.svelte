@@ -14,9 +14,9 @@
   
   const baseUrl = "https://vermontcomplexsystems.org"; // Your actual domain
   // Normalize pathname to remove base and ensure clean path
-  const pathname = page.url.pathname.replace(base, '').replace(/^\/+/, '/');
-  const url = `${baseUrl}${pathname}`;
-  const fullImageUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
+  let pathname = $derived(page.url.pathname.replace(base, '').replace(/^\/+/, '/'));
+  let url = $derived(`${baseUrl}${pathname}`);
+  let fullImageUrl = $derived(image.startsWith('http') ? image : `${baseUrl}${image}`);
 </script>
 
 <svelte:head>
