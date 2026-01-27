@@ -42,6 +42,13 @@
             {@render renderTextContent(item)}
         {/each}
     </section>
+    
+    <h2 class="prose">Appendix</h2>
+    <section id="conclusion" class="prose">
+        {#each data.appendix as item}
+            {@render renderTextContent(item)}
+        {/each}
+    </section>
 </article>
 
 <style>

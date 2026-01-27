@@ -11,6 +11,7 @@
 
     // Fetched data
     let districts = $state([]);
+    let boundary = $state([]);
     let hydro = $state([]);
     let metadataRaw = $state([]);
 
@@ -22,6 +23,7 @@
         ]);
         const features = topojson.feature(topo, topo.objects.data).features;
         districts = features.filter(f => f.properties.layer === 'districts');
+        boundary = features.filter(f => f.properties.layer === 'boundary');
         hydro = features.filter(f => f.properties.layer === 'hydro');
         metadataRaw = d3.csvParse(csvText);
     });
@@ -123,12 +125,13 @@
 
     // Projection that fits the districts to the container
     let projection = $derived.by(() => {
-        if (districts.length === 0) return d3.geoMercator();
+        const allFeatures = [...districts, ...hydro];
+        if (allFeatures.length === 0) return d3.geoMercator();
 
         return d3.geoMercator()
             .fitSize([innerWidth, innerHeight], {
                 type: "FeatureCollection",
-                features: districts
+                features: allFeatures
             });
     });
 
@@ -153,21 +156,23 @@
         {/if}
     </div>
 
-    <svg viewBox={`0 0 ${width} ${height}`}>
+    <svg viewBox={`0 0 ${width} ${height}`} style="background: #a6cee3;">
         <g transform={`translate(${margin.left},${margin.top})`}>
-            <!-- Hydro (water) -->
-            {#each hydro as feature}
+            <!-- Boundary (CMA land outside districts) -->
+            {#each boundary as feature}
                 <path
+                    class="boundary"
                     d={pathGenerator(feature)}
-                    fill="#a6cee3"
-                    stroke="#6baed6"
+                    fill="#f0f0f0"
+                    stroke="#999"
                     stroke-width="0.5"
                 />
             {/each}
 
-            <!-- Districts -->
+            <!-- Districts (land) -->
             {#each districts as feature (feature.properties.id || feature.properties.nom)}
                 <path
+                    class="district"
                     d={pathGenerator(feature)}
                     fill={getFillColor(feature.properties.arrondissement)}
                     stroke="#333"
@@ -275,11 +280,11 @@
         color: #333;
     }
 
-    path {
+    path.district {
         cursor: pointer;
     }
 
-    path:hover {
+    path.district:hover {
         stroke-width: 2;
         stroke: #000;
     }

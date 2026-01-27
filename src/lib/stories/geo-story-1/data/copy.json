@@ -1,56 +1,72 @@
 {
-	"title": "Geo Scrolly story",
-	"subtitle": "Fullscreen mode with geo data together with data orchestration",
-	"authors": [
-        { 
-			"name": "Jonathan St-Onge", 
-			"url": "https://complexstories.uvm.edu/author/jonathan-st-onge" 
-		}
+    "title": "Geo Scrolly story",
+    "subtitle": "Fullscreen mode with geo data together with data orchestration",
+    "authors": [
+        {
+            "name": "Jonathan St-Onge",
+            "url": "https://complexstories.uvm.edu/author/jonathan-st-onge"
+        }
     ],
-	"date": "Jan 24, 2026",
-	"SectionTitle": "Hello world",
-	"introduction": [
-		{
-			"type": "markdown",
-			"value": "This code is a follow up from [this story](https://vcsi.cmplxsys.w3.uvm.edu/scrolly-story-2/), but we show how to integrate geo data into the mix. One key challenge with project including geo data is that it can get messy very fast. You have different layers you might want to include or not, with metadata one needs to merge at different moment."
-		},
-		{
-			"type": "markdown",
-			"value": "To keep the project neat and tidy, we show how to write simple dagster pipeline to do extraction-transformation-load (ETL) in a secondary [github repository](https://github.com/jstonge/dag-montreal). The github repository culminates into a [metadata.csv](https://github.com/jstonge/dag-montreal/blob/main/src/dag_montreal/defs/transform/input/metadata.csv) and a [montreal.topojson](https://github.com/jstonge/dag-montreal/blob/main/src/dag_montreal/defs/transform/input/montreal.topojson). The pipeline currently look like:"
-		},
-		{
-			"type": "markdown",
-			"value": "<img src=\"/dagster.jpg\" style=\"width: 70vw; max-width: none; margin-left: calc(50% - 30vw); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); border-radius: 4px;\" />"
-		},
-		{
-			"type": "markdown",
-			"value": "Structuring the data flow as directed acyclic graph is neat because we can understand at a glance what is happening. Under the hood, we are using [dagster](https://dagster.io/) as data orchestration tools, using different features to describe where the data comes from and how it is aggregated. The pipeline could be part of our current project,  but here we keep it as separate because we reuse that pipelines across multiple projects."
-		},
-		{
-			"type": "markdown",
-			"value": "Now, without further ado, a simple yet pretty scrolly story using geographic data."
-		}
-
-
-	],
-	"steps": [
-		{
-			"type": "markdown",
-			"value": "This is Montreal. The city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones—like Mont-Royal, Westmount, Dorval, and Côte-Saint-Luc—are independent municipalities that chose to 'defuse' and remain separate from the megacity."
-		},
-		{
-			"type": "markdown",
-			"value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
-		},
-		{
-			"type": "markdown",
-			"value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
-		}
-	],
-	"conclusion": [
-		{
-			"type": "markdown",
-			"value": "In conclusion, we saw how to programmatically have a scrolly story with geo data coming from a backend.."
-		}
-	]
+    "date": "Jan 24, 2026",
+    "SectionTitle": "Hello world",
+    "introduction": [
+        {
+            "type": "markdown",
+            "value": "This code is a follow up from [this story](https://vcsi.cmplxsys.w3.uvm.edu/scrolly-story-2/), but we show how to integrate geo data into the mix. "
+        }
+    ],
+    "steps": [
+        {
+            "type": "markdown",
+            "value": "This is Montreal. The city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones—like Mont-Royal, Westmount, Dorval, and Côte-Saint-Luc—are independent municipalities that chose to 'defuse' and remain separate from the megacity."
+        },
+        {
+            "type": "markdown",
+            "value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+        }
+    ],
+    "conclusion": [
+        {
+            "type": "markdown",
+            "value": "In conclusion, we saw how to programmatically have a scrolly story with geo data coming from a backend.."
+        }
+    ],
+    "appendix": [
+        {
+            "type": "markdown",
+            "value": "One key challenge with project including geo data is that it can get messy very fast. You have different geo and/or metadata layers one might want to include or not."
+        },
+        {
+            "type": "markdown",
+            "value": "To keep the project neat and tidy, we show how to write simple dagster pipeline to do extraction-transformation-load (ETL) in a secondary [github repository](https://github.com/jstonge/dag-montreal). The github repository culminates into a [metadata.csv](https://github.com/jstonge/dag-montreal/blob/main/src/dag_montreal/defs/transform/input/metadata.csv) and a [montreal.topojson](https://github.com/jstonge/dag-montreal/blob/main/src/dag_montreal/defs/transform/input/montreal.topojson). The pipeline currently look like:"
+        },
+        {
+            "type": "markdown",
+            "value": "<img src=\"/dagster.jpg\" style=\"width: 70vw; max-width: none; margin-left: calc(50% - 35vw); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); border-radius: 4px;\" />"
+        },
+        {
+            "type": "markdown",
+            "value": "Structuring the data flow as directed acyclic graph is neat because we can understand at a glance what is happening. When assets are green, it means they build successfully. In this case, we edges represent active dependencies, showing we're not currently using `boundary_file_census_2021` and `montreal_boundary`."
+        },
+        {
+            "type": "markdown",
+            "value": "Under the hood, we are using [dagster](https://dagster.io/) as data orchestration tool, using different features to describe where the data comes from and how it is aggregated. The pipeline could be part of our current project, but here we keep it as separate because we reuse that pipelines across multiple projects."
+        },
+        {
+            "type": "markdown",
+            "value": "Here's what a dagster project implementing principled data processing looks like:"
+        },
+        {
+            "type": "markdown",
+            "value": "```\n.\n├── pyproject.toml\n├── README.md\n├── src\n│   └── dag_montreal\n│       ├── __init__.py\n│       ├── definitions.py\n│       └── defs\n│           ├── __init__.py\n│           ├── ingest\n│           │   ├── hand\n│           │   ├── input\n│           │   │   ├── geo\n│           │   │   │   ├── boundary_file_census\n│           │   │   │   ├── districts-electoraux-2021.geojson\n│           │   │   │   ├── limites-administratives-agglomeration-nad83.geojson\n│           │   │   │   ├── limites-terrestres.geojson\n│           │   │   │   └── montreal.geojson\n│           │   │   └── metadata\n│           │   │       ├── population\n│           │   │       │   ├── 2001\n│           │   │       │   │   └── population_mtl_by_district.pdf\n│           │   │       │   ├── 2006\n│           │   │       │   │   └── population_mtl_by_district.csv\n│           │   │       │   ├── 2011\n│           │   │       │   │   └── population_mtl_by_district.csv\n│           │   │       │   ├── 2016\n│           │   │       │   │   └── population_mtl_by_district.csv\n│           │   │       │   └── 2021\n│           │   │       │       └── population_mtl_by_district.csv\n│           │   │       ├── population_mtl_by_district.csv\n│           │   │       └── population_mtl_by_district.pdf\n│           │   ├── README.md\n│           │   └── src\n│           │       └── ingest.py\n│           └── transform\n│               ├── input\n│               │   ├── metadata.csv\n│               │   └── montreal.topojson\n│               └── src\n│                   ├── geo_aggregation.py\n│                   └── metadata_aggregation.py\n├── tests\n│   └── __init__.py\n└── uv.lock\n```"
+        },
+        {
+            "type": "markdown",
+            "value": "The key idea is that each script in `src` are implementing one atomic task of the data pipeline, which we can then examine. Then, we scaffold the project using dagster, which creates a directed acyclic graphs. By doing it right, it is a more _maintainable_ way to structure code because the code is the documentation (the DAG already should tell you alot about the project). By knowing exactly where each file is the output of what assets, it's also more _extensible_ as there is a single source of truth that should follow the data flow."
+        }
+    ]
 }
