@@ -108,7 +108,7 @@
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseenter', handleMouseEnter);
     canvas.addEventListener('mouseleave', handleMouseLeave);
-    const gl = canvas.getContext('webgl', { preserveDrawingBuffer: false });
+    const gl = canvas.getContext('webgl', { preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: false });
     if (!gl) {
       console.error('WebGL is not supported by your browser.');
       return;
@@ -372,21 +372,8 @@
       rotationAngle += 0.0005;
       gl.uniform1f(rotationUniformLocation, rotationAngle);
       gl.uniform1f(timeUniformLocation, timestamp);
-      // Get computed background color from CSS variable
-      const computedStyle = getComputedStyle(canvas);
-      const bgColor = computedStyle.getPropertyValue('--color-bg').trim();
-      
-      // Parse RGB color and convert to WebGL format (0-1)
-      const rgbMatch = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-      if (rgbMatch) {
-        const r = parseInt(rgbMatch[1]) / 255;
-        const g = parseInt(rgbMatch[2]) / 255;
-        const b = parseInt(rgbMatch[3]) / 255;
-        gl.clearColor(r, g, b, 1.0);
-      } else {
-        // Fallback to light grey
-        gl.clearColor(0.937, 0.937, 0.937, 1.0);
-      }
+      // Clear with transparent color - CSS background will show through
+      gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       // Handle dot jumps

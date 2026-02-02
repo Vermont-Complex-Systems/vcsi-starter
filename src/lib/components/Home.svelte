@@ -124,8 +124,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 2 * var(--nav-height));
-  padding: 0 var(--page-padding);
+  min-height: min(70vh, 600px);
+  padding: 3rem var(--page-padding);
   box-sizing: border-box;
 }
 
@@ -133,7 +133,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4rem;
+  gap: 3rem;
   width: 100%;
   max-width: var(--page-max-width);
 }
@@ -141,12 +141,13 @@
 .hero-text {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   max-width: 55%;
 }
 
 .hero-text h1 {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.3;
   margin: 0;
   font-family: var(--serif);
 }
@@ -160,7 +161,7 @@
 .code-blocks {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .github-row {
@@ -169,7 +170,7 @@
   font-family: var(--sans);
   font-size: 0.9rem;
   color: var(--color-gray-700);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .github-link {
