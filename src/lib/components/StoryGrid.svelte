@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Story } from '$lib/data.remote';
+    import type { Story } from '$lib/story.remote';
 
     let { stories }: { stories: Story[] } = $props();
 </script>

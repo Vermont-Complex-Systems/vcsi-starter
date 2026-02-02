@@ -44,9 +44,11 @@
 		"@lucide/svelte": "^0.562.0",
 		"@playwright/mcp": "^0.0.56",
 		"@rollup/plugin-dsv": "^3.0.5",
+		"@turf/rewind": "^7.3.3",
 		"better-sqlite3": "^12.5.0",
 		"d3": "^7.9.0",
 		"highlight.js": "^11.11.1",
+		"hyparquet": "^1.24.1",
 		"katex": "^0.16.27",
 		"mode-watcher": "^1.1.0",
 		"rehype-highlight": "^7.0.2",
@@ -56,6 +58,7 @@
 		"remark-math": "^6.0.0",
 		"svelte-exmarkdown": "^5.0.2",
 		"svelteplot": "^0.9.2",
+		"topojson-client": "^3.1.0",
 		"valibot": "^1.2.0"
 	}
 }

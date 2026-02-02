@@ -1,0 +1,163 @@
+{
+    "title": "Geo Scrolly story",
+    "subtitle": "Fullscreen mode with geo data and data orchestration",
+    "authors": [
+        {
+            "name": "Jonathan St-Onge",
+            "url": "https://complexstories.uvm.edu/author/jonathan-st-onge"
+        }
+    ],
+    "date": "Jan 24, 2026",
+    "SectionTitle": "Hello world",
+    "introduction": [
+        {
+            "type": "markdown",
+            "value": "This code is a follow up from [this story](https://vcsi.cmplxsys.w3.uvm.edu/scrolly-story-2/), but we show how to integrate geo with metadata from various sources together into a neat scrolly story. The data we'll be using is from statcan, in charge of the Canadian census, the city of montreal, and other places that we document in the pipeline."
+        },
+        {
+            "type": "markdown",
+            "value": "It is important to note that data orchestration is a crucial component of making this story maintainable and extensible. We talk about it more in the appendix."
+        },
+        {
+            "type": "markdown",
+            "value": "Without further ado, here's Montreal:"
+        }
+    ],
+    "steps": [
+        {
+            "type": "markdown",
+            "value": "Montreal city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones—like Mont-Royal, Westmount, Dorval, and Côte-Saint-Luc—are independent municipalities that chose to 'defuse' and remain separate from the megacity."
+        },
+        {
+            "type": "markdown",
+            "value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+        }
+    ],
+    "conclusion": [
+        {
+            "type": "markdown",
+            "value": "In conclusion, we saw how to programmatically have a scrolly story with geo data coming from a backend."
+        }
+    ],
+    "appendix": [
+        {
+            "type": "markdown",
+            "value": "One key challenge with projects including geo data is that it can get messy very fast. You have different geo and/or metadata layers one might want to include or not."
+        },
+        {
+            "type": "markdown",
+            "value": "To keep the project neat and tidy, we show how to write simple dagster pipeline to do extraction-transformation-load (ETL) in a secondary [github repository](https://github.com/jstonge/rdag-montreal). The github repository culminates into a [metadata.csv](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/metadata.csv), together with Montreal's electoral [districts](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/boundary.geojson) and broader [boundary](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/boundary.geojson). The pipeline currently looks like:"
+        },
+        {
+            "type": "markdown",
+            "value": "<img src=\"/dagster.jpg\" style=\"width: 70vw; max-width: none; margin-left: calc(50% - 35vw); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); border-radius: 4px;\" />"
+        },
+        {
+            "type": "markdown",
+            "value": "Structuring the data flow as directed acyclic graph is neat because we can understand at a glance what is happening. When assets are green, it means they build successfully. In this case, the edges represent active dependencies, showing we're not currently using `boundary_file_census_2021` and `montreal_boundary`. To produce the plot above, we are using [dagster](https://dagster.io/) as data orchestration tool. But really any software that can take a series of steps, then construct the dependency graph, is fair game to implement PDP. As a matter of fact, [GNU make](https://www.gnu.org/software/make/manual/make.html) is a popular choice to implement PDP, using Makefile to specify the data workflow. The important bit is that we have a way to describe where the data comes from and where it is going."
+        },
+        {
+            "type": "markdown",
+            "value": "For the rest of this appendix, we will be using [maestro](https://whipson.github.io/maestro/index.html) in `R` (it also can output simple DAG diagrams using `diagrammeR`, but they are less fancy). We implement PDP in its own repo, showcasing how it can be done either in R or Python. By keeping the data pipeline separate it can be reused across multiple projects, the codebase is simpler, and collaborators can work on it without thinking too much about the frontend. The downside is that collaborators are not thinking about the frontend, creating a gap between the backend and frontend. This is one key trade-off when doing full-stack projects like that."
+        },
+        {
+            "type": "markdown",
+            "value": "Here's what a project implementing principled data processing in maestro might look like:"
+        },
+        {
+            "type": "markdown",
+            "value": "```\n.\n├── orchestrator.R \n├── pipelines\n│   ├── etl.R\n│   ├── ingest\n│   │   ├── input\n│   │   │   ├── geo\n│   │   │   │   ├── boundary_file_census\n│   │   │   │   ├── cma_boundary_file_census\n│   │   │   │   ├── districts-electoraux-2021.geojson\n│   │   │   │   ├── hydrographie_2020\n│   │   │   │   ├── limites-administratives-agglomeration-nad83.geojson\n│   │   │   │   └── limites-terrestres.geojson\n│   │   │   └── metadata\n│   │   │       └── population\n│   │   │           ├── 2001\n│   │   │           │   └── population_mtl_by_district.pdf\n│   │   │           ├── 2006\n│   │   │           │   └── population_mtl_by_district.csv\n│   │   │           ├── 2011\n│   │   │           │   └── population_mtl_by_district.csv\n│   │   │           ├── 2016\n│   │   │           │   └── population_mtl_by_district.csv\n│   │   │           └── 2021\n│   │   │               └── population_mtl_by_district.csv\n│   │   └── src\n│   │       └── ingest.R\n│   └── transform\n│       ├── input\n│       │   ├── boundary.geojson\n│       │   ├── districts.geojson\n│       │   └── metadata.csv\n│       └── src\n│           ├── geo_aggregation.R\n│           └── metadata_aggregation.R\n└── renv/\n```"
+        },
+        {
+            "type": "markdown",
+            "value": "The key idea is that each script in `pipelines/` are implementing atomic tasks, which we can then examine. For instance, in `ingest.R` you will find that each task is responsible to load one particular data source. This might seem pedantic, but remember that the default assumption here is that things can easily get messy. Then, we scaffold the project using maestro `orchestrator.R`, which creates a directed acyclic graph from `etl.R`. In dagster, the DAG is built automatically from the dependencies declared in the assets, while in `R` we use `etl.R` to specify the DAG:"
+        },
+        {
+            "type": "code",
+            "language": "r",
+            "value": [
+                "library(here)",
+                "",
+                "source(here('pipelines', 'ingest', 'src', 'ingest.R'))",
+                "source(here('pipelines', 'transform', 'src', 'geo_aggregation.R'))",
+                "source(here('pipelines', 'transform', 'src', 'metadata_aggregation.R'))",
+                "",
+                "# =======================================",
+                "# INGEST PIPELINES",
+                "# =======================================",
+                "",
+                "#' Ingest electoral districts",
+                "#' @maestroOutputs transform_geo",
+                "ingest_districts <- function() {",
+                "districts_electoraux_2021()",
+                "}",
+                "",
+                "#' Ingest Montreal CMA boundary",
+                "#' @maestroOutputs transform_geo",
+                "ingest_cma <- function() {",
+                "montreal_cma()",
+                "}",
+                "",
+                "#' Ingest population data",
+                "#' @maestroOutputs transform_metadata",
+                "ingest_population <- function() {",
+                "# Population data is downloaded via Excel sheets in ingest.R",
+                "population_by_district()",
+                "}",
+                "",
+                "# ========================================",
+                "# TRANSFORM PIPELINES",
+                "# ========================================",
+                "",
+                "#' Transform geo layers into geoJSON",
+                "#' @maestroInputs ingest_districts ingest_cma",
+                "ingest_population <- function(.input) {",
+                  "geo_aggregation()",
+                "}",
+                "",
+                "#' Transform population metadata",
+                "#' @maestroInputs ingest_population",
+                "transform_metadata <- function(.input) {",
+                "metadata_aggregation()",
+                "}"
+            ]
+        },
+        {
+            "type": "markdown",
+            "value": "Running `orchestrator.R` from [Positron](https://positron.posit.co/) (note that we need an editor that can spin up a server under the hood), we see the following:"
+        },
+        {
+            "type": "code",
+            "value": [
+                "── [2026-02-02 11:03:36]",
+                "Running pipelines ▶ ",
+                "✔ ingest_districts [28ms]",
+                "✔ transform_geo [759ms]",
+                "✔ ingest_cma [19ms]",
+                "✔ transform_geo [602ms]",
+                "✔ ingest_population [50ms]",
+                "✔ transform_metadata [31ms]",
+                "",
+                "── [2026-02-02 11:03:37]",
+                "Pipeline execution completed ■ | 1.538 sec elapsed ",
+                "✔ 6 successes | ! 0 warnings | ✖ 0 errors | ◼ 6 total"
+            ]
+        },
+        {
+            "type": "markdown",
+            "value": "Thinking in terms of DAGs lead to more _maintainable_ project because the code is documentation (`etl.R` already tell you a lot about the project). By knowing exactly where each file is the output of what tasks, it's also more _extensible_ as there is a single source of truth that should follow the data flow. As a bonus, we can use the scheduler in either `maestro` or `dagster` to run the pipeline on a regular basis, setting up some alerts to know if the code is breaking up."
+        },
+        {
+            "type": "markdown",
+            "value": "There are numerous other software and documentation implementing different levels of features across languages. Here's a few:\n - [tango (Python)](https://github.com/allenai/tango) by AllenAI, which lets you specify experiments when running data pipelines\n - [targets (R)](https://books.ropensci.org/targets/walkthrough.html) only runs tasks when upstream dependencies have been modified. That is, it won't rerun the whole pipeline if it doesn't have to.\n - [DrWatson.jl (Julia)](https://juliadynamics.github.io/DrWatson.jl/stable/) is more general, including its own project structure for reproducible scientific projects.\n - [luigi (Python)](https://github.com/spotify/luigi) by Spotify to easily run jobs on Hadoop.\n - [Snakemake (Python)](https://snakemake.readthedocs.io/en/stable/) is tightly integrated with HPC Slurm and has a broad scientific community supporting its development."
+        },
+         {
+            "type": "markdown",
+            "value": "In my opinion, each have their pros and cons. What I like about `maestro` and `dagster` is that they don't enforce a project structure and you keep writing vanilla `R` and `Python`, making them easy to use to refactor existing projects. "
+        }
+    ]
+}

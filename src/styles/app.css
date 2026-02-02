@@ -9,11 +9,9 @@
 
 :root {
   /* Typography families */
-  --sans: "Atlas Grotesk", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --serif: "Tiempos Text", "Times New Roman", Times, serif;
-  --mono: "Atlas Typewriter", "SF Mono", Monaco, "Cascadia Code",
-    "Roboto Mono", Consolas, "Courier New", monospace;
+  --sans: "Atlas Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Baskerville", "Times New Roman", Times, serif;
+  --mono: "Atlas Typewriter", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
 
   /* Type scale */
   --font-size-giant: clamp(3rem, 10vw, 4rem);
@@ -103,10 +101,36 @@ main {
    BASE TEXT STYLES
    ============================================================================= */
 
+/* =============================================================================
+   BASE TEXT STYLES
+   ============================================================================= */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--serif);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin: 2.5rem 0 1rem;
+}
+
 h2 {
   font-size: 1.8rem;
-  font-weight: 400;
   margin: 2.5rem 0 1rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  margin: 2rem 0 0.75rem;
+}
+
+h4 {
+  font-size: 1.2rem;
+  margin: 1.5rem 0 0.5rem;
 }
 
 p {

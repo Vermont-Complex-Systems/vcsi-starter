@@ -13,6 +13,7 @@
     // Import specific languages like in their docs
     import css from 'highlight.js/lib/languages/css';
     import xml from 'highlight.js/lib/languages/xml';
+    import R from 'highlight.js/lib/languages/r';
 
     let { text } = $props();
 
@@ -34,6 +35,7 @@
                         css,
                         html: xml,
                         xml,
+                        r: R,
                         svelte: xml
                     }
                 }
@@ -122,16 +124,17 @@
         margin: 0;
     }
 
-    /* Code blocks */
+    /* Code blocks - GitHub style */
     .markdown-content :global(pre) {
-        background: var(--color-input-bg);
-        border-radius: var(--border-radius);
+        background: #f6f8fa;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
         padding: 1rem;
         margin: 1.5rem 0;
         overflow-x: auto;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 0.7em;
-        line-height: 1.3;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.85em;
+        line-height: 1.45;
         white-space: pre;
     }
 
@@ -142,6 +145,7 @@
         white-space: pre;
         font-family: inherit;
         font-size: inherit;
+        color: #1f2328;
     }
 
     /* Inline code */
@@ -161,7 +165,12 @@
     }
 
     :global(.dark) .markdown-content :global(pre) {
-        background: var(--color-gray-800);
+        background: #161b22;
+        border-color: #30363d;
+    }
+
+    :global(.dark) .markdown-content :global(pre code) {
+        color: #e6edf3;
     }
 
     :global(.dark) .markdown-content :global(p code),
