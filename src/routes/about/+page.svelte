@@ -3,7 +3,7 @@
     import Spinner from "$lib/components/helpers/Spinner.svelte";
     import About from "$lib/components/About.svelte";
 
-    import { getMembers } from '$lib/data.remote'
+    import { getMembers } from '$lib/story.remote'
 
      const preloadFont = [
         "/assets/fonts/tiempos/TiemposTextWeb-Regular.woff2",

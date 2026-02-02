@@ -1,6 +1,6 @@
 <script>
   import { page } from '$app/state';
-  import { getMember } from '$lib/data.remote' 
+  import { getMember } from '$lib/story.remote' 
   
   import Meta from "$lib/components/Meta.svelte";
   import Member from "$lib/components/Member.svelte";

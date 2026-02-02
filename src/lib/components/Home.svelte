@@ -2,7 +2,8 @@
   import DotsToImage from '$lib/components/DotsToImage.svelte';
   import StoryGrid from '$lib/components/StoryGrid.svelte';
   import CopyCodeBlock from '$lib/components/helpers/CopyCodeBlock.svelte';
-  import { getStories } from '$lib/data.remote';
+  import RemoteFunctionsSection from '$lib/components/RemoteFunctionsSection.svelte';
+  import { getStories } from '$lib/story.remote';
   import { ArrowRight } from '@lucide/svelte';
 </script>
 
@@ -22,6 +23,9 @@
           label="Annotated branch"
         />
         <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/website-template" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>
+      </div>
+      <div class="tip-row">
+        <p>P.S. Here we provide templates for building <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Frameworks_libraries/Introduction#static_site_generators">static website</a>. For a sister project providing similar templates but with <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side">server-side logic</a>, visit <a href="https://jso.cool/">jso.cool/</a>.</p>
       </div>
     </div>
     <DotsToImage imgFilePath='/octopus-swim-right.png' />
@@ -68,6 +72,51 @@
   </div>
   <p class="svelte-cta">Learn more at <a href="https://svelte.dev/" target="_blank" rel="noopener noreferrer">svelte.dev</a> or follow their <a href="https://svelte.dev/tutorial/svelte/welcome-to-svelte" target="_blank" rel="noopener noreferrer">tutorial</a></p>
 </section>
+
+<!-- Project Structure Section -->
+<section class="project-structure page">
+  <h2>Project Structure</h2>
+  <div class="structure-layout">
+    <pre class="tree-view"><code>.
+├── src/
+│   ├── routes/            # Pages & layouts
+│   │   ├── +layout.svelte
+│   │   ├── +page.svelte   # Home page
+│   │   ├── about/
+│   │   └── [story]/       # Dynamic story routes
+│   ├── lib/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── stories/       # Your scrollytelling content
+│   │   │   └── &#123;story-name&#125;/
+│   │   │       ├── components/
+│   │   │       └── data/copy.json
+│   │   └── story.remote.ts
+│   ├── data/              # CSV data for routes
+│   └── styles/            # Global CSS
+├── static/                # Images, fonts, assets
+└── svelte.config.js       # Route generation</code></pre>
+    <div class="structure-explanations">
+      <div class="explanation">
+        <h3>Adding Stories</h3>
+        <p>Create a folder in <code>src/lib/stories/</code> with your story name. Add an entry to <code>src/data/stories.csv</code> and your story appears in the grid and gets its own route.</p>
+      </div>
+      <div class="explanation">
+        <h3>Story Content</h3>
+        <p>Each story has a <code>data/copy.json</code> for text content and <code>components/</code> for visualizations. The scrollytelling logic is handled by shared helpers.</p>
+      </div>
+      <div class="explanation">
+        <h3>Dynamic Routes</h3>
+        <p>SvelteKit generates routes from CSV data at build time. The <code>[story]</code> folder creates pages like <code>/geo-story-1</code> automatically.</p>
+      </div>
+      <div class="explanation">
+        <h3>Styling</h3>
+        <p>Global styles in <code>src/styles/</code> define CSS variables. Components use scoped styles. Check <code>variables.css</code> for theme customization.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<RemoteFunctionsSection />
 
 <style>
 /* ---------------- Hero Section ---------------- */
@@ -136,6 +185,19 @@
 
 .github-link:hover {
   gap: 0.5rem;
+}
+
+.tip-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  color: var(--color-gray-700);
+}
+
+.tip-row p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 /* Make DotsToImage grow to fill space */
@@ -210,6 +272,89 @@
   font-weight: 500;
 }
 
+/* ---------------- Project Structure Section ---------------- */
+.project-structure {
+  padding: 4rem var(--page-padding);
+}
+
+.project-structure h2 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-family: var(--serif);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.structure-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.tree-view {
+  background: #f6f8fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 0;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #1f2328;
+}
+
+.tree-view code {
+  background: none;
+  padding: 0;
+}
+
+:global(.dark) .tree-view {
+  background: #161b22;
+  border-color: #30363d;
+  color: #e6edf3;
+}
+
+.structure-explanations {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.explanation {
+  padding: 1.25rem;
+  background: var(--color-bg);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.explanation h3 {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--color-fg);
+}
+
+.explanation p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--color-gray-700);
+}
+
+.explanation code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8em;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
+
+:global(.dark) .explanation code {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* ---------------- Responsive ---------------- */
 @media (max-width: 768px) {
   .hero-inner {
@@ -225,6 +370,12 @@
   }
   .hero-text p {
     font-size: 1.2rem;
+  }
+  .structure-layout {
+    grid-template-columns: 1fr;
+  }
+  .structure-explanations {
+    grid-template-columns: 1fr;
   }
 }
 </style>
