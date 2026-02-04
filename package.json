@@ -15,7 +15,8 @@
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+		"db:studio": "drizzle-kit studio",
+		"msgraph:fetch": "node scripts/fetch-msgraph.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -41,16 +42,21 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
+		"@azure/identity": "^4.13.0",
 		"@lucide/svelte": "^0.562.0",
+		"@microsoft/microsoft-graph-client": "^3.0.7",
 		"@playwright/mcp": "^0.0.56",
 		"@rollup/plugin-dsv": "^3.0.5",
 		"@turf/rewind": "^7.3.3",
 		"better-sqlite3": "^12.5.0",
 		"d3": "^7.9.0",
+		"dotenv": "^17.2.3",
 		"highlight.js": "^11.11.1",
 		"hyparquet": "^1.24.1",
+		"isomorphic-fetch": "^3.0.0",
 		"katex": "^0.16.27",
 		"mode-watcher": "^1.1.0",
+		"readline-sync": "^1.4.10",
 		"rehype-highlight": "^7.0.2",
 		"rehype-highlight-code-lines": "^1.2.1",
 		"rehype-katex": "^7.0.1",

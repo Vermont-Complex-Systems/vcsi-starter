@@ -1,44 +1,19 @@
 <script>
-    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { rewind } from '@turf/rewind';
+    import Legend from './Legend.svelte';
+
+    // Local data imports
+    import metadataRaw from '../data/metadata.csv';
+    import districtsGeo from '../data/districts.json';
+    import boundaryGeo from '../data/boundary.json';
 
     let { scrollyIndex } = $props();
 
-    // Remote data URLs
-    const DISTRICTS_URL = 'https://raw.githubusercontent.com/jstonge/rdag-montreal/refs/heads/main/pipelines/transform/input/districts.geojson';
-    const BOUNDARY_URL = 'https://raw.githubusercontent.com/jstonge/rdag-montreal/refs/heads/main/pipelines/transform/input/boundary.geojson';
-    const METADATA_URL = 'https://raw.githubusercontent.com/jstonge/rdag-montreal/refs/heads/main/pipelines/transform/input/metadata.csv';
-
-    // Fetched data
-    let districts = $state([]);
-    let boundary = $state([]);
-    let metadataRaw = $state([]);
-
     // Fix winding order for GeoJSON features
     // https://observablehq.com/@john-guerra/d3-black-box-map
-    function rewindGeoJSON(geo) {
-        return {
-            ...geo,
-            features: geo.features.map(f => rewind(f, { reverse: true }))
-        };
-    }
-
-    // Fetch data on mount
-    onMount(async () => {
-        const [districtsGeo, boundaryGeo, csvText] = await Promise.all([
-            fetch(DISTRICTS_URL).then(r => r.json()),
-            fetch(BOUNDARY_URL).then(r => r.json()),
-            fetch(METADATA_URL).then(r => r.text())
-        ]);
-
-        const fixedDistricts = rewindGeoJSON(districtsGeo);
-        const fixedBoundary = rewindGeoJSON(boundaryGeo);
-
-        districts = fixedDistricts.features;
-        boundary = fixedBoundary.features;
-        metadataRaw = d3.csvParse(csvText);
-    });
+    const districts = districtsGeo.features.map(f => rewind(f, { reverse: true }));
+    const boundary = boundaryGeo.features.map(f => rewind(f, { reverse: true }));
 
     // Chart dimensions
     let width = $state(800);
@@ -49,114 +24,99 @@
     let innerHeight = $derived(height - margin.top - margin.bottom);
     let isMobile = $derived(width < 768);
 
-    // Determine display mode from scrollyIndex
-    // Step 0: Just show Montreal (no data fill)
-    // Step 1: Show 2011 population
-    // Step 2: Show % change between 2011 and 2016
-    let showPopulation = $derived(scrollyIndex !== undefined && scrollyIndex >= 1);
-    let showChange = $derived(scrollyIndex !== undefined && scrollyIndex >= 2);
+    // Current step index (default case handles overflow)
+    let stepIndex = $derived(scrollyIndex ?? 0);
 
-    // Parse CSV data (year and population are strings from CSV, need to convert)
-    let metadata = $derived(
-        metadataRaw.map(d => ({
-            arrondissement: d.arrondissement,
-            year: parseInt(d.year),
-            population: parseFloat(d.population)
-        }))
+    // ============================================
+    // STATIC DATA (computed once from imports)
+    // ============================================
+
+    // Parse CSV data (year and population are strings, convert to numbers)
+    const metadata = metadataRaw.map(d => ({
+        arrondissement: d.arrondissement,
+        year: parseInt(d.year),
+        population: parseFloat(d.population)
+    }));
+
+    // Lookup maps for population by year
+    const pop2011 = new Map(
+        metadata.filter(d => d.year === 2011).map(d => [d.arrondissement, d.population])
+    );
+    const pop2016 = new Map(
+        metadata.filter(d => d.year === 2016).map(d => [d.arrondissement, d.population])
     );
 
-    // Create lookup maps for both years
-    let pop2011 = $derived(
-        new Map(metadata.filter(d => d.year === 2011).map(d => [d.arrondissement, d.population]))
-    );
-    let pop2016 = $derived(
-        new Map(metadata.filter(d => d.year === 2016).map(d => [d.arrondissement, d.population]))
-    );
-
-    // Calculate percentage change for each arrondissement
-    let changeMap = $derived.by(() => {
-        const map = new Map();
-        for (const [arr, pop11] of pop2011) {
-            const pop16 = pop2016.get(arr);
-            if (pop11 && pop16) {
-                const change = ((pop16 - pop11) / pop11) * 100;
-                map.set(arr, change);
-            }
-        }
-        return map;
-    });
-
-    // Max population for color scale domain (2011)
-    let maxPopulation = $derived(
-        metadata.length > 0 ? d3.max(metadata.filter(d => d.year === 2011), d => d.population) : 100000
-    );
-
-    // Max absolute change for diverging scale
-    let maxChange = $derived.by(() => {
-        const values = [...changeMap.values()];
-        return values.length > 0 ? Math.max(Math.abs(d3.min(values)), Math.abs(d3.max(values))) : 10;
-    });
-
-    // Top 5 most populous districts (2011)
-    let top5Population = $derived.by(() => {
-        const entries = [...pop2011.entries()];
-        return new Set(
-            entries
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(d => d[0])
-        );
-    });
-
-    // Top 5 districts by population change
-    let top5Change = $derived.by(() => {
-        const entries = [...changeMap.entries()];
-        return new Set(
-            entries
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(d => d[0])
-        );
-    });
-
-    // Color scale for population (spectral)
-    let populationColorScale = $derived(
-        d3.scaleSequential(d3.interpolateSpectral)
-            .domain([maxPopulation, 0])
-    );
-
-    // Color scale for change (diverging: red = decline, white = no change, blue = growth)
-    let changeColorScale = $derived(
-        d3.scaleDiverging(d3.interpolateRdBu)
-            .domain([-maxChange, 0, maxChange])
-    );
-
-    // Get fill color based on mode
-    function getFillColor(arrondissement) {
-        if (!showPopulation) {
-            return '#e0e0e0'; // Neutral gray for intro step
-        } else if (showChange) {
-            const change = changeMap.get(arrondissement);
-            return change !== undefined ? changeColorScale(change) : '#ccc';
-        } else {
-            const pop = pop2011.get(arrondissement);
-            return pop !== undefined ? populationColorScale(pop) : '#ccc';
+    // Percentage change for each arrondissement
+    const changeMap = new Map();
+    for (const [arr, pop11] of pop2011) {
+        const pop16 = pop2016.get(arr);
+        if (pop11 && pop16) {
+            const change = ((pop16 - pop11) / pop11) * 100;
+            changeMap.set(arr, change);
         }
     }
 
-    // Projection that fits the districts to the container
-    let projection = $derived.by(() => {
-        const allFeatures = [...districts];
-        if (allFeatures.length === 0) return d3.geoMercator();
+    // Map configuration based on current step
+    // Only title, colors, labels, and legend are changing
+    // The map itself is static
+    let mapConfig = $derived.by(() => {
+        switch (stepIndex) {
+            case 0:
+                return {
+                    title: 'Montreal',
+                    colors: null,
+                    labelsToShow: null,
+                    legend: null
+                };
 
-        const featureCollection = {
-            type: "FeatureCollection",
-            features: allFeatures
-        };
+            case 1: {
+                // Population view 2011 only
+                const maxPopulation = d3.max([...pop2011.values()]);
+                const colorScale = d3.scaleSequential(d3.interpolateSpectral)
+                    .domain([maxPopulation, 0]);
 
-        return d3.geoMercator()
-            .fitSize([innerWidth, innerHeight], featureCollection);
+                const colors = new Map(
+                    [...pop2011.entries()].map(([arr, pop]) => [arr, colorScale(pop)])
+                );
+                const labelsToShow = new Set(
+                    [...pop2011.entries()]
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5)
+                        .map(d => d[0])
+                );
+
+                return { title: 'Population 2011', colors, labelsToShow, legend: colorScale };
+            }
+
+            default: {
+                // Change view
+                const changeValues = [...changeMap.values()];
+                const maxChange = Math.max(Math.abs(d3.min(changeValues)), Math.abs(d3.max(changeValues)));
+                const colorScale = d3.scaleDiverging(d3.interpolateRdBu)
+                    .domain([-maxChange, 0, maxChange]);
+
+                const colors = new Map(
+                    [...changeMap.entries()].map(([arr, change]) => [arr, colorScale(change)])
+                );
+                const labelsToShow = new Set(
+                    [...changeMap.entries()]
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5)
+                        .map(d => d[0])
+                );
+
+                return { title: 'Population Change 2011→2016', colors, labelsToShow, legend: colorScale };
+            }
+        }
     });
+
+    // Projection that fits the districts to the container
+    let projection = $derived(
+        d3.geoMercator().fitSize(
+            [innerWidth, innerHeight],
+            { type: "FeatureCollection", features: districts }
+        )
+    );
 
     // Path generator
     let pathGenerator = $derived(d3.geoPath().projection(projection));
@@ -169,15 +129,7 @@
 </script>
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
-    <div class="year-indicator">
-        {#if !showPopulation}
-            Montreal
-        {:else if showChange}
-            Population Change 2011→2016
-        {:else}
-            Population 2011
-        {/if}
-    </div>
+    <div class="year-indicator">{mapConfig.title}</div>
 
     <svg viewBox={`0 0 ${width} ${height}`} style="background: #a6cee3;">
         <g transform={`translate(${margin.left},${margin.top})`}>
@@ -195,10 +147,12 @@
 
                 <!-- Districts -->
                 {#each districts as feature (feature.properties.id || feature.properties.nom)}
+                    {@const arrondissement = feature.properties.arrondissement}
+                    {@const color = mapConfig.colors?.get(arrondissement) ?? '#e0e0e0'}
                     <path
                         class="district"
                         d={pathGenerator(feature)}
-                        fill={getFillColor(feature.properties.arrondissement)}
+                        fill={color}
                         stroke="#333"
                         stroke-width="0.5"
                         style="transition: fill 0.5s ease;"
@@ -210,11 +164,9 @@
                 {#each districts as feature (feature.properties.id || feature.properties.nom)}
                     {@const centroid = getCentroid(feature)}
                     {@const arrondissement = feature.properties.arrondissement}
-                    {@const showLabel =
-                        ((scrollyIndex === 0 || scrollyIndex === undefined) && !isMobile) ||
-                        (scrollyIndex === 1 && top5Population.has(arrondissement)) ||
-                        (scrollyIndex >= 2 && top5Change.has(arrondissement))
-                    }
+                    {@const showLabel = mapConfig.labelsToShow
+                        ? mapConfig.labelsToShow.has(arrondissement)
+                        : !isMobile}
                     {#if centroid && !isNaN(centroid[0]) && showLabel}
                         <text
                             x={centroid[0]}
@@ -235,20 +187,7 @@
             </g>
     </svg>
 
-    <!-- Color legend -->
-    {#if showPopulation}
-    <div class="legend">
-        {#if showChange}
-            <span class="legend-label">-{maxChange?.toFixed(0)}%</span>
-            <div class="legend-gradient-diverging"></div>
-            <span class="legend-label">+{maxChange?.toFixed(0)}%</span>
-        {:else}
-            <span class="legend-label">0</span>
-            <div class="legend-gradient"></div>
-            <span class="legend-label">{maxPopulation?.toLocaleString()}</span>
-        {/if}
-    </div>
-    {/if}
+    <Legend scale={mapConfig.legend} />
 </div>
 
 <style>
@@ -298,38 +237,4 @@
         border-radius: 4px;
     }
 
-    .legend {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.5rem;
-        border-radius: 4px;
-    }
-
-    .legend-gradient {
-        width: 200px;
-        height: 12px;
-        background: linear-gradient(to right,
-            #5e4fa2, #3288bd, #66c2a5, #abdda4,
-            #e6f598, #fee08b, #fdae61, #f46d43, #d53e4f, #9e0142
-        );
-        border-radius: 2px;
-    }
-
-    .legend-gradient-diverging {
-        width: 200px;
-        height: 12px;
-        background: linear-gradient(to right, #b2182b, #f7f7f7, #2166ac);
-        border-radius: 2px;
-    }
-
-    .legend-label {
-        font-size: 0.75rem;
-        color: #333;
-    }
 </style>
