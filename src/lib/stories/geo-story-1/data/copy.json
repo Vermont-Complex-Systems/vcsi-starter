@@ -35,6 +35,14 @@
         {
             "type": "markdown",
             "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+        },
+        {
+            "type": "markdown",
+            "value": "Lets now zoom in on my neighborhood."
+        },
+        {
+            "type": "markdown",
+            "value": "Kidding, we don't have the fine-grained data yet."
         }
     ],
     "conclusion": [

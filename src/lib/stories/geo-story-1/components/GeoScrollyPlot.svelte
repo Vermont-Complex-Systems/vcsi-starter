@@ -1,6 +1,8 @@
 <script>
     import * as d3 from 'd3';
     import { rewind } from '@turf/rewind';
+    import { tweened } from 'svelte/motion';
+    import { cubicOut } from 'svelte/easing';
     import Legend from './Legend.svelte';
 
     // Local data imports
@@ -66,7 +68,9 @@
                     title: 'Montreal',
                     colors: null,
                     labelsToShow: null,
-                    legend: null
+                    legend: null,
+                    focus: null,
+                    rotation: 0
                 };
 
             case 1: {
@@ -85,11 +89,11 @@
                         .map(d => d[0])
                 );
 
-                return { title: 'Population 2011', colors, labelsToShow, legend: colorScale };
+                return { title: 'Population 2011', colors, labelsToShow, legend: colorScale, focus: null, rotation: 0 };
             }
 
-            default: {
-                // Change view
+            case 2: {
+               // Change view
                 const changeValues = [...changeMap.values()];
                 const maxChange = Math.max(Math.abs(d3.min(changeValues)), Math.abs(d3.max(changeValues)));
                 const colorScale = d3.scaleDiverging(d3.interpolateRdBu)
@@ -105,21 +109,129 @@
                         .map(d => d[0])
                 );
 
-                return { title: 'Population Change 2011→2016', colors, labelsToShow, legend: colorScale };
+                return { title: 'Population Change 2011→2016', colors, labelsToShow, legend: colorScale, focus: null, rotation: 0 };
+            }
+
+            case 3: {
+                // Zoom on Villeray - highlight the arrondissement
+                const focusArr = 'Villeray-Saint-Michel-Parc-Extension';
+
+                // Color focused districts, gray out others
+                const colors = new Map(
+                    [...pop2011.keys()].map(arr => [
+                        arr,
+                        arr === focusArr ? '#2a9d8f' : '#d3d3d3'
+                    ])
+                );
+
+                return {
+                    title: focusArr,
+                    colors,
+                    labelsToShow: new Set([focusArr]),
+                    legend: null,
+                    focus: focusArr,
+                    rotation: 60
+                };
+            }
+            default: {
+                return {
+                    title: null,
+                    colors: null,
+                    labelsToShow: null,
+                    legend: null,
+                    focus: null,
+                    rotation: 0
+                };
             }
         }
     });
 
-    // Projection that fits the districts to the container
+    // Fixed projection that always shows all districts
     let projection = $derived(
-        d3.geoMercator().fitSize(
-            [innerWidth, innerHeight],
+        d3.geoMercator().fitExtent(
+            [[20, 20], [innerWidth - 20, innerHeight - 20]],
             { type: "FeatureCollection", features: districts }
         )
     );
 
-    // Path generator
+    // Path generator (fixed, doesn't change with zoom)
     let pathGenerator = $derived(d3.geoPath().projection(projection));
+
+    // Animated view state (viewBox + rotation center)
+    const viewState = tweened(
+        { x: 0, y: 0, w: 800, h: 600, rotCx: 400, rotCy: 300, rotation: 0 },
+        { duration: 1200, easing: cubicOut }
+    );
+
+    // Calculate target view state based on focus
+    let targetViewState = $derived.by(() => {
+        const rot = mapConfig.rotation ?? 0;
+
+        if (!mapConfig.focus) {
+            // Full view - rotate around map center
+            return {
+                x: 0, y: 0, w: width, h: height,
+                rotCx: innerWidth / 2, rotCy: innerHeight / 2,
+                rotation: rot
+            };
+        }
+
+        // Find features to zoom to
+        const focusFeatures = districts.filter(
+            d => d.properties.arrondissement === mapConfig.focus
+        );
+
+        if (!focusFeatures.length) {
+            return {
+                x: 0, y: 0, w: width, h: height,
+                rotCx: innerWidth / 2, rotCy: innerHeight / 2,
+                rotation: rot
+            };
+        }
+
+        // Calculate bounding box in screen coordinates
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const feature of focusFeatures) {
+            const bounds = pathGenerator.bounds(feature);
+            minX = Math.min(minX, bounds[0][0]);
+            minY = Math.min(minY, bounds[0][1]);
+            maxX = Math.max(maxX, bounds[1][0]);
+            maxY = Math.max(maxY, bounds[1][1]);
+        }
+
+        // Calculate center of focused area (in local coords, before translate)
+        const focusCenterX = (minX + maxX) / 2;
+        const focusCenterY = (minY + maxY) / 2;
+        const focusW = maxX - minX;
+        const focusH = maxY - minY;
+
+        // ViewBox center (in SVG coords, after translate)
+        const viewCenterX = focusCenterX + margin.left;
+        const viewCenterY = focusCenterY + margin.top;
+
+        // Zoom factor: smaller = tighter zoom
+        const zoomFactor = 0.8;
+
+        // Maintain aspect ratio
+        const aspectRatio = width / height;
+        const zoomedSize = Math.max(focusW, focusH) * zoomFactor;
+        const w = aspectRatio >= 1 ? zoomedSize * aspectRatio : zoomedSize;
+        const h = aspectRatio >= 1 ? zoomedSize : zoomedSize / aspectRatio;
+
+        return {
+            x: viewCenterX - w / 2,
+            y: viewCenterY - h / 2 - 10,
+            w, h,
+            rotCx: focusCenterX,  // Rotate around focus center
+            rotCy: focusCenterY,
+            rotation: rot
+        };
+    });
+
+    // Update animation when target changes
+    $effect(() => {
+        viewState.set(targetViewState);
+    });
 
     // Get centroid for labels
     function getCentroid(feature) {
@@ -128,11 +240,18 @@
 
 </script>
 
-<div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
+<div
+    class="chart-container"
+    bind:clientWidth={width}
+    bind:clientHeight={height}
+>
     <div class="year-indicator">{mapConfig.title}</div>
 
-    <svg viewBox={`0 0 ${width} ${height}`} style="background: #a6cee3;">
-        <g transform={`translate(${margin.left},${margin.top})`}>
+    <svg
+        viewBox={`${$viewState.x} ${$viewState.y} ${$viewState.w} ${$viewState.h}`}
+        style="background: #a6cee3;"
+    >
+        <g transform={`translate(${margin.left},${margin.top}) rotate(${$viewState.rotation}, ${$viewState.rotCx}, ${$viewState.rotCy})`}>
                 <!-- Boundary (CMA land outside districts) -->
                 {#each boundary as feature (feature.properties.id)}
                     <path
@@ -173,10 +292,10 @@
                             y={centroid[1]}
                             text-anchor="middle"
                             font-size="10"
-                            font-weight="500"
+                            font-weight="600"
                             fill="#333"
                             stroke="white"
-                            stroke-width="3"
+                            stroke-width="1"
                             stroke-linejoin="round"
                             paint-order="stroke"
                         >
@@ -198,7 +317,7 @@
         position: relative;
         border: 1px solid rgba(0, 0, 0, 0.08);
         border-radius: 16px;
-        overflow: hidden;
+        overflow: visible;
     }
 
     /* Mobile: Square container centered within sticky parent
