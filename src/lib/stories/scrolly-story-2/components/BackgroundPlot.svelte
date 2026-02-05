@@ -2,21 +2,26 @@
     import { scaleLinear, scaleLog, scaleOrdinal, scaleSqrt } from 'd3';
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
-    import Tooltip from '$lib/components/helpers/Tooltip.svelte';
+    import ChartTooltip from './ChartTooltip.svelte';
     import RegressionLines from './RegressionLines.svelte';
     import RegionLegend from './RegionLegend.svelte';
     import ScatterDots from './ScatterDots.svelte';
+    import XAxis from './XAxis.svelte';
+    import YAxis from './YAxis.svelte';
+    import SimpleToggle from '$lib/components/helpers/SimpleToggle.svelte';
     import allData from '../data/combined-data.csv';
 
     let { scrollyIndex } = $props();
-    let tooltip = $state({ visible: false, x: 0, y: 0, content: '' });
 
+    
+    let selectedXVar = $state('democracy');
+    
     // X-axis variable options
     const xVariables = [
         { value: 'democracy', label: 'Electoral Democracy Index', domain: [0, 1], scale: 'linear' },
         { value: 'gdp', label: 'GDP per Capita', domain: [200, 150000], scale: 'log' },
     ];
-    let selectedXVar = $state('democracy');
+    
     let xConfig = $derived(xVariables.find(v => v.value === selectedXVar));
 
     // Population-based dot sizing
@@ -43,10 +48,10 @@
     );
 
     // Color scale for regions
-    const regions = ['Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America', 'Unknown'];
+    const regions = [...new Set(allData.map(d => d.owid_region))];
     const colorScale = scaleOrdinal()
         .domain(regions)
-        .range(['#e15759', '#f28e2c', '#4e79a7', '#76b7b2', '#59a14f', '#edc949', '#999999']);
+        .range(['#e15759', '#f28e2c', '#4e79a7', '#76b7b2', '#59a14f', '#edc949']);
 
     // Radius scale for population (area-proportional using sqrt)
     let radiusScale = $derived(
@@ -101,31 +106,12 @@
 
     // Tooltip state
     let hoveredCountry = $state(null);
-
-    // Update tooltip content when hovered country changes
-    $effect(() => {
-        const d = hoveredCountry && filteredData.find(c => c.entity === hoveredCountry);
-        tooltip.visible = !!d;
-        tooltip.content = d ? `${d.entity}\nLife exp: ${d.life_expectancy.toFixed(1)}\n${xConfig.label}: ${xConfig.scale === 'log' ? d.x_value.toLocaleString() : d.x_value.toFixed(2)}\nPopulation size: ${(d.population/1e6).toFixed(2)}M` : '';
-    });
-
-    function handleHover(e) {
-        if (e) {
-            tooltip.x = e.clientX;
-            tooltip.y = e.clientY;
-        }
-    }
-
-    function formatXTick(tick) {
-        if (xConfig.scale === 'log') {
-            return tick >= 1000 ? `${tick / 1000}k` : tick;
-        }
-        return tick;
-    }
+    let hoveredData = $derived(hoveredCountry ? filteredData.find(c => c.entity === hoveredCountry) : null);
 </script>
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
     <svg viewBox={`0 0 ${width} ${height-navHeight}`}>
+        
         <defs>
             <clipPath id="chart-area">
                 <rect x={0} y={0} width={innerWidth} height={innerHeight} />
@@ -134,30 +120,11 @@
                 <rect x={-60} y={0} width={60} height={innerHeight} />
             </clipPath>
         </defs>
+
         <g transform={`translate(${margin.left},${margin.top})`}>
-            <!-- Grid lines -->
-            {#each xTicks as tick}
-                <line
-                    x1={xScale(tick)}
-                    x2={xScale(tick)}
-                    y1={0}
-                    y2={innerHeight}
-                    stroke="#e0e0e0"
-                    stroke-width="1"
-                />
-            {/each}
-            <g clip-path="url(#chart-area)">
-                {#each yTicks as tick (tick)}
-                    <line
-                        x1={0}
-                        x2={innerWidth}
-                        y1={yScale(tick)}
-                        y2={yScale(tick)}
-                        stroke="#e0e0e0"
-                        stroke-width="1"
-                    />
-                {/each}
-            </g>
+            <!-- Axes -->
+            <XAxis {xScale} {innerWidth} {innerHeight} ticks={xTicks} label={xConfig.label} isLogScale={xConfig.scale === 'log'} />
+            <YAxis {yScale} {innerWidth} {innerHeight} ticks={yTicks} label="Life Expectancy (years)" />
 
             <!-- Regression lines per region -->
             <RegressionLines data={filteredData} {xScale} {yScale} {colorScale} />
@@ -171,56 +138,7 @@
                 {radiusScale}
                 {usePopulationSize}
                 bind:hoveredCountry
-                onHover={handleHover}
             />
-
-            <!-- X-axis -->
-            <line x1={0} x2={innerWidth} y1={innerHeight} y2={innerHeight} stroke="#333" stroke-width="1" />
-            {#each xTicks as tick}
-                <text
-                    x={xScale(tick)}
-                    y={innerHeight + 20}
-                    text-anchor="middle"
-                    font-size="12"
-                >
-                    {formatXTick(tick)}
-                </text>
-            {/each}
-            <text
-                x={innerWidth / 2}
-                y={innerHeight + 50}
-                text-anchor="middle"
-                font-size="14"
-                font-weight="500"
-            >
-                {xConfig.label}
-            </text>
-
-            <!-- Y-axis -->
-            <line x1={0} x2={0} y1={0} y2={innerHeight} stroke="#333" stroke-width="1" />
-            <g clip-path="url(#chart-area-y)">
-                {#each yTicks as tick (tick)}
-                    <text
-                        x={-10}
-                        y={yScale(tick)}
-                        text-anchor="end"
-                        alignment-baseline="middle"
-                        font-size="12"
-                    >
-                        {tick}
-                    </text>
-                {/each}
-            </g>
-            <text
-                x={-innerHeight / 2}
-                y={-45}
-                text-anchor="middle"
-                font-size="14"
-                font-weight="500"
-                transform="rotate(-90)"
-            >
-                Life Expectancy (years)
-            </text>
 
             <!-- Year label -->
             <text
@@ -241,54 +159,56 @@
             <RegionLegend {regions} {colorScale} bind:selectedRegions {innerWidth} />
         </g>
 
-        <!-- X-variable selector (using foreignObject for HTML select) -->
-        <foreignObject x={width - 215} y={10} width="180" height="40">
-            <select class="x-selector" bind:value={selectedXVar}>
-                {#each xVariables as opt}
-                    <option value={opt.value}>{opt.label}</option>
-                {/each}
-            </select>
-        </foreignObject>
-
-        <!-- Population size toggle -->
-        <foreignObject x={width - 215} y={50} width="180" height="30">
-            <label class="pop-toggle">
-                <input type="checkbox" bind:checked={usePopulationSize} />
-                <span>Size by population</span>
-            </label>
-        </foreignObject>
     </svg>
+
+    <!-- Controls positioned outside SVG -->
+    <div class="chart-controls">
+        
+        <select class="x-selector" bind:value={selectedXVar}>
+            {#each xVariables as opt}
+                <option value={opt.value}>{opt.label}</option>
+            {/each}
+        </select>
+        
+        <SimpleToggle bind:isTrue={usePopulationSize} onText="Show population size" offText="Show population size" />
+    </div>
 </div>
 
-<Tooltip visible={tooltip.visible} x={tooltip.x} y={tooltip.y} content={tooltip.content} />
+<ChartTooltip
+    data={hoveredData}
+    {xScale}
+    {yScale}
+    {margin}
+    {width}
+    xLabel={xConfig?.label}
+    isLogScale={xConfig?.scale === 'log'}
+/>
 
 <style>
     .chart-container {
+        position: relative;
         width: 100%;
         height: 100%;
     }
 
+    .chart-controls {
+        position: absolute;
+        top: 5rem;
+        right: 2.5rem;
+        gap: 1rem;
+        display: flex;
+        align-items: center; 
+        z-index: 10;
+    }
+
     .x-selector {
-        padding: 6px 12px;
+        padding: 0 12px;
+        height: 30px;
         font-size: 13px;
         border-radius: 4px;
         border: 1px solid #555;
         background: #2a2a2a;
         color: #fff;
-        cursor: pointer;
-        width: 100%;
-    }
-
-    .pop-toggle {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        color: #fff;
-        cursor: pointer;
-    }
-
-    .pop-toggle input {
         cursor: pointer;
     }
 

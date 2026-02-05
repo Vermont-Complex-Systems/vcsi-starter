@@ -16,8 +16,7 @@
         colorScale,
         radiusScale,
         usePopulationSize = false,
-        hoveredCountry = $bindable(),
-        onHover
+        hoveredCountry = $bindable()
     }: {
         data: DataPoint[];
         xScale: ScaleLinear<number, number> | ScaleLogarithmic<number, number>;
@@ -26,7 +25,6 @@
         radiusScale: ScalePower<number, number>;
         usePopulationSize: boolean;
         hoveredCountry: string | null;
-        onHover: (e: MouseEvent | null) => void;
     } = $props();
 
 </script>
@@ -43,15 +41,8 @@
         style="transition: cx 0.8s ease-in-out, cy 0.8s ease-in-out, r 0.4s ease-out;"
         role="graphics-symbol"
         aria-label={d.entity}
-        onmouseenter={(e) => {
-            hoveredCountry = d.entity;
-            onHover(e);
-        }}
-        onmousemove={(e) => onHover(e)}
-        onmouseleave={() => {
-            hoveredCountry = null;
-            onHover(null);
-        }}
+        onmouseenter={() => hoveredCountry = d.entity}
+        onmouseleave={() => hoveredCountry = null}
     />
 {/each}
 
