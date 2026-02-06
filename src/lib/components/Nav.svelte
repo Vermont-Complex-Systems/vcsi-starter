@@ -21,7 +21,7 @@ function closeMenu(skipFocus = false) {
 <div class="header-inner">
   <div class="header-left">
     <a href="{base}/" class="title-link">
-       <img src="waxSeal.png" alt="Verso seal" class="site-title"/>
+       <img src="/waxSealSmall.png" alt="Verso seal" class="site-title"/>
     </a>
   </div>
 
@@ -87,6 +87,7 @@ function closeMenu(skipFocus = false) {
 
 .header-left {
   margin-left: -0.5rem; /* compensate for logo whitespace */
+  margin-top: 1rem; /* compensate for logo whitespace */
 }
 
 
