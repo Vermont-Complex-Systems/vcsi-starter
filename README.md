@@ -97,6 +97,25 @@ Inspired by The Pudding, each story lives in `src/lib/stories/story`:
   - Content is stored in a `data/copy.json`: when creating scrolly, key is the section name and values are list. Each entry in the list is a dictionary contains at least `type` (i.e. markdown, html, math) and `value`.
   - Stories can be found in `components/Index.svelte`. Each story contain local styling, which can sometimes need to overwrite the global styling.
 
+## Sharepoint Site integration
+
+You will need to setup the relevant secrets in a `.env` file. 
+
+```zsh
+mv .env.example .env
+```
+
+Then, the `.env` needs to contain the following
+
+```
+tenantId=
+clientId=
+clientSecret=
+siteID=https://uvmoffice.sharepoint.com/sites/{sitename}/_api/site/id
+```
+
+The `tenanId`, `clientId`, `clientSecret` can be obtained by registring your Sharepoint Site via [https://entra.microsoft.com/](https://entra.microsoft.com/#home). 
+
 ## Dependencies:
 
  - [mode-watcher](https://github.com/svecosystem/mode-watcher): Simple utilities to manage light & dark mode in your SvelteKit app.
