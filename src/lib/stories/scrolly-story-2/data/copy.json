@@ -22,23 +22,23 @@
 	"steps": [
 		{ 
 			"type": "markdown",
-			"value": "We made some improvement over the original [Hans Rosling](https://www.youtube.com/watch?v=jbkSRLYSojo) chart. You can now toggle between GDP and democracy index  in the top right of the chart, examining how variables tell different stories. You can hover on Dots to see extra information."
+			"value": "2001"
 		},
 		{
 			"type": "markdown",
-			"value": " We also added regression lines, making explicit what most people were doing anyway when looking at those correlations. You can click on the different regions in the top left, if you want to compare one or many specific regions."
+			"value": "2007"
 		},
 		{
 			"type": "markdown",
-			"value": "Try resizing the window, you'll see how the dots and regression lines are adapting thanks to svelte reactivity and smooth transitions. It is very pleasing."
+			"value": "2013"
 		},
 		{
 			"type": "markdown",
-			"value": "Of course, the goal is still to gain insights into our world in data."
+			"value": "2020"
 		},
 		{
 			"type": "markdown",
-			"value": "Like, what is happening with Central Africa? Is this a bug or is this a real outlier in terms of Life expectancy?"
+			"value": "2022"
 		}
 	],
 	"conclusion": [
