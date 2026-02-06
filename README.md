@@ -1,4 +1,37 @@
-# Custom Researh Website Template
+# Custom Research Website Template
+
+## Installation
+
+You will need `nodejs` and `npm` installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the command line interface, the easiest way to get started is to copy paste this code snippet in your terminal: 
+
+```zsh
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 24
+
+# Verify the Node.js version:
+node -v # Should print "v24.13.0".
+
+# Verify npm version:
+npm -v # Should print "11.6.2".
+```
+
+Once this is done, you should be able to simply run:
+
+```zsh
+npx degit Vermont-Complex-Systems/website-template example
+```
+
+If you want to use a specific branch, you can do
+
+```zsh
+npx degit Vermont-Complex-Systems/website-template#annotated-boxes example
+```
 
 ## Goal
 
@@ -63,51 +96,6 @@ Particular settings provide some rough edges of the website, as put by [Josh Com
 Inspired by The Pudding, each story lives in `src/lib/stories/story`:
   - Content is stored in a `data/copy.json`: when creating scrolly, key is the section name and values are list. Each entry in the list is a dictionary contains at least `type` (i.e. markdown, html, math) and `value`.
   - Stories can be found in `components/Index.svelte`. Each story contain local styling, which can sometimes need to overwrite the global styling.
-
-### Using Remote functions
-
-In front-end world, it is important to keep in mind the distinction between [server and client](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview#web_servers_and_http_a_primer). I keep in mind the distinction using the fact that, for example, static site generators are defined as such by their lack of [server-side logic](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side). As mozilla puts it, it means that "for any given URL, all users will receive the same content". In contrasts, dynamic websites can dynamically display data as required (e.g. when users are authenticated, display data will be shown differently for a given url).
-
-Data loading is an infamous problem in frontend design, which is how data is sent from the server to the client. That is, how the server receiving requests from HTTP, send data to client (e.g. user's web browser). Remote functions are new tools to solve that problem in a way that is both efficient and readable. We favor that approach because we find this make the code more readble to newcomers; in particular, it allows us to transfer data from server to clients simply using async functions.
-
-```js
-//data.remote.ts`
-import * as v from 'valibot';
-import { prerender } from '$app/server';
-import membersData from '$data/members.csv'
-
-export const getMembers = prerender(async () => {
-    return await membersData
-});
-
-
-export const getMember = prerender(
-    v.string(),
-    async (slug) => {
-        return await membersData.filter(d => d.id == slug)
-    },
-    { dynamic: true }
-);
-```
-
-and then we can do
-
-```svelte
-<script>
-  import { page } from '$app/state';
-  import { getMember } from '$lib/data.remote' 
-  import Member from "$lib/components/Member.svelte";
-  import Spinner from "$lib/components/helpers/Spinner.svelte";
-</script>
-
-{#await getMember(page.params.name)}
-  <Spinner text="Loading member..." />
-{:then author} 
-    <Member {author}/>
-{:catch error}
-  <p>Error loading member: {error.message || 'Unknown error'}</p>
-{/await}
-```
 
 ## Dependencies:
 
