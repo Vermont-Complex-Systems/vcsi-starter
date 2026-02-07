@@ -27,10 +27,18 @@ Once this is done, you should be able to simply run:
 npx degit Vermont-Complex-Systems/website-template example
 ```
 
-If you want to use a specific branch, you can do
+## Learning
+
+We use specific branch to teach about web design and interactive data viz. For example, on the branch `annotated-boxes` we show what the website looks like using colored divs. You can scaffold that project directly using:
 
 ```zsh
 npx degit Vermont-Complex-Systems/website-template#annotated-boxes example
+```
+
+Similarly, we use branches with specific tags to showcase stories at differnet point in time. From example, to see the vanilla version of `scrolly-story-2`, you can do
+
+```
+npx degit Vermont-Complex-Systems/website-template#scrolly-story-2-v1.0.1 example
 ```
 
 ## Goal

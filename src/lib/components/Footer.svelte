@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
-	import { Youtube, Github, Linkedin, MessageCircle, ExternalLink } from "@lucide/svelte";
+	import { Youtube, Github, Linkedin, ExternalLink } from "@lucide/svelte";
 </script>
 
 <footer class="footer">
@@ -46,16 +46,17 @@
 </footer>
 
 <style>
-		.footer {
+	.footer {
 		width: 100%;
-		background-color: var(--color-uvm-green);
-		border-top: 1px solid var(--color-border);
+		/* Use story-defined variables with sensible defaults */
+		background-color: var(--footer-bg, light-dark(var(--color-uvm-green), #0d0d0d));
+		border-top: 1px solid var(--footer-border, light-dark(var(--color-border), rgba(255, 255, 255, 0.1)));
 		padding: 3rem 0 2rem; /* vertical padding only */
 	}
 
-	:global(.dark) .footer {
-		background-color: #0d0d0d;
-		border-top-color: rgba(255, 255, 255, 0.1);
+	/* When a dark story is present, Footer adapts to dark theme */
+	:global(body:has(.story.dark)) .footer {
+		color-scheme: dark;
 	}
 
 	/* Inner container aligns content with header/main page */
@@ -91,11 +92,7 @@
 		align-items: center;
 		padding-top: 1.5rem;
 		margin-top: 1rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.2);
-	}
-
-	:global(.dark) .footer-bottom {
-		border-top-color: rgba(255, 255, 255, 0.15);
+		border-top: 1px solid var(--color-border-on-dark);
 	}
 
 	.social-icons {
@@ -108,10 +105,6 @@
 
 	.social-icons a {
 		text-decoration: none;
-		color: var(--color-uvm-gold);
-	}
-
-	:global(.dark) .social-icons a {
 		color: var(--color-uvm-gold);
 	}
 

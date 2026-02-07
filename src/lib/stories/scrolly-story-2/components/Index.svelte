@@ -2,15 +2,21 @@
 import BackgroundPlot from './BackgroundPlot.svelte';
 import StoryHeader from '$lib/components/StoryHeader.svelte';
 import ScrollIndicator from '$lib/components/helpers/ScrollIndicator.svelte';
-import { renderTextContent, scrollyContent } from '$lib/components/helpers/ScrollySnippets.svelte';
+import BackToHome from '$lib/components/helpers/BackToHome.svelte';
+
+import { renderTextContent } from '$lib/components/helpers/ScrollySnippets.svelte';
+import ScrollyContent from '$lib/components/helpers/ScrollyContent.svelte';
 
 let { story, data } = $props();
-let scrollyIndex = $state({ value: undefined });
+let scrollyIndex = $state(undefined);
+
 </script>
 
+<BackToHome />
 <ScrollIndicator />
 
-<article class="story theme-dark" style="--theme-bg: #353839; --theme-footer: #414A4C;">
+
+<article class="story dark" style="--story-bg: #353839; --story-fg: white;">
     <div class="prose">
         <StoryHeader
             title={data.title}
@@ -28,9 +34,9 @@ let scrollyIndex = $state({ value: undefined });
     
     <section id="scrolly" class="scrolly-fullscreen">
         <div class="scrolly-chart">
-            <BackgroundPlot scrollyIndex={scrollyIndex.value} />
+            <BackgroundPlot {scrollyIndex} />
         </div>
-        {@render scrollyContent(data.steps, scrollyIndex)}
+        <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
     </section>
     
     <h2 class="prose">Conclusion</h2>
@@ -41,20 +47,3 @@ let scrollyIndex = $state({ value: undefined });
     </section>
 </article>
 
-<style>
-    /* Custom scrolly step boxes for this story */
-    :global(.theme-dark .scrolly-content .step > *),
-    :global(.theme-dark .scrolly-content .step > * *) {
-        background: white;
-        border-radius: 6px;
-        color: #353839 !important;
-    }
-
-    /* Remove duplicate styles on nested elements */
-    :global(.theme-dark .scrolly-content .step > * *) {
-        background: transparent;
-        box-shadow: none;
-        border: none;
-        border-radius: 0;
-    }
-</style>

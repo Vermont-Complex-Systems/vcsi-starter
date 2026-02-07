@@ -120,12 +120,21 @@
 
 <style>
 /* ---------------- Hero Section ---------------- */
+
+
+/* 
+Centering vertically the hero
+Fills the full viewport (100dvh)
+Uses padding-top: var(--nav-height) to create space for the fixed nav
+Uses padding-bottom: 0 to make the centering symmetric 
+*/
 .hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: min(70vh, 600px);
-  padding-bottom: 3rem;
+  min-height: 100dvh;
+  padding-top: var(--nav-height);
+  padding-bottom: 0;
   box-sizing: border-box;
 }
 

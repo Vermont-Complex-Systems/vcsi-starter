@@ -1,29 +1,22 @@
 <script>
+    import BackToHome from '$lib/components/helpers/BackToHome.svelte';
     import GeoScrollyPlot from './GeoScrollyPlot.svelte';
     import StoryHeader from '$lib/components/StoryHeader.svelte';
     import ScrollIndicator from '$lib/components/helpers/ScrollIndicator.svelte';
 
-    import { renderTextContent, scrollyContent } from '$lib/components/helpers/ScrollySnippets.svelte';
+    import { renderTextContent } from '$lib/components/helpers/ScrollySnippets.svelte';
+    import ScrollyContent from '$lib/components/helpers/ScrollyContent.svelte';
 
     let { story, data } = $props();
 
-    let scrollyIndex = $state({ value: undefined });
+    let scrollyIndex = $state(undefined);
     
 </script>
 
+<BackToHome />
 <ScrollIndicator threshold={50} />
 
-<!-- Here we overwrite --header-position to prevent its stickiness  -->
-<svelte:head>
-  <style>
-    :root {
-      --header-position: relative;
-    }
-  </style>
-</svelte:head>
-
-
-<article class="story theme-light" id="geo-story-1">
+<article class="story" id="geo-story-1">
     <div class="prose">
         <StoryHeader
             title={data.title}
@@ -41,9 +34,9 @@
 
     <section id="scrolly" class="scrolly-fullscreen">
         <div class="scrolly-chart">
-            <GeoScrollyPlot scrollyIndex={scrollyIndex.value} />
+            <GeoScrollyPlot {scrollyIndex} />
         </div>
-        {@render scrollyContent(data.steps, scrollyIndex)}
+        <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
     </section>
 
     <h2 class="prose">Conclusion</h2>
@@ -60,10 +53,3 @@
         {/each}
     </section>
 </article>
-
-<style>    
-    :global(#geo-story-1 #intro) {
-        margin-bottom: 10rem;
-    }
-
-</style>

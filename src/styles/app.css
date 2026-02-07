@@ -1,26 +1,63 @@
-@import "variables.css";
-@import "fonts.css";
 @import "reset.css";
-@import "themes.css";
+@import "fonts.css";
 
 /* =============================================================================
-   ROOT TOKENS
+   DESIGN TOKENS
+
+   Global defaults that stories can override with inline styles:
+     style="--story-bg: #353839; --story-fg: white;"
    ============================================================================= */
 
 :root {
-  /* Typography families */
-  --sans: "Atlas Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Enable light-dark() function */
+  color-scheme: light dark;
+
+  /* Core palette */
+  --color-black: #000;
+  --color-white: #fff;
+  --color-beige: #f4efea;
+
+  /* Brand colors */
+  --color-uvm-green: #154734;
+  --color-uvm-gold: rgb(255, 209, 0);
+  --color-accent: var(--color-uvm-green);
+
+  /* Gray scale - automatically inverts in dark mode */
+  --color-gray-100: light-dark(rgb(239, 239, 239), rgb(45, 45, 45));
+  --color-gray-200: light-dark(rgb(223, 223, 223), rgb(55, 55, 55));
+  --color-gray-300: light-dark(rgb(202, 202, 202), rgb(75, 75, 75));
+  --color-gray-400: light-dark(rgb(168, 168, 168), rgb(100, 100, 100));
+  --color-gray-600: light-dark(rgb(109, 109, 109), rgb(160, 160, 160));
+  --color-gray-700: light-dark(rgb(78, 78, 78), rgb(180, 180, 180));
+  --color-gray-800: light-dark(rgb(55, 55, 55), rgb(200, 200, 200));
+  --color-gray-900: light-dark(rgb(38, 38, 38), rgb(225, 225, 225));
+  --color-tertiary-gray: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
+
+  /* Semantic colors */
+  --color-bg: light-dark(var(--color-beige), #1a1a1a);
+  --color-fg: light-dark(rgb(55, 55, 55), #e8e8e8);
+  --color-muted: light-dark(rgb(109, 109, 109), #888);
+  --color-border: light-dark(rgb(202, 202, 202), rgba(255, 255, 255, 0.15));
+  --color-link: light-dark(var(--color-fg), #8ab4f8);
+  --color-link-hover: light-dark(var(--color-accent), #aecbfa);
+
+  /* Interactive states */
+  --color-hover: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.1));
+  --color-border-on-dark: light-dark(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
+
+  /* Typography */
+  --sans: "Atlas Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --serif: "Baskerville", "Times New Roman", Times, serif;
-  --mono: "Atlas Typewriter", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  --mono: "Atlas Typewriter", "SF Mono", Monaco, Consolas, monospace;
 
   /* Type scale */
   --font-size-giant: clamp(3rem, 10vw, 4rem);
-  --font-size-xlarge: clamp(1.8rem, 5vw, 3rem);
-  --font-size-large: clamp(1.5rem, 2.5vw, 2.5rem);
-  --font-size-medium: clamp(1rem, 1.75vw, 1.5rem);
+  --font-size-xl: clamp(1.8rem, 5vw, 3rem);
+  --font-size-lg: clamp(1.5rem, 2.5vw, 2.5rem);
+  --font-size-md: clamp(1rem, 1.75vw, 1.5rem);
+  --font-size-base: clamp(14px, 1.18vw, 1.2rem);
   --font-size-small: clamp(14px, 1.18vw, 1.2rem);
-  --font-size-smallish: clamp(14px, 1vw, 0.9rem);
-  --font-size-xsmall: clamp(12px, 1vw, 0.8rem);
+  --font-size-sm: clamp(12px, 1vw, 0.9rem);
 
   /* Layout */
   --page-max-width: 1200px;
@@ -31,27 +68,44 @@
   --border-radius: 3px;
 
   /* Motion */
-  --left-tilt: -2deg;
-  --right-tilt: 2deg;
-  --transition-medium: 200ms;
-  --1s: 1ms;
+  --transition: 200ms ease;
 
   /* Z-index */
   --z-overlay: 1000;
 
-  /* Colors (light mode) */
-  --color-bg: var(--color-beige);
-  --color-fg: var(--color-gray-800);
-  --color-primary: var(--color-black);
-  --color-link: var(--color-black);
-  --color-border: var(--color-gray-300);
+  /* Story theming (defaults, stories override these) */
+  --story-bg: var(--color-bg);
+  --story-fg: var(--color-fg);
+  --story-step-bg: light-dark(#fff, #2a2a2a);
+  --story-step-fg: light-dark(#333, #e8e8e8);
+  --story-step-bg-inactive: light-dark(#f5f5f5, #222);
+  --story-step-fg-inactive: light-dark(#ccc, #666);
+
+  /* Header theming (stories can override via <svelte:head>) */
+  --header-bg: var(--color-bg);
+  --header-fg: var(--color-fg);
 }
 
-/* Enable motion when allowed */
-@media (prefers-reduced-motion: no-preference) {
-  :root {
-    --1s: 1s;
-  }
+/* Theme toggle: force dark mode when .dark class is present */
+:root.dark {
+  color-scheme: dark;
+}
+
+/* Interactive elements get pointer cursor by default */
+button,
+[role="button"],
+summary {
+  cursor: pointer;
+}
+
+/* Link styling */
+a {
+  color: var(--color-link);
+  cursor: pointer !important;
+}
+
+a:hover {
+  color: var(--color-link-hover);
 }
 
 /* =============================================================================
@@ -65,13 +119,9 @@ body {
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--serif);
-  font-size: var(--font-size-small);
-  transition: background-color 200ms ease, color 200ms ease;
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition), color var(--transition);
 }
-
-/* =============================================================================
-   MAIN CONTENT
-   ============================================================================= */
 
 main {
   flex: 1;
@@ -82,11 +132,10 @@ main > :last-child {
 }
 
 /* =============================================================================
-   LAYOUT CLASSES
+   LAYOUT: PAGE
+   Centered container for standard pages (About, etc.)
    ============================================================================= */
 
-   
-/* Centered page layout (for about, etc.) */
 .page {
   width: 100%;
   max-width: var(--page-max-width);
@@ -103,13 +152,160 @@ main > :last-child {
 }
 
 /* =============================================================================
-   BASE TEXT STYLES
+   LAYOUT: STORY
+   Full-width container for scrollytelling stories
+
+   Usage:
+     <article class="story" style="--story-bg: #353839; --story-fg: white;">
    ============================================================================= */
 
-h1,
-h2,
-h3,
-h4 {
+.story {
+  /* Stories default to light mode, independent of global dark mode toggle */
+  color-scheme: light;
+  width: 100%;
+  padding-top: var(--padding-top-page);
+  padding-bottom: var(--padding-bottom-page);
+  background: var(--story-bg);
+  color: var(--story-fg);
+}
+
+@media (max-width: 768px) {
+  .story {
+    padding-top: 0;
+  }
+}
+
+/* Prose sections get centered, readable width */
+.story .prose {
+  max-width: 600px;
+  margin-inline: auto;
+  margin-top: 2rem;
+  padding-inline: 1rem;
+}
+
+.story #intro {
+  margin-bottom: 2rem;
+}
+
+.story h2.prose {
+  margin-top: 4rem;
+}
+
+.story #conclusion {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+   SCROLLY LAYOUT: SIDE-BY-SIDE
+   Content on left, sticky chart on right
+
+   Usage:
+     <section class="scrolly-with-chart">
+       <div class="scrolly-chart">...</div>
+       {@render scrollyContent(...)}
+     </section>
+   ============================================================================= */
+
+.scrolly-with-chart {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(450px, 45%);
+  gap: 2rem;
+  align-items: start;
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+
+  /* Override component defaults via CSS variables */
+  --scrolly-max-width: none;
+  --step-max-width: 400px;
+}
+
+.scrolly-with-chart .scrolly-chart {
+  position: sticky;
+  top: calc(50vh - 20vh);
+  height: 80vh;
+  max-height: 600px;
+  grid-column: 2;
+}
+
+.scrolly-with-chart .scrolly-content {
+  grid-column: 1;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .scrolly-with-chart {
+    grid-template-columns: 1fr;
+    padding-left: 0;
+    padding-right: 0;
+    --step-max-width: 100%;
+  }
+
+  .scrolly-with-chart .scrolly-chart {
+    position: sticky;
+    top: calc(50vh - 30vh);
+    height: 60vh;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scrolly-with-chart .scrolly-content {
+    grid-column: 1;
+    grid-row: 2;
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
+  }
+}
+
+/* =============================================================================
+   SCROLLY LAYOUT: FULLSCREEN
+   Full-viewport background with centered text overlay
+
+   Usage:
+     <section class="scrolly-fullscreen">
+       <div class="scrolly-chart">...</div>
+       {@render scrollyContent(...)}
+     </section>
+   ============================================================================= */
+
+.scrolly-fullscreen {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+
+  /* Override component defaults via CSS variables */
+  --step-height: 100vh;
+  --step-max-width: 500px;
+  --step-padding: 2rem;
+  --step-border-radius: 8px;
+  --scrolly-max-width: 600px;
+  --scrolly-pointer-events: none; /* Let events pass to chart behind */
+}
+
+.scrolly-fullscreen .scrolly-chart {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.scrolly-fullscreen .scrolly-content {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+/* =============================================================================
+   TYPOGRAPHY
+   ============================================================================= */
+
+h1, h2, h3, h4 {
   font-family: var(--serif);
   font-weight: 700;
 }
@@ -139,11 +335,6 @@ p {
   margin-bottom: 1rem;
 }
 
-
-/* =============================================================================
-   MOBILE ADJUSTMENTS
-   ============================================================================= */
-
 @media (max-width: 768px) {
   h2 {
     font-size: 1.5rem;
@@ -152,4 +343,51 @@ p {
   p {
     font-size: 1.2rem;
   }
+}
+
+/* =============================================================================
+   DARK STORY THEME
+   Add class="story dark" for stories with dark backgrounds.
+   Customize colors with inline style:
+     style="--story-bg: #353839; --story-fg: white;"
+   ============================================================================= */
+
+.story.dark {
+  /* Opt into dark mode when story explicitly uses .dark class */
+  color-scheme: dark;
+  --story-step-bg: whitesmoke;
+  --story-step-fg: #333;
+  --story-step-bg-inactive: rgba(255, 255, 255, 0.9);
+  --story-step-fg-inactive: #666;
+}
+
+/* Ensure all text in dark stories uses the story foreground color */
+.story.dark,
+.story.dark .prose,
+.story.dark .prose h1,
+.story.dark .prose h2,
+.story.dark .prose h3,
+.story.dark .prose p,
+.story.dark .prose a {
+  color: var(--story-fg);
+}
+
+/* Header uses --header-bg/--header-fg variables (set by stories via <svelte:head>) */
+body:has(.story.dark) .header {
+  background: var(--header-bg);
+  border-bottom-color: var(--color-border-on-dark);
+}
+
+body:has(.story.dark) .header .site-title,
+body:has(.story.dark) .header .about-button,
+body:has(.story.dark) .header .icon-button {
+  color: var(--header-fg);
+}
+
+body:has(.story.dark) .header.scrolled {
+  background: var(--header-bg);
+}
+
+body:has(.story.dark) footer.footer {
+  background-color: var(--header-bg);
 }

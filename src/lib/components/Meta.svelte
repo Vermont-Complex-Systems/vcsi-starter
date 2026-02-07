@@ -8,7 +8,6 @@
     description, 
     keywords = "",
     image = "/default-og-image.jpg",
-    preloadFont = [],
     author = "Vermont Complex Systems Institute"
   } = $props();
   
@@ -44,9 +43,4 @@
 
   <link rel="canonical" href={url} />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-
-  {#each preloadFont as href}
-    <link rel="preload" {href} as="font" type="font/woff2" crossorigin />
-  {/each}
-  
 </svelte:head>

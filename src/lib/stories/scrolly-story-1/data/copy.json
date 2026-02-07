@@ -37,6 +37,33 @@
 			"value": "We can change mark, here transitioning from barchart to lollipop. Note that here we always show the **same data**, but differently."
 		}
 	],
+	"markdownRenderer": [
+		{
+			"type": "markdown",
+			"value": "We also have a powerful markdown renderer that is worth mentioning. In the copy.json, you can use [markdown](https://www.markdownguide.org/), as one would expect.\n You can create newlines using `\n` directly in the json, or add a different entry. The newline is useful for example when doing quote block\n>Dorothy followed her through many of the beautiful rooms in her castle."
+		},
+		{
+			"type": "markdown",
+			"value": "As scientists, it is key to have access to write mathematics too. You can do it inline in the markdown block, such as $f(x) = ax^{-k}$. Or using the math type to have equations on their own line:"
+		},
+		{
+			"type": "math",
+			"value": "$$f(cx)=a(cx)^{-k}=c^{-k}f(x) \\propto f(x)$$"
+		},
+		{
+			"type": "markdown",
+			"value": "Of course, <span style='color: red;'>html</span> is available too in markdown or its own block. All of this can be rendered in the text block of the scrolly story, see [this story](https://complexstories.uvm.edu/allotax-scrolly) for an example of that. Finally, there is the `code` block for more technical content:"
+		},
+		{
+			"type": "code",
+			"language": "js",
+			"value": "<div class='scrolly-content'>\n  <div class='spacer'></div>\n    <Scrolly bind:value>\n    {#each steps as step, i (i)}\n    {@const active = value === i}\n    <div class='step' class:active>\n      <div class='step-content'>\n        {@render contentRenderer(step)}\n      </div>\n    </div>\n    {/each}\n    </Scrolly>\n  <div class='spacer'></div>\n</div>"
+		},
+		{
+			"type": "markdown",
+			"value": "This is a bit ungainly to write manually, as in the JSON the newlines and spacing needs to be done manually. But LLMs are pretty good at it. Also it is always possible to do outside the copy.json, like we do with for the copyable code snippet on the Home page. Not everything needs to be in copy.json, but it is useful for stories where different people must edit it."
+		}
+	],
 	"conclusion": [
 		{
 			"type": "markdown",

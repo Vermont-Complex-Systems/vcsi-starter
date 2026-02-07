@@ -1,11 +1,10 @@
 <script>
-    import TransparentHeader from '$lib/components/helpers/TransparentHeader.svelte';
     import { scrollReveal } from '$lib/utils/scrollReveal.js';
-
+    import BackToHome from '$lib/components/helpers/BackToHome.svelte';
     let { story, data } = $props();
 </script>
 
-<TransparentHeader />
+<BackToHome />
 
 <div class="landing-page">
     <!-- Hero -->
@@ -13,7 +12,7 @@
         <div class="hero-content">
         <h1>Not all stories are scrolly</h1>
             <p class="subtitle">Some of the best stories are about creative themes</p>
-            <p class="caption">(story borrowed from <a href="https://vermontcomplexsystems.org/events/cnww/">CNWW</a>. The story shows how we can build custom layout given a theme.)</p>
+            <p class="caption">(story taken from <a href="https://vermontcomplexsystems.org/events/cnww/">CNWW</a>. The story shows how we can build custom layout given a theme.)</p>
         </div>
     </section>
 
@@ -139,10 +138,14 @@
 </div>
 
 <style>
+    /* Story theme tokens - single source of truth */
     .landing-page {
-        --accent: #162F4B;
-        --text: white;
-        background: var(--accent);
+        --story-bg: #162F4B;
+        --story-fg: white;
+        --story-border: rgba(255, 255, 255, 0.2);
+
+        background: var(--story-bg);
+        color: var(--story-fg);
         min-height: 100vh;
         max-width: none !important;
         padding: 0 !important;
@@ -151,7 +154,6 @@
     /* Hero */
     .hero {
         height: 100vh;
-        margin-top: calc(-1 * var(--nav-height, 80px));
         background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
                     url('/common/assets/events/skyline.jpg') center/cover;
         display: flex;
@@ -161,7 +163,7 @@
 
     .hero-content {
         text-align: center;
-        color: var(--text);
+        color: var(--story-fg);
     }
 
     .hero h1 {
@@ -195,7 +197,7 @@
         font-size: 1.25rem;
         line-height: 1.6;
         font-family: var(--serif);
-        color: var(--text);
+        color: var(--story-fg);
     }
 
     /* Content Rows */
@@ -223,7 +225,7 @@
     }
 
     .text-col {
-        color: var(--text);
+        color: var(--story-fg);
     }
 
     .text-col h3 {
@@ -251,8 +253,8 @@
         display: inline-block;
         margin-top: 1rem;
         padding: 0.75rem 2rem;
-        background: var(--text);
-        color: var(--accent);
+        background: var(--story-fg);
+        color: var(--story-bg);
         font-weight: 600;
         border-radius: var(--border-radius);
         text-decoration: none;
@@ -273,7 +275,7 @@
 
     .testimonials h2 {
         text-align: center;
-        color: var(--text);
+        color: var(--story-fg);
         font-size: 2.5rem;
         margin-bottom: 3rem;
     }
@@ -300,13 +302,13 @@
         font-style: italic;
         font-size: 1.1rem;
         line-height: 1.7;
-        color: var(--text);
+        color: var(--story-fg);
         margin-bottom: 1rem;
     }
 
     blockquote footer {
         text-align: right;
-        color: var(--text);
+        color: var(--story-fg);
         font-weight: 600;
         line-height: 1.4;
     }
@@ -347,7 +349,7 @@
     /* Logos */
     .logos {
         padding: 4rem var(--page-padding);
-        border-top: 1px solid rgba(255,255,255,0.2);
+        border-top: 1px solid var(--story-border);
     }
 
     .logos-row {
@@ -416,5 +418,11 @@
         .logos-row img {
             height: 50px;
         }
+    }
+
+    /* Footer adapts to this story's theme */
+    :global(body:has(.landing-page)) :global(.footer) {
+        background-color: var(--story-bg);
+        border-top-color: var(--story-border);
     }
 </style>

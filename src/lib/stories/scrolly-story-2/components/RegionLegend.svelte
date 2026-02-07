@@ -49,7 +49,7 @@
             x={12}
             y={4}
             font-size="10"
-            opacity={selectedRegions.size === 0 || selectedRegions.has(region) ? 1 : 0.4}
+            fill="white"
         >
             {region}
         </text>

@@ -1,19 +1,13 @@
 <script>
-	import Nav from '$lib/components/Nav.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { ModeWatcher } from 'mode-watcher';
+	import Footer from '$lib/components/Footer.svelte';
 	import '$styles/app.css';
 
 	let { children } = $props();
 </script>
 
-
-<Nav />
-
 <ModeWatcher defaultMode="system" />
 
-<main id="content">
-	{@render children?.()}
-</main>
+{@render children?.()}
 
 <Footer />

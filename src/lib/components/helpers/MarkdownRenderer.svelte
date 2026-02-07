@@ -14,6 +14,7 @@
     import css from 'highlight.js/lib/languages/css';
     import xml from 'highlight.js/lib/languages/xml';
     import R from 'highlight.js/lib/languages/r';
+    import JS from 'highlight.js/lib/languages/javascript';
 
     let { text } = $props();
 
@@ -36,7 +37,8 @@
                         html: xml,
                         xml,
                         r: R,
-                        svelte: xml
+                        svelte: xml,
+                        js: JS
                     }
                 }
             ]
