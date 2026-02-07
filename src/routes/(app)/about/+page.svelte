@@ -5,20 +5,12 @@
 
     import { getMembers } from '$lib/story.remote'
 
-     const preloadFont = [
-        "/assets/fonts/tiempos/TiemposTextWeb-Regular.woff2",
-        "/assets/fonts/tiempos/TiemposTextWeb-Bold.woff2",
-        "/assets/fonts/atlas/AtlasGrotesk-Regular-Web.woff2",
-        "/assets/fonts/atlas/AtlasGrotesk-Bold-Web.woff2",
-        "/assets/fonts/atlas/AtlasTypewriter-Medium-Web.woff2"
-    ];
 </script>
 
 
 <Meta
   title="About"
   description="Description of the group."
-  {preloadFont}
 />
 
 <div class="page">

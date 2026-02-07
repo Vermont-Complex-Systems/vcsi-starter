@@ -41,6 +41,13 @@
 
     </section>
 
+    <h2 class="prose">Markdown Renderer</h2>
+    <section id="markdown" class="prose">
+        {#each data.markdownRenderer as item}
+            {@render renderTextContent(item)}
+        {/each}
+    </section>
+    
     <h2 class="prose">Conclusion</h2>
     <section id="conclusion" class="prose">
         {#each data.conclusion as item}

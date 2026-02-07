@@ -19,14 +19,12 @@
     let {
         steps,
         value = $bindable(undefined),
-        topSpacer = true,
-        bottomSpacer = true,
         contentRenderer = renderTextContent
     }: Props = $props();
 </script>
 
 <div class="scrolly-content">
-    {#if topSpacer}<div class="spacer"></div>{/if}
+    <div class="spacer"></div>
     <Scrolly bind:value>
         {#each steps as step, i (i)}
             {@const active = value === i}
@@ -37,7 +35,7 @@
             </div>
         {/each}
     </Scrolly>
-    {#if bottomSpacer}<div class="spacer"></div>{/if}
+    <div class="spacer"></div>
 </div>
 
 <style>
