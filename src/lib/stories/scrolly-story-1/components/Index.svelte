@@ -12,7 +12,7 @@
 
 <ScrollIndicator />
 
-<article class="story theme-light">
+<article class="story">
     <StoryHeader
         title={data.title}
         subtitle={data.subtitle}

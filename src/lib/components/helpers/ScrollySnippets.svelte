@@ -1,5 +1,4 @@
 <script module>
-    import '$styles/scrolly.css';
     import Scrolly from '$lib/components/helpers/Scrolly.svelte';
     import Md from '$lib/components/helpers/MarkdownRenderer.svelte';
 

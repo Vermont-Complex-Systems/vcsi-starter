@@ -37,7 +37,7 @@
             x={12}
             y={4}
             font-size="10"
-            opacity={1}
+            fill="white"
         >
             {region}
         </text>

@@ -62,12 +62,13 @@
 }
 
 .article-meta .author a {
-  color: var(--color-gray-900);
+  color: inherit;
+  text-decoration: underline;
 }
 
 .article-meta .date {
   font-size: var(--font-size-small);
-  color: var(--color-tertiary-gray);
+  opacity: 0.7;
 }
 
 /* Mobile adjustments */

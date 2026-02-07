@@ -23,7 +23,7 @@
 </svelte:head>
 
 
-<article class="story theme-light" id="geo-story-1">
+<article class="story" id="geo-story-1">
     <div class="prose">
         <StoryHeader
             title={data.title}
@@ -61,9 +61,9 @@
     </section>
 </article>
 
-<style>    
-    :global(#geo-story-1 #intro) {
+<style>
+    /* Story-specific spacing override */
+    #intro {
         margin-bottom: 10rem;
     }
-
 </style>

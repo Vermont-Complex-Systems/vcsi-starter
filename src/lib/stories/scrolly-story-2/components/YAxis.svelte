@@ -4,7 +4,7 @@
         innerWidth,
         innerHeight,
         ticks,
-        label
+        label,
     } = $props();
 </script>
 
@@ -16,14 +16,14 @@
             x2={innerWidth}
             y1={yScale(tick)}
             y2={yScale(tick)}
-            stroke="#e0e0e0"
+            stroke="rgba(255,255,255,0.2)"
             stroke-width="1"
         />
     {/each}
 </g>
 
 <!-- Axis line -->
-<line x1={0} x2={0} y1={0} y2={innerHeight} stroke="#333" stroke-width="1" />
+<line x1={0} x2={0} y1={0} y2={innerHeight} stroke="white" stroke-width="1" />
 
 <!-- Tick labels (clipped) -->
 <g clip-path="url(#chart-area-y)">
@@ -34,6 +34,7 @@
             text-anchor="end"
             alignment-baseline="middle"
             font-size="12"
+            fill="white"
         >
             {tick}
         </text>
@@ -48,6 +49,7 @@
     font-size="14"
     font-weight="500"
     transform="rotate(-90)"
+    fill="white"
 >
     {label}
 </text>

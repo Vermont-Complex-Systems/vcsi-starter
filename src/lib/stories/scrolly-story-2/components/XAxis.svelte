@@ -15,13 +15,13 @@
         x2={xScale(tick)}
         y1={0}
         y2={innerHeight}
-        stroke="#e0e0e0"
+        stroke="rgba(255,255,255,0.2)"
         stroke-width="1"
     />
 {/each}
 
 <!-- Axis line -->
-<line x1={0} x2={innerWidth} y1={innerHeight} y2={innerHeight} stroke="#333" stroke-width="1" />
+<line x1={0} x2={innerWidth} y1={innerHeight} y2={innerHeight} stroke="white" stroke-width="1" />
 
 <!-- Tick labels -->
 {#each ticks as tick}
@@ -30,6 +30,7 @@
         y={innerHeight + 20}
         text-anchor="middle"
         font-size="12"
+        fill="white"
     >
         {tick}
     </text>
@@ -42,6 +43,7 @@
     text-anchor="middle"
     font-size="14"
     font-weight="500"
+    fill="white"
 >
     {label}
 </text>

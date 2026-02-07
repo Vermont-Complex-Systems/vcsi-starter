@@ -120,15 +120,7 @@ function closeMenu(skipFocus = false) {
 }
 
 .about-button:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:global(.dark) .about-button {
-  color: var(--color-fg);
-}
-
-:global(.dark) .about-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-hover);
 }
 
 .icon-button {
@@ -147,11 +139,7 @@ function closeMenu(skipFocus = false) {
 
 .icon-button:hover {
   transform: rotate(var(--right-tilt)) scale(1.05);
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:global(.dark) .icon-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-hover);
 }
 
 .mobile-menu-button {
@@ -172,15 +160,7 @@ function closeMenu(skipFocus = false) {
 
 .github-button:hover {
   transform: scale(1.1);
-  background: rgba(0, 0, 0, 0.05);
-}
-
-:global(.dark) .github-button {
-  color: var(--color-fg);
-}
-
-:global(.dark) .github-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-hover);
 }
 
 .sr-only {
