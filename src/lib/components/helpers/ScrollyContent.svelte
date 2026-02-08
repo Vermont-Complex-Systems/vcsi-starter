@@ -89,11 +89,11 @@
     /* Step box styling */
     .step > :global(*) {
         padding: var(--step-padding, 1rem);
-        background: var(--story-step-bg-inactive);
+        background-color: var(--story-step-bg-inactive);
         color: var(--story-step-fg-inactive);
         border-radius: var(--step-border-radius, 5px);
         box-shadow: var(--step-box-shadow, 1px 1px 10px rgba(0, 0, 0, 0.2));
-        transition: all 500ms ease;
+        transition: background-color 500ms ease, color 500ms ease;
         text-align: center;
         max-width: var(--step-max-width, 600px);
         margin: 0 auto;
@@ -102,7 +102,7 @@
 
     /* Active step */
     .step.active > :global(*) {
-        background: var(--story-step-bg);
+        background-color: var(--story-step-bg);
         color: var(--story-step-fg);
     }
 

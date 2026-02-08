@@ -76,10 +76,10 @@
   /* Story theming (defaults, stories override these) */
   --story-bg: var(--color-bg);
   --story-fg: var(--color-fg);
-  --story-step-bg: light-dark(#fff, #2a2a2a);
-  --story-step-fg: light-dark(#333, #e8e8e8);
-  --story-step-bg-inactive: light-dark(#f5f5f5, #222);
-  --story-step-fg-inactive: light-dark(#ccc, #666);
+  --story-step-bg: #fff;
+  --story-step-fg: #333;
+  --story-step-bg-inactive: #f5f5f5;
+  --story-step-fg-inactive: #ccc;
 
   /* Header theming (stories can override via <svelte:head>) */
   --header-bg: var(--color-bg);
@@ -89,6 +89,16 @@
 /* Theme toggle: force dark mode when .dark class is present */
 :root.dark {
   color-scheme: dark;
+}
+
+/* Progressive enhancement: use light-dark() for step colors when supported */
+@supports (color: light-dark(#fff, #000)) {
+  :root {
+    --story-step-bg: light-dark(#fff, #2a2a2a);
+    --story-step-fg: light-dark(#333, #e8e8e8);
+    --story-step-bg-inactive: light-dark(#f5f5f5, #222);
+    --story-step-fg-inactive: light-dark(#ccc, #666);
+  }
 }
 
 /* Interactive elements get pointer cursor by default */
