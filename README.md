@@ -1,8 +1,10 @@
 # Custom Research Website Template
 
+This is an experimental static site template to scaffold web applications with data-driven stories. It aims to demonstrate techniques we do at the VCSI to do visual essays.
+
 ## Installation
 
-You will need [nodejs](https://nodejs.org/en/about) and [npm](https://docs.npmjs.com/about-npm) (equivalent to `pip` or `CRAN`). installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the command line interface, the easiest way to get started is to copy paste this code snippet in your terminal: 
+You will need [nodejs](https://nodejs.org/en/about) and [npm](https://docs.npmjs.com/about-npm) installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the CLI, you can simply copy paste this code snippet in your terminal: 
 
 ```zsh
 # Download and install nvm:
@@ -27,6 +29,18 @@ Once this is done, you should be able to simply run:
 npx degit Vermont-Complex-Systems/website-template example
 ```
 
+#### Install dependencies
+
+```
+npm i
+```
+
+#### Start the development server
+
+```
+npm run dev
+```
+
 ## Learning
 
 We use specific branch to teach about web design and interactive data viz. For example, on the branch `annotated-boxes` we show what the website looks like using colored divs. You can scaffold that project directly using:
@@ -41,47 +55,71 @@ Similarly, we use branches with specific tags to showcase stories at differnet p
 npx degit Vermont-Complex-Systems/website-template#scrolly-story-2-v1.0.1 example
 ```
 
-## Goal
-
-This is an experimental Template to scaffold web applications with data-driven visual essays. It aims to demonstrate techniques we do at the VCSI to do visual essays.
-
 ## Project structure
 
 ```zsh
-src/
-├── styles/
-│   ├── app.css              # Global tokens, base styles, .page class
-│   └── scrolly.css          # Scrolly patterns (.scrolly-with-chart, .scrolly-fullscreen)
-│
-├── routes/
-│   └── +layout.svelte       # App shell: Nav + main + Footer (no constraints)
-│
-└── lib/
-    ├── layouts/
-    │   ├── PageLayout.svelte    # Centered pages (max-width, padding, nav offset)
-    │   └── ScrollyLayout.svelte # Full-width stories (nav offset, .prose centering, section spacing)
-    │
-    └── components/
-        ├── StoryHeader.svelte           # Reusable title/subtitle/authors/date block
-        └── helpers/
-            └── ScrollySnippets.svelte   # Scrolly content snippets (imports scrolly.css)
-
+├── src/
+│   ├── routes/            # Pages & layouts
+│   │   ├── (app)
+|   |   |   ├── +layout.svelte
+│   │   |   ├── +page.svelte   # Home page
+│   │   |   └── about/
+|   |   ├── +layout.svelte
+│   │   └── [story]/       # Dynamic story routes
+│   ├── lib/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── stories/       # Your scrollytelling content
+│   │   │   └── story-1
+│   │   │       ├── components/Index.svelte
+│   │   │       └── data/copy.json
+│   │   └── story.remote.ts
+│   ├── data/              # CSV data for routes
+│   └── styles/            # Global CSS
+├── static/                # Images, fonts, assets
+└── svelte.config.js       # Route generation
 ```
 
-flow 
+styling flow 
 
 ```zsh
-+layout.svelte (shell)
-    │
-    ├── PageLayout         → About page, etc.
-    │   └── .page class from app.css
-    │
-    └── ScrollyLayout      → Stories
-        ├── StoryHeader
-        ├── .prose sections (intro, conclusion)
-        └── .scrolly-with-chart (from scrolly.css)
-            ├── .scrolly-chart
-            └── scrollyContent snippet
+┌─────────────────────────────────────────────────────────────┐
+│  app.css (Global Layouts)                                   │
+│  Defines: grid structures, --panel-height, --step-max-width │
+│  ┌──────────────┐  ┌────────────────┐  ┌─────────────────┐  │
+│  │ split-layout │  │ fullscreen-    │  │ triple-layout   │  │
+│  │  2-col grid  │  │  layout        │  │   3-col grid    │  │
+│  └──────┬───────┘  └───────┬────────┘  └────────┬────────┘  │
+└─────────┼──────────────────┼───────────────────┼────────────┘
+          └──────────────────┼───────────────────┘
+                  constrains │ (provides container bounds)
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│  ScrollyContent.svelte                                      │
+│  Reads CSS variables, fills available space                 │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ .scrolly-content                                       │ │
+│  │   .step   min-height: var(--step-height)               │ │
+│  │     .step-box max-width: var(--step-max-width)         │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────┬───────────────────────────────┘
+                   overrides  │ (story-specific customization)
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Index.svelte   (local style)                               │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ .live-demo                                             │ │
+│  │   --step-height: 40vh;      /* override defaults */    │ │
+│  │   --step-max-width: 350px;                             │ │
+│  │                                                        │ │
+│  └────────────────────────────────────────────────────────┘ │
+│  Composes layouts + overrides CSS variables per section     │
+└─────────────────────────────┬───────────────────────────────┘
+                     content  │ (data drives rendering)
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│  copy.json                                                  │
+│       steps: [...], code: "...", highlightLines: "..."      │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ## Features
