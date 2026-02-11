@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import { Youtube, Github, Linkedin, ExternalLink } from "@lucide/svelte";
+
+	let { theme }: { theme?: 'light' | 'dark' } = $props();
 </script>
 
-<footer class="footer">
+<footer class="footer" class:theme-light={theme === 'light'} class:theme-dark={theme === 'dark'}>
 	<div class="footer-inner">
 		<div class="footer-logo">
 			<img src="{base}/UVM_Logo_Primary_Horiz_W_PunchOut.png" alt="Logo" class="logo-img" />
@@ -48,15 +50,28 @@
 <style>
 	.footer {
 		width: 100%;
-		/* Use story-defined variables with sensible defaults */
+		/* Default: UVM green for light mode */
 		background-color: var(--footer-bg, var(--color-uvm-green));
-		border-top: 1px solid var(--footer-border, var(--color-border));
-		padding: 3rem 0 2rem; /* vertical padding only */
+		border-top: 1px solid var(--footer-border, rgba(255, 255, 255, 0.2));
+		padding: 3rem 0 2rem;
 	}
 
-	/* When a dark story is present, Footer adapts to dark theme */
-	:global(body:has(.story.dark)) .footer {
-		color-scheme: dark;
+	/* Global dark mode toggle (mode-watcher) - only when no explicit theme */
+	:global(.dark) .footer:not(.theme-light):not(.theme-dark) {
+		background-color: var(--footer-bg, var(--color-gray-100));
+		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
+	}
+
+	/* theme="light" - forces UVM green, ignores global dark mode */
+	.footer.theme-light {
+		background-color: var(--footer-bg, var(--color-uvm-green));
+		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.2));
+	}
+
+	/* theme="dark" - forces dark theme (explicit color, not variable that flips) */
+	.footer.theme-dark {
+		background-color: var(--footer-bg, rgb(45, 45, 45));
+		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
 	}
 
 	/* Inner container aligns content with header/main page */
@@ -92,7 +107,7 @@
 		align-items: center;
 		padding-top: 1.5rem;
 		margin-top: 1rem;
-		border-top: 1px solid var(--color-border-on-dark);
+		border-top: 1px solid rgba(255, 255, 255, 0.2);
 	}
 
 	.social-icons {

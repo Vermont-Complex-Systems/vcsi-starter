@@ -3,9 +3,7 @@
 
 /* =============================================================================
    DESIGN TOKENS
-
-   Global defaults that stories can override with inline styles:
-     style="--story-bg: #353839; --story-fg: white;"
+   Global CSS variables for colors, typography, and layout.
    ============================================================================= */
 
 :root {
@@ -58,7 +56,7 @@
   --font-size-small: clamp(14px, 1.18vw, 1.2rem);
   --font-size-sm: clamp(12px, 1vw, 0.9rem);
 
-  /* Layout */
+  /* Reusable Layout variables */
   --page-max-width: 1200px;
   --page-inline-padding: 5%;
   --nav-height: 4.5rem;
@@ -72,20 +70,9 @@
   /* Z-index */
   --z-overlay: 1000;
 
-  /* Story theming (defaults, stories override these) */
-  --story-bg: var(--color-bg);
-  --story-fg: var(--color-fg);
-  --story-step-bg: #fff;
-  --story-step-fg: #333;
-  --story-step-bg-inactive: #f5f5f5;
-  --story-step-fg-inactive: #ccc;
-
+  /* Scrolly step styling */
   --step-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
   --step-height: 90vh;
-
-  /* Header theming (stories can override via <svelte:head>) */
-  --header-bg: var(--color-bg);
-  --header-fg: var(--color-fg);
 
   /* ==========================================================================
      SCROLLY: SHARED VARIABLES
@@ -168,14 +155,14 @@ summary {
   cursor: pointer;
 }
 
-/* Link styling */
+/* Link styling - uses light-dark() to respect color-scheme */
 a {
-  color: var(--color-link);
+  color: light-dark(rgb(55, 55, 55), #8ab4f8);
   cursor: pointer !important;
 }
 
 a:hover {
-  color: var(--color-link-hover);
+  color: light-dark(var(--color-accent), #aecbfa);
 }
 
 /* =============================================================================
@@ -223,22 +210,10 @@ main > :last-child {
 
 /* =============================================================================
    LAYOUT: STORY
-   Full-width container for scrollytelling stories
-
-   Usage:
-     <article class="story" style="--story-bg: #353839; --story-fg: white;">
+   Full-width container for scrollytelling stories.
    ============================================================================= */
 
 .story {
-  /* Stories default to light mode, independent of global dark mode toggle.
-     Explicitly set light values so system dark mode doesn't leak in. */
-  color-scheme: light;
-  --story-bg: var(--color-beige);
-  --story-fg: rgb(55, 55, 55);
-  --story-step-bg: #fff;
-  --story-step-fg: #333;
-  --story-step-bg-inactive: #f5f5f5;
-  --story-step-fg-inactive: #ccc;
   width: 100%;
   padding-top: var(--padding-top-page);
   padding-bottom: var(--padding-bottom-page);
@@ -248,12 +223,13 @@ main > :last-child {
 
 @media (max-width: 768px) {
   .story {
-    padding-top: 0;
+    padding-top: 6rem; /* Clear the BackToHome logo */
   }
 }
 
 /* Prose sections get centered, readable width */
 .story .prose {
+  width: 100%;
   max-width: 600px;
   margin-inline: auto;
   margin-top: 2rem;
@@ -271,6 +247,162 @@ main > :last-child {
 .story #conclusion {
   margin-bottom: 0;
 }
+
+
+/* =============================================================================
+   LIGHT STORY THEME (default)
+   Stories default to light mode, independent of global dark mode toggle.
+   Customize with: style="--story-bg: #fff; --story-fg: #333;"
+   ============================================================================= */
+
+.story {
+  color-scheme: light;
+  --story-bg: var(--color-beige);
+  --story-fg: rgb(55, 55, 55);
+  --story-step-bg: #fff;
+  --story-step-fg: #333;
+  --story-step-bg-inactive: #f5f5f5;
+  --story-step-fg-inactive: #ccc;
+}
+
+
+/* =============================================================================
+   DARK STORY THEME
+   Add class="story dark" for stories with dark backgrounds.
+   Customize with: style="--story-bg: #353839; --story-fg: white;"
+   ============================================================================= */
+
+.story.dark {
+  color-scheme: dark;
+  --story-bg: #353839;
+  --story-fg: white;
+  --story-step-bg: whitesmoke;
+  --story-step-fg: #333;
+  --story-step-bg-inactive: rgba(255, 255, 255, 0.9);
+  --story-step-fg-inactive: #666;
+}
+
+/* Ensure all text in dark stories uses the story foreground color */
+.story.dark,
+.story.dark .prose,
+.story.dark .prose h1,
+.story.dark .prose h2,
+.story.dark .prose h3,
+.story.dark .prose p,
+.story.dark .prose a {
+  color: var(--story-fg);
+}
+
+
+/* =============================================================================
+   TYPOGRAPHY
+   Uses fluid font-size variables (clamp) - no media queries needed
+   ============================================================================= */
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+  margin: 2.5rem 0 1rem;
+}
+
+h2 {
+  font-size: var(--font-size-lg);
+  margin: 2.5rem 0 1rem;
+}
+
+h3 {
+  font-size: var(--font-size-md);
+  margin: 2rem 0 0.75rem;
+}
+
+h4 {
+  font-size: var(--font-size-base);
+  margin: 1.5rem 0 0.5rem;
+}
+
+p {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Code blocks - uses light-dark() to respect color-scheme */
+
+pre {
+  background: light-dark(#f6f8fa, #161b22);
+  border: 1px solid light-dark(#d1d9e0, #30363d);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  max-width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: light-dark(#1f2328, #e6edf3);
+}
+
+/* Code line numbers and highlighting (from rehype-highlight-code-lines) */
+pre code .code-line {
+  display: inline-block;
+  min-width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-left: 3px solid transparent;
+}
+
+pre code .numbered-code-line::before {
+  content: attr(data-line-number);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: light-dark(#6e7781, #6e7781);
+  user-select: none;
+}
+
+pre code .highlighted-code-line {
+  background: light-dark(rgba(255, 220, 100, 0.3), rgba(255, 220, 100, 0.15));
+  border-left-color: #f0c000;
+}
+
+/* Inline code - uses light-dark() with literal colors (not variables that change with dark mode) */
+:where(p, li) code {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: light-dark(rgb(235, 235, 235), rgb(55, 55, 55));
+  padding: 0.125rem 0.35rem;
+  border-radius: 3px;
+}
+
+/* Blockquotes - uses light-dark() to respect color-scheme */
+blockquote {
+  margin: 2rem 0;
+  padding: 0 0 0 1.5rem;
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: light-dark(#2c5aa0, #4a90e2);
+  border-left: 3px solid light-dark(#2c5aa0, #4a90e2);
+}
+
+blockquote p {
+  margin: 0;
+}
+
 
 /* =============================================================================
    LAYOUT: SPLIT (Two-Column)
@@ -293,9 +425,8 @@ main > :last-child {
   /* Panel configuration (specific to two-column layout) */
   --panel-min-width: 450px;
   --panel-width: 45%;
-  --panel-height: 80vh;
+  --panel-height: min(80vh, 600px); /* Capped so top-offset calc stays accurate */
   --panel-top-offset: calc((100vh - var(--panel-height)) / 2); /* auto-center vertically */
-  --panel-max-height: 600px;
   --layout-gap: 2rem;
 
   position: relative;
@@ -318,8 +449,10 @@ main > :last-child {
   position: sticky;
   top: var(--panel-top-offset);
   height: var(--panel-height);
-  max-height: var(--panel-max-height);
   grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .split-layout.reversed .sticky-panel {
@@ -340,6 +473,8 @@ main > :last-child {
     grid-template-columns: 1fr;
     padding-inline: 0;
     --step-max-width: 100%;
+    max-width: 100vw;
+    overflow-x: clip; /* clip instead of hidden to preserve sticky */
   }
 
   .split-layout .sticky-panel {
@@ -349,6 +484,7 @@ main > :last-child {
     grid-column: 1;
     grid-row: 1;
     width: 100%;
+    min-width: 0; /* Allow shrinking below content size */
     z-index: 0;
     display: flex;
     align-items: center;
@@ -426,9 +562,8 @@ main > :last-child {
    ============================================================================= */
 
 .triple-layout {
-  --panel-height: 95vh;
+  --panel-height: min(95vh, 900px);
   --panel-top-offset: calc((100vh - var(--panel-height)) / 2);
-  --panel-max-height: 900px;
   --layout-gap: 1.5rem;
 
   position: relative;
@@ -447,7 +582,6 @@ main > :last-child {
   position: sticky;
   top: var(--panel-top-offset);
   height: var(--panel-height);
-  max-height: var(--panel-max-height);
   grid-column: 2;
 }
 
@@ -455,7 +589,6 @@ main > :last-child {
   position: sticky;
   top: var(--panel-top-offset);
   height: var(--panel-height);
-  max-height: var(--panel-max-height);
   grid-column: 3;
 }
 
@@ -499,214 +632,4 @@ main > :last-child {
     pointer-events: none;
     padding-inline: var(--content-padding-inline);
   }
-}
-
-
-/* =============================================================================
-   TYPOGRAPHY
-   ============================================================================= */
-
-h1, h2, h3, h4 {
-  font-family: var(--serif);
-  font-weight: 700;
-}
-
-h1 {
-  font-size: 1.8rem;
-  margin: 2.5rem 0 1rem;
-}
-
-h2 {
-  font-size: 1.8rem;
-  margin: 2.5rem 0 1rem;
-}
-
-h3 {
-  font-size: 1.4rem;
-  margin: 2rem 0 0.75rem;
-}
-
-h4 {
-  font-size: 1.2rem;
-  margin: 1.5rem 0 0.5rem;
-}
-
-p {
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 768px) {
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-  }
-}
-
-/* Code blocks */
-pre {
-  background: #f6f8fa;
-  border: 1px solid #d1d9e0;
-  border-radius: 6px;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.85em;
-  line-height: 1.45;
-}
-
-pre code {
-  background: none;
-  padding: 0;
-  border: none;
-  font-family: inherit;
-  font-size: inherit;
-  color: #1f2328;
-}
-
-/* Code line numbers and highlighting (from rehype-highlight-code-lines) */
-pre code .code-line {
-  display: inline-block;
-  min-width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  margin-left: -1rem;
-  margin-right: -1rem;
-  border-left: 3px solid transparent;
-}
-
-pre code .numbered-code-line::before {
-  content: attr(data-line-number);
-  display: inline-block;
-  width: 2rem;
-  margin-right: 1rem;
-  text-align: right;
-  color: #6e7781;
-  user-select: none;
-}
-
-pre code .highlighted-code-line {
-  background: rgba(255, 220, 100, 0.3);
-  border-left-color: #f0c000;
-}
-
-/* Inline code */
-:where(p, li) code {
-  font-family: var(--mono);
-  font-size: 0.8em;
-  background: var(--color-gray-100);
-  padding: 0.125rem 0.35rem;
-  border-radius: 3px;
-}
-
-/* Blockquotes */
-blockquote {
-  margin: 2rem 0;
-  padding: 0 0 0 1.5rem;
-  font-size: 1.1em;
-  line-height: 1.5;
-  color: #2c5aa0;
-  border-left: 3px solid #2c5aa0;
-}
-
-blockquote p {
-  margin: 0;
-}
-
-/* Dark mode: code and blockquotes */
-@media (prefers-color-scheme: dark) {
-  pre {
-    background: #161b22;
-    border-color: #30363d;
-  }
-  pre code {
-    color: #e6edf3;
-  }
-  pre code .numbered-code-line::before {
-    color: #6e7781;
-  }
-  pre code .highlighted-code-line {
-    background: rgba(255, 220, 100, 0.15);
-    border-left-color: #f0c000;
-  }
-  :where(p, li) code {
-    background: var(--color-gray-200);
-  }
-  blockquote {
-    color: #4a90e2;
-    border-left-color: #4a90e2;
-  }
-}
-
-:root.dark pre {
-  background: #161b22;
-  border-color: #30363d;
-}
-:root.dark pre code {
-  color: #e6edf3;
-}
-:root.dark pre code .numbered-code-line::before {
-  color: #6e7781;
-}
-:root.dark pre code .highlighted-code-line {
-  background: rgba(255, 220, 100, 0.15);
-  border-left-color: #f0c000;
-}
-:root.dark :where(p, li) code {
-  background: var(--color-gray-200);
-}
-:root.dark blockquote {
-  color: #4a90e2;
-  border-left-color: #4a90e2;
-}
-
-/* =============================================================================
-   DARK STORY THEME
-   Add class="story dark" for stories with dark backgrounds.
-   Customize colors with inline style:
-     style="--story-bg: #353839; --story-fg: white;"
-   ============================================================================= */
-
-.story.dark {
-  /* Opt into dark mode when story explicitly uses .dark class */
-  color-scheme: dark;
-  --story-step-bg: whitesmoke;
-  --story-step-fg: #333;
-  --story-step-bg-inactive: rgba(255, 255, 255, 0.9);
-  --story-step-fg-inactive: #666;
-}
-
-/* Ensure all text in dark stories uses the story foreground color */
-.story.dark,
-.story.dark .prose,
-.story.dark .prose h1,
-.story.dark .prose h2,
-.story.dark .prose h3,
-.story.dark .prose p,
-.story.dark .prose a {
-  color: var(--story-fg);
-}
-
-/* Header uses --header-bg/--header-fg variables (set by stories via <svelte:head>) */
-body:has(.story.dark) .header {
-  background: var(--header-bg);
-  border-bottom-color: var(--color-border-on-dark);
-}
-
-body:has(.story.dark) .header .site-title,
-body:has(.story.dark) .header .about-button,
-body:has(.story.dark) .header .icon-button {
-  color: var(--header-fg);
-}
-
-body:has(.story.dark) .header.scrolled {
-  background: var(--header-bg);
-}
-
-body:has(.story.dark) footer.footer {
-  background-color: var(--header-bg);
 }

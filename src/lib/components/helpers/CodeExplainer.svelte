@@ -1,7 +1,7 @@
 <script lang="ts">
     import Md from './MarkdownRenderer.svelte';
     import ScrollyContent from './ScrollyContent.svelte';
-    import type { ContentItem } from './ScrollySnippets.svelte';
+    import { renderCodeHtml, type ContentItem } from './ScrollySnippets.svelte';
 
     interface CodeExplainerData {
         code: string;
@@ -23,14 +23,6 @@
     let currentHighlight = $derived(
         value !== undefined ? data.steps[value]?.highlightLines || '' : ''
     );
-
-    // Escape HTML entities for code display
-    function escapeHtml(str: string): string {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
 </script>
 
 <section class="split-layout" class:reversed>
@@ -39,7 +31,7 @@
             {#if data.filename}
                 <div class="filename-tab">{data.filename}</div>
             {/if}
-            <Md text={`<pre><code class="language-${data.language || 'text'} show-line-numbers" data-highlight-lines="${currentHighlight}">${escapeHtml(data.code)}</code></pre>`} />
+            <Md text={renderCodeHtml(data.code, data.language, currentHighlight)} />
         </div>
     </div>
     <div class="stepContainer">
@@ -61,6 +53,7 @@
 
     .code-explainer-chart {
         position: relative;
+        width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
@@ -71,8 +64,9 @@
 
     .code-explainer-chart :global(pre) {
         margin: 0;
+        max-width: 100%;
         max-height: 100%; /* respect parent's height, not viewport */
-        overflow-y: auto;
+        overflow: auto;
     }
 
     .filename-tab {

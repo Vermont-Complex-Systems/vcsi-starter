@@ -64,8 +64,5 @@ export const getStory = prerender(v.string(), async (slug) => {
   const copyPath = `/src/lib/stories/${slug}/data/copy.json`;
   const copyData = copyModules[copyPath]?.default ?? {};
 
-  return {
-    story,
-    copyData
-  };
+  return { story, copyData };
 });

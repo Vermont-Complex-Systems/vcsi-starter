@@ -1,6 +1,7 @@
 <script>
     import { scrollReveal } from '$lib/utils/scrollReveal.js';
     import BackToHome from '$lib/components/helpers/BackToHome.svelte';
+    import Footer from '$lib/components/Footer.svelte';
 </script>
 
 <BackToHome />
@@ -134,6 +135,8 @@
             <img src="/common/assets/logos/rgb_logo_Sentinelle_Nord_ang.png" alt="Sentinelle Nord" />
         </div>
     </section>
+
+    <Footer />
 </div>
 
 <style>
@@ -142,6 +145,8 @@
         --story-bg: #162F4B;
         --story-fg: white;
         --story-border: rgba(255, 255, 255, 0.2);
+        --footer-bg: #162F4B;
+        --footer-border: rgba(255, 255, 255, 0.2);
 
         background: var(--story-bg);
         color: var(--story-fg);
@@ -417,11 +422,5 @@
         .logos-row img {
             height: 50px;
         }
-    }
-
-    /* Footer adapts to this story's theme */
-    :global(body:has(.landing-page)) :global(.footer) {
-        background-color: var(--story-bg);
-        border-top-color: var(--story-border);
     }
 </style>

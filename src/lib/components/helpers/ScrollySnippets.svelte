@@ -23,6 +23,18 @@
             .replace(/>/g, '&gt;');
     }
 
+    /**
+     * Generate HTML string for a code block with syntax highlighting.
+     * Use with <Md text={renderCodeHtml(...)} /> for dynamic highlighting.
+     * @example <Md text={renderCodeHtml(code, 'js', '1-3,5')} />
+     */
+    export function renderCodeHtml(code: string, language?: string, highlightLines?: string): string {
+        const escaped = escapeHtml(code);
+        const langClass = language ? `language-${language}` : '';
+        const highlightAttr = highlightLines ? `data-highlight-lines="${highlightLines}"` : '';
+        return `<pre><code class="${langClass} show-line-numbers" ${highlightAttr}>${escaped}</code></pre>`;
+    }
+
     export { renderTextContent };
 </script>
 

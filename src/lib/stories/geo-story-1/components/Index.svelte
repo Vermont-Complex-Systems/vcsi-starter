@@ -3,6 +3,7 @@
     import GeoScrollyPlot from './GeoScrollyPlot.svelte';
     import StoryHeader from '$lib/components/StoryHeader.svelte';
     import ScrollIndicator from '$lib/components/helpers/ScrollIndicator.svelte';
+    import Footer from '$lib/components/Footer.svelte';
 
     import { renderTextContent } from '$lib/components/helpers/ScrollySnippets.svelte';
     import ScrollyContent from '$lib/components/helpers/ScrollyContent.svelte';
@@ -32,8 +33,8 @@
         </section>
     </div>
 
-    <section id="scrolly" class="scrolly-fullscreen">
-        <div class="scrolly-chart">
+    <section id="scrolly" class="fullscreen-layout">
+        <div class="sticky-panel">
             <GeoScrollyPlot {scrollyIndex} />
         </div>
         <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
@@ -53,3 +54,5 @@
         {/each}
     </section>
 </article>
+
+<Footer theme="light" />

@@ -3,6 +3,7 @@
     import ScrollyPlot from './ScrollyPlot.svelte';
     import StoryHeader from '$lib/components/StoryHeader.svelte';
     import ScrollIndicator from '$lib/components/helpers/ScrollIndicator.svelte';
+    import Footer from '$lib/components/Footer.svelte';
 
     import { renderTextContent } from '$lib/components/helpers/ScrollySnippets.svelte';
     import ScrollyContent from '$lib/components/helpers/ScrollyContent.svelte';
@@ -54,6 +55,8 @@
     </section>
 
 </article>
+
+<Footer theme="light" />
 
 <style>
     @media (min-width: 769px) {

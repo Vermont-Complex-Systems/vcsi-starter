@@ -78,23 +78,37 @@
   <h2>Project Structure</h2>
   <div class="structure-layout">
     <pre class="tree-view"><code>.
-├── src/
-│   ├── routes/            # Pages & layouts
-│   │   ├── +layout.svelte
-│   │   ├── +page.svelte   # Home page
-│   │   ├── about/
-│   │   └── [story]/       # Dynamic story routes
-│   ├── lib/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── stories/       # Your scrollytelling content
-│   │   │   └── &#123;story-name&#125;/
-│   │   │       ├── components/
-│   │   │       └── data/copy.json
-│   │   └── story.remote.ts
-│   ├── data/              # CSV data for routes
-│   └── styles/            # Global CSS
-├── static/                # Images, fonts, assets
-└── svelte.config.js       # Route generation</code></pre>
+└── src
+    ├── data                    # CSV data for routes
+    ├── lib                 
+    │   ├── components/         # Reusable UI components
+    │   │   ├── About.svelte
+    │   │   ├── Nav.svelte
+    │   │   ... 
+    │   │   └── Home.svelte
+    │   ├── server
+    │   ├── stories             # Your scrollytelling content
+    │   │   └── story-1
+    │   │       ├── components/Index.svelte
+    │   │       └── data/copy.json
+    │   ├── story.remote.ts
+    │   └── utils
+    │       └── scrollReveal.ts  # Reusable javscript modules
+    ├── routes                   # Pages & layouts
+    │   ├── (app)
+    │   │   ├── +layout.svelte   # Non-story default layouts 
+    │   │   ├── +page.svelte     # Home page
+    │   │   ├── about
+    │   │   │   ├── [name]
+    │   │   │   │   └── +page.svelte
+    │   │   │   └── +page.svelte
+    │   │   └── getting-started
+    │   │       └── +page.svelte
+    │   ├── [story]             # Dynamic story routes
+    │   │   └── +page.svelte
+    │   └── +layout.svelte      # Minimal layouts
+    └── styles                  # Global CSS
+  </code></pre>
     <div class="structure-explanations">
       <div class="explanation">
         <h3>Adding Stories</h3>
@@ -120,6 +134,7 @@
 
 <style>
 /* ---------------- Hero Section ---------------- */
+
 
 
 /* 

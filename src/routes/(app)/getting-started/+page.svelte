@@ -123,14 +123,14 @@
         transition: transform 200ms ease, box-shadow 200ms ease;
         border-radius: var(--border-radius);
         overflow: visible;
-        background: var(--color-white);
-        border: 1px solid var(--color-border);
+        background: light-dark(#fff, #2a2a2a);
+        border: 1px solid light-dark(rgb(202, 202, 202), rgba(255, 255, 255, 0.15));
         z-index: 1;
     }
-    
+
     .video-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        box-shadow: light-dark(0 8px 24px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.4));
         z-index: 10;
     }
     
@@ -145,7 +145,7 @@
         width: 100%;
         aspect-ratio: 16/9;
         overflow: hidden;
-        background: var(--color-gray-100);
+        background: light-dark(rgb(239, 239, 239), rgb(45, 45, 45));
     }
     
     .video-thumbnail img {
@@ -188,7 +188,7 @@
         font-weight: 600;
         font-family: var(--serif);
         margin: 0;
-        color: var(--color-fg);
+        color: light-dark(rgb(55, 55, 55), #e8e8e8);
         line-height: 1.3;
     }
     
@@ -213,8 +213,8 @@
     /* Tooltip styles */
     .tooltip {
         position: fixed;
-        background: var(--color-fg);
-        color: var(--color-white);
+        background: light-dark(rgb(55, 55, 55), #1a1a1a);
+        color: #fff;
         padding: 2rem;
         border-radius: var(--border-radius);
         font-size: 0.9rem;
@@ -227,16 +227,16 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 200ms ease 100ms, visibility 200ms ease 100ms;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        box-shadow: light-dark(0 12px 32px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.6));
         white-space: pre-line;
         pointer-events: auto;
         box-sizing: border-box;
-        
+
         /* Simple centering */
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        
+
         /* Ensure readable text */
         text-align: left;
         word-wrap: break-word;

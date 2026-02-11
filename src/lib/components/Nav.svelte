@@ -88,7 +88,7 @@ function closeMenu(skipFocus = false) {
 
 .header-left {
   margin-left: -0.5rem; /* compensate for logo whitespace */
-  margin-top: 1rem; /* compensate for logo whitespace */
+  margin-top: 0.1rem; /* compensate for logo whitespace */
 }
 
 

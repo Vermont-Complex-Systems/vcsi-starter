@@ -3,6 +3,8 @@
     import ScrollyContent from '$lib/components/helpers/ScrollyContent.svelte';
     import CodeExplainer from '$lib/components/helpers/CodeExplainer.svelte';
     import Md from '$lib/components/helpers/MarkdownRenderer.svelte';
+    import { renderCodeHtml } from '$lib/components/helpers/ScrollySnippets.svelte';
+    import Footer from '$lib/components/Footer.svelte';
     import { resolve } from '$app/paths';
     let { story, data } = $props();
 
@@ -23,14 +25,6 @@
     );
 
     const chartData = [20, 35, 25, 45];
-
-    // Escape HTML entities for code display
-    function escapeHtml(str) {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
 </script>
 
 <BackToHome />
@@ -73,7 +67,7 @@
                 <ScrollyContent steps={data.LiveDemoExplainer.steps} bind:value={scrollyIndex} />
                 <div class="code-panel">
                     <div class="code-explainer-chart">
-                        <Md text={`<pre><code class="language-${data.LiveDemoExplainer.language || 'text'} show-line-numbers" data-highlight-lines="${currentHighlight}">${escapeHtml(data.LiveDemoExplainer.code)}</code></pre>`} />
+                        <Md text={renderCodeHtml(data.LiveDemoExplainer.code, data.LiveDemoExplainer.language, currentHighlight)} />
                     </div>
                 </div>
                 <div class="chart-panel">
@@ -126,7 +120,7 @@
                     <ScrollyContent steps={data.LiveDemoExplainer.steps} bind:value={scrollyIndex} topSpacer={false} bottomSpacer={false} />
                     <div class="code-panel">
                         <div class="code-explainer-chart">
-                            <Md text={`<pre><code class="language-${data.LiveDemoExplainer.language || 'text'} show-line-numbers" data-highlight-lines="${currentHighlight}">${escapeHtml(data.LiveDemoExplainer.code)}</code></pre>`} />
+                            <Md text={renderCodeHtml(data.LiveDemoExplainer.code, data.LiveDemoExplainer.language, currentHighlight)} />
                         </div>
                     </div>
                 </div>
@@ -257,6 +251,8 @@
     </section>
 </article>
 
+<Footer theme="light" />
+
 <style>
     .architecture-diagram {
         font-size: 0.85rem;
@@ -349,6 +345,7 @@
     }
 
     .code-explainer-chart {
+        width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
@@ -359,7 +356,8 @@
 
     .code-explainer-chart :global(pre) {
         margin: 0;
+        max-width: 100%;
         max-height: 100%;
-        overflow-y: auto;
+        overflow: auto;
     }
 </style>
