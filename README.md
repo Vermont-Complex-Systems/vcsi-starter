@@ -1,5 +1,7 @@
 # Custom Research Website Template
 
+This is an experimental static site template to scaffold web applications with data-driven stories. It aims to demonstrate techniques we do at the VCSI to do visual essays.
+
 ## Installation
 
 You will need [nodejs](https://nodejs.org/en/about) and [npm](https://docs.npmjs.com/about-npm) installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the CLI, you can simply copy paste this code snippet in your terminal: 
@@ -52,10 +54,6 @@ Similarly, we use branches with specific tags to showcase stories at differnet p
 ```
 npx degit Vermont-Complex-Systems/website-template#scrolly-story-2-v1.0.1 example
 ```
-
-## Goal
-
-This is an experimental Template to scaffold web applications with data-driven visual essays. It aims to demonstrate techniques we do at the VCSI to do visual essays.
 
 ## Project structure
 
