@@ -2,7 +2,7 @@
 
 ## Installation
 
-You will need [nodejs](https://nodejs.org/en/about) and [npm](https://docs.npmjs.com/about-npm) (equivalent to `pip` or `CRAN`). installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the command line interface, the easiest way to get started is to copy paste this code snippet in your terminal: 
+You will need [nodejs](https://nodejs.org/en/about) and [npm](https://docs.npmjs.com/about-npm) installed to get things going. The easiest way to install node is by following the instructions [here](https://nodejs.org/en/download). If you are familiar with the CLI, you can simply copy paste this code snippet in your terminal: 
 
 ```zsh
 # Download and install nvm:
@@ -25,6 +25,18 @@ Once this is done, you should be able to simply run:
 
 ```zsh
 npx degit Vermont-Complex-Systems/website-template example
+```
+
+#### Install dependencies
+
+```
+npm i
+```
+
+#### Start the development server
+
+```
+npm run dev
 ```
 
 ## Learning
