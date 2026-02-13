@@ -12,8 +12,9 @@ export { default as CopyCodeBlock } from './components/CopyCodeBlock.svelte';
 export { default as CodeExplainer } from './components/CodeExplainer.svelte';
 export { default as Spinner } from './components/Spinner.svelte';
 
-// Snippets and utilities
-export { renderTextContent, renderCodeHtml, type ContentItem } from './components/ScrollySnippets.svelte';
+// Content rendering
+export { default as RenderTextContent } from './components/RenderTextContent.svelte';
+export { renderCodeHtml, type ContentItem } from './components/ScrollySnippets.svelte';
 
 // Actions
 export { scrollReveal } from './actions/scrollReveal';
