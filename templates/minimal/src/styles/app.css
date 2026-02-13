@@ -35,6 +35,13 @@
   --page-max-width: var(--scrolly-page-max-width);
   --page-inline-padding: 5%;
 
+  /* Step box aliases for ScrollyContent */
+  --step-max-width: var(--scrolly-step-max-width);
+  --step-height: var(--scrolly-step-height);
+  --step-padding: var(--scrolly-step-padding);
+  --step-border-radius: var(--scrolly-step-border-radius);
+  --step-box-shadow: var(--scrolly-step-box-shadow);
+
   /* Theme color aliases for Nav component */
   --color-bg-light: var(--scrolly-bg-light);
   --color-fg-light: var(--scrolly-fg-light);
