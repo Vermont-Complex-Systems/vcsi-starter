@@ -1,0 +1,4 @@
+{
+  "css.customData": ["./.vscode/css.customData.json"],
+  "svelte.plugin.css.completions.enable": true
+}

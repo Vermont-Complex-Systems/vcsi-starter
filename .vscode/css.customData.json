@@ -1,0 +1,265 @@
+{
+  "version": 1.1,
+  "properties": [
+    {
+      "name": "--color-bg",
+      "description": "Page background. Auto-switches with theme. Use this!"
+    },
+    {
+      "name": "--color-fg",
+      "description": "Page text color. Auto-switches with theme. Use this!"
+    },
+    {
+      "name": "--color-hover",
+      "description": "Hover background for buttons/links. Auto-switches with theme."
+    },
+    {
+      "name": "--color-border",
+      "description": "Border color. Auto-switches with theme."
+    },
+    {
+      "name": "--color-link",
+      "description": "Link text color. Auto-switches with theme."
+    },
+    {
+      "name": "--color-link-hover",
+      "description": "Link hover color. Auto-switches with theme."
+    },
+    {
+      "name": "--color-muted",
+      "description": "Secondary/muted text color."
+    },
+    {
+      "name": "--color-bg-light",
+      "description": "Raw token: light background. Use for forcing light theme."
+    },
+    {
+      "name": "--color-bg-dark",
+      "description": "Raw token: dark background. Use for forcing dark theme."
+    },
+    {
+      "name": "--color-fg-light",
+      "description": "Raw token: light text. Use for forcing light theme."
+    },
+    {
+      "name": "--color-fg-dark",
+      "description": "Raw token: dark text. Use for forcing dark theme."
+    },
+    {
+      "name": "--color-hover-light",
+      "description": "Raw token: light hover. Use for forcing light theme."
+    },
+    {
+      "name": "--color-hover-dark",
+      "description": "Raw token: dark hover. Use for forcing dark theme."
+    },
+    {
+      "name": "--color-border-light",
+      "description": "Raw token: light border. Use for forcing light theme."
+    },
+    {
+      "name": "--color-border-dark",
+      "description": "Raw token: dark border. Use for forcing dark theme."
+    },
+    {
+      "name": "--color-black",
+      "description": "Pure black (#000)"
+    },
+    {
+      "name": "--color-white",
+      "description": "Pure white (#fff)"
+    },
+    {
+      "name": "--color-beige",
+      "description": "Beige (#f4efea) - default light background"
+    },
+    {
+      "name": "--color-uvm-green",
+      "description": "UVM Green (#154734) - primary brand color"
+    },
+    {
+      "name": "--color-uvm-gold",
+      "description": "UVM Gold - accent color"
+    },
+    {
+      "name": "--color-accent",
+      "description": "Accent color (defaults to UVM Green)"
+    },
+    {
+      "name": "--color-gray-100",
+      "description": "Lightest gray"
+    },
+    {
+      "name": "--color-gray-400",
+      "description": "Medium gray"
+    },
+    {
+      "name": "--color-gray-800",
+      "description": "Dark gray"
+    },
+    {
+      "name": "--sans",
+      "description": "Sans-serif font (Atlas Grotesk)"
+    },
+    {
+      "name": "--serif",
+      "description": "Serif font (Baskerville) - default body font"
+    },
+    {
+      "name": "--mono",
+      "description": "Monospace font (Atlas Typewriter)"
+    },
+    {
+      "name": "--font-size-giant",
+      "description": "Giant text (3-4rem) - hero headlines"
+    },
+    {
+      "name": "--font-size-xl",
+      "description": "Extra large (1.8-3rem) - h1"
+    },
+    {
+      "name": "--font-size-lg",
+      "description": "Large (1.5-2.5rem) - h2"
+    },
+    {
+      "name": "--font-size-md",
+      "description": "Medium (1-1.5rem) - h3"
+    },
+    {
+      "name": "--font-size-base",
+      "description": "Base size - body text"
+    },
+    {
+      "name": "--font-size-sm",
+      "description": "Small - captions"
+    },
+    {
+      "name": "--page-max-width",
+      "description": "Max page content width (1200px)"
+    },
+    {
+      "name": "--page-inline-padding",
+      "description": "Horizontal page padding (5%)"
+    },
+    {
+      "name": "--nav-height",
+      "description": "Navigation bar height (4.5rem)"
+    },
+    {
+      "name": "--padding-top-page",
+      "description": "Page top padding (5.5rem) - clears fixed nav"
+    },
+    {
+      "name": "--padding-bottom-page",
+      "description": "Page bottom padding (7.5rem)"
+    },
+    {
+      "name": "--border-radius",
+      "description": "Default border radius (3px)"
+    },
+    {
+      "name": "--transition",
+      "description": "Default transition (200ms ease)"
+    },
+    {
+      "name": "--z-overlay",
+      "description": "Z-index for overlays/modals (1000)"
+    },
+    {
+      "name": "--step-box-shadow",
+      "description": "Shadow for scrolly step boxes"
+    },
+    {
+      "name": "--step-height",
+      "description": "Height of each scroll step (90vh)"
+    },
+    {
+      "name": "--step-max-width",
+      "description": "Max width of step text boxes (400px)"
+    },
+    {
+      "name": "--step-padding",
+      "description": "Padding inside step boxes (1.5rem)"
+    },
+    {
+      "name": "--step-border-radius",
+      "description": "Border radius of step boxes (8px)"
+    },
+    {
+      "name": "--content-padding-inline",
+      "description": "Horizontal padding for content (2rem)"
+    },
+    {
+      "name": "--scrolly-max-width",
+      "description": "Max width of scrolly content (600px)"
+    },
+    {
+      "name": "--scrolly-pointer-events",
+      "description": "Pointer events for scrolly (auto or none for click-through)"
+    },
+    {
+      "name": "--nav-bg",
+      "description": "Nav background. Follows --color-bg by default."
+    },
+    {
+      "name": "--nav-fg",
+      "description": "Nav text color. Follows --color-fg by default."
+    },
+    {
+      "name": "--nav-hover",
+      "description": "Nav hover state. Follows --color-hover by default."
+    },
+    {
+      "name": "--nav-border",
+      "description": "Nav border color when scrolled."
+    },
+    {
+      "name": "--footer-bg",
+      "description": "Footer background. Defaults to UVM Green."
+    },
+    {
+      "name": "--footer-border",
+      "description": "Footer top border color."
+    },
+    {
+      "name": "--story-bg",
+      "description": "Story page background."
+    },
+    {
+      "name": "--story-fg",
+      "description": "Story page text color."
+    },
+    {
+      "name": "--story-max-width",
+      "description": "Max width for story prose (600px)"
+    },
+    {
+      "name": "--story-step-bg",
+      "description": "Background for scrolly steps in stories."
+    },
+    {
+      "name": "--story-step-fg",
+      "description": "Text color for scrolly steps in stories."
+    },
+    {
+      "name": "--panel-height",
+      "description": "Sticky panel height in split/triple layouts."
+    },
+    {
+      "name": "--panel-width",
+      "description": "Sticky panel width % in split layout (45%)"
+    },
+    {
+      "name": "--panel-min-width",
+      "description": "Min sticky panel width in split layout (450px)"
+    },
+    {
+      "name": "--panel-top-offset",
+      "description": "Vertical centering offset for sticky panels."
+    },
+    {
+      "name": "--layout-gap",
+      "description": "Gap between layout columns (2rem)"
+    }
+  ]
+}

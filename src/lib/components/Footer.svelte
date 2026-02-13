@@ -63,14 +63,8 @@
 		padding: 3rem 0 2rem;
 	}
 
-	/* Global dark mode toggle (mode-watcher) - only when no explicit theme */
-	:global(.dark) .footer:not(.theme-light):not(.theme-dark) {
-		background-color: var(--footer-bg, var(--color-gray-100));
-		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
-	}
-
 	/* theme="light" - forces UVM green, ignores global dark mode */
-	 .footer.theme-light {
+	.footer.theme-light {
 		--footer-bg: var(--color-uvm-green);
 		--footer-border: rgba(255, 255, 255, 0.2);
 	}

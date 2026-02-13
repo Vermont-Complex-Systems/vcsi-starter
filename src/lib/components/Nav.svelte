@@ -70,14 +70,30 @@ function closeMenu(skipFocus = false) {
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--color-bg);
+  background: var(--nav-bg);
   border-bottom: 2px solid transparent;
   z-index: 100;
   transition: border-color 200ms ease;
 }
 
 .header.scrolled {
-  border-bottom-color: var(--color-gray-400);
+  border-bottom-color: var(--nav-border);
+}
+
+/* theme="light" - forces light theme, ignores global dark mode */
+.header.theme-light {
+  --nav-bg: var(--color-bg-light);
+  --nav-fg: var(--color-fg-light);
+  --nav-hover: var(--color-hover-light);
+  --nav-border: var(--color-border-light);
+}
+
+/* theme="dark" - forces dark theme, ignores global dark mode */
+.header.theme-dark {
+  --nav-bg: var(--color-bg-dark);
+  --nav-fg: var(--color-fg-dark);
+  --nav-hover: var(--color-hover-dark);
+  --nav-border: var(--color-border-dark);
 }
 
 /* Inner container aligns nav content with page */
@@ -128,17 +144,16 @@ function closeMenu(skipFocus = false) {
   font-family: var(--sans);
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--color-fg);
+  color: var(--nav-fg);
   text-decoration: none;
   background: transparent;
-  text-decoration: none;
   border: none;
   border-radius: 0.5rem;
   transition: all var(--transition-medium);
 }
 
 .about-button:hover {
-  background: var(--color-hover);
+  background: var(--nav-hover);
 }
 
 .icon-button {
@@ -149,7 +164,7 @@ function closeMenu(skipFocus = false) {
   height: 2.5rem;
   border-radius: 0.5rem;
   background: transparent;
-  color: var(--color-fg);
+  color: var(--nav-fg);
   border: none;
   cursor: pointer;
   transition: all var(--transition-medium);
@@ -157,7 +172,7 @@ function closeMenu(skipFocus = false) {
 
 .icon-button:hover {
   transform: rotate(var(--right-tilt)) scale(1.05);
-  background: var(--color-hover);
+  background: var(--nav-hover);
 }
 
 .mobile-menu-button {
@@ -172,13 +187,13 @@ function closeMenu(skipFocus = false) {
   height: 2.25rem;
   border-radius: 0.5rem;
   text-decoration: none;
-  color: var(--color-fg);
+  color: var(--nav-fg);
   transition: all var(--transition-medium);
 }
 
 .github-button:hover {
   transform: scale(1.1);
-  background: var(--color-hover);
+  background: var(--nav-hover);
 }
 
 .sr-only {

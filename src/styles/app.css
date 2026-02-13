@@ -2,16 +2,29 @@
 @import "fonts.css";
 
 /* =============================================================================
-   DESIGN TOKENS
-   Global CSS variables for colors, typography, and layout.
+   APP.CSS - Design System
+
+   TOKENS (in :root)
+   ├─ Core palette ........... black, white, beige, brand colors, grays
+   ├─ Typography ............. font families, type scale
+   ├─ Layout ................. page dimensions, nav height, spacing
+   ├─ Scrolly ................ step-*, scrolly-*, content-*
+   ├─ Raw tokens ............. *-light, *-dark (fixed values, don't use directly)
+   ├─ Semantic tokens ........ color-bg, color-fg, etc. (use these!)
+   └─ Component tokens ....... nav-*, footer-* (follow semantic by default)
+
+   STYLES
+   ├─ Base document .......... body, main
+   ├─ Layout: Page ........... .page (centered content)
+   ├─ Layout: Story .......... .story, .story.dark
+   ├─ Typography ............. headings, paragraphs, code, blockquotes
+   └─ Layout: Scrolly ........ .split-layout, .fullscreen-layout, .triple-layout
+
+   THEMING
+   - Semantic tokens auto-switch with global dark mode
+   - Stories are isolated: use .story (light) or .story.dark
+   - Components accept theme="light" or theme="dark" to override
    ============================================================================= */
-
-@property --myColor {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: rebeccapurple;
-}
-
 
 :root {
   color-scheme: light dark;
@@ -37,29 +50,6 @@
   --color-gray-900: rgb(38, 38, 38);
   --color-tertiary-gray: rgba(0, 0, 0, 0.5);
 
-  /* Semantic colors */
-  --color-bg: var(--color-beige);
-  --color-fg: rgb(55, 55, 55);
-  --color-muted: rgb(109, 109, 109);
-  --color-border: rgb(202, 202, 202);
-  --color-link: var(--color-fg);
-  --color-link-hover: var(--color-accent);
-
-    /* Raw tokens */
-  --bg-light: var(--color-beige);
-  --bg-dark: rgb(45, 45, 45);
-
-  --fg-light: black;
-  --fg-dark: whitesmoke;
-
-  --hover-light: rgba(0, 0, 0, 0.05);
-  --hover-dark: rgba(255, 255, 255, 0.08);
-
-    
-  /* Interactive states */
-  --color-hover: rgba(0, 0, 0, 0.05);
-  --color-border-on-dark: rgba(255, 255, 255, 0.2);
-
   /* Typography */
   --sans: "Atlas Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --serif: "Baskerville", "Times New Roman", Times, serif;
@@ -74,85 +64,54 @@
   --font-size-small: clamp(14px, 1.18vw, 1.2rem);
   --font-size-sm: clamp(12px, 1vw, 0.9rem);
 
-  /* Reusable Layout variables */
+  /* Layout */
   --page-max-width: 1200px;
   --page-inline-padding: 5%;
-  --nav-height: 4.5rem;
   --padding-top-page: 5.5rem;
   --padding-bottom-page: 7.5rem;
   --border-radius: 3px;
-
-  /* Motion */
   --transition: 200ms ease;
-
-  /* Z-index */
   --z-overlay: 1000;
 
-  /* Scrolly step styling */
+  /* Scrolly */
   --step-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
   --step-height: 90vh;
-
-  /* ==========================================================================
-     SCROLLY: SHARED VARIABLES
-     General variables for scrolly content, reusable across any layout.
-     Override these on the layout container to customize.
-     ========================================================================== */
-
-  /* Content area (used by all layouts) */
-  --content-padding-inline: 2rem;
-
-  /* Scrolly content container */
-  --scrolly-max-width: 600px;
-  --scrolly-pointer-events: auto;
-
-  /* Step boxes (the text cards) - these apply regardless of layout */
   --step-max-width: 400px;
   --step-padding: 1.5rem;
   --step-border-radius: 8px;
-  /* Section spacing (vertical breathing room around scrolly sections) */
+  --content-padding-inline: 2rem;
+  --scrolly-max-width: 600px;
+  --scrolly-pointer-events: auto;    /* set to 'none' for click-through */
 
-  /* --nav-bg: var(--color-bg);
-  --nav-fg: var(--color-fg);
-  --color-fg-light: var(--color-fg);
-  --nav-border: var(--color-gray-400);
-  --nav-hover: var(--color-hover);
-
-  --footer-bg: var(--color-uvm-green);
-	--footer-border: rgba(255, 255, 255, 0.2); */
-
-    /* ─────────────────────────────
-     RAW LIGHT/DARK BASE TOKENS
-     These never change.
-     ───────────────────────────── */
-
+  /* Raw tokens (fixed values - use for explicit theme overrides) */
   --color-bg-light: var(--color-beige);
   --color-bg-dark: #1a1a1a;
-
   --color-fg-light: rgb(55, 55, 55);
   --color-fg-dark: #e8e8e8;
-
   --color-hover-light: rgba(0, 0, 0, 0.05);
   --color-hover-dark: rgba(255, 255, 255, 0.1);
-
   --color-border-light: rgb(202, 202, 202);
   --color-border-dark: rgba(255, 255, 255, 0.15);
+  --color-link-light: var(--color-fg-light);
+  --color-link-dark: #8ab4f8;
+  --color-link-hover-light: var(--color-uvm-green);
+  --color-link-hover-dark: #aecbfa;
 
-  /* ─────────────────────────────
-     ACTIVE SEMANTIC TOKENS
-     (KEEPING OLD NOMENCLATURE)
-     ───────────────────────────── */
-
+  /* Semantic tokens (use these - auto-switch with theme) */
   --color-bg: var(--color-bg-light);
   --color-fg: var(--color-fg-light);
   --color-hover: var(--color-hover-light);
   --color-border: var(--color-border-light);
+  --color-muted: rgb(109, 109, 109);
+  --color-link: var(--color-link-light);
+  --color-link-hover: var(--color-link-hover-light);
 
-  /* Component defaults follow global theme */
+  /* Component tokens (follow semantic by default) */
+  --nav-height: 4.5rem;
   --nav-bg: var(--color-bg);
   --nav-fg: var(--color-fg);
   --nav-hover: var(--color-hover);
   --nav-border: var(--color-gray-400);
-
   --footer-bg: var(--color-uvm-green);
   --footer-border: rgba(255, 255, 255, 0.2);
 
@@ -162,66 +121,33 @@
 /* Dark mode via system preference */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-gray-100: rgb(45, 45, 45);
-    --color-gray-200: rgb(55, 55, 55);
-    --color-gray-300: rgb(75, 75, 75);
-    --color-gray-400: rgb(100, 100, 100);
-    --color-gray-600: rgb(160, 160, 160);
-    --color-gray-700: rgb(180, 180, 180);
-    --color-gray-800: rgb(200, 200, 200);
-    --color-gray-900: rgb(225, 225, 225);
-    --color-tertiary-gray: rgba(255, 255, 255, 0.5);
-    --color-bg: #1a1a1a;
-    --color-fg: #e8e8e8;
-    --color-muted: #888;
-    --color-border: rgba(255, 255, 255, 0.15);
-    --color-link: #8ab4f8;
-    --color-link-hover: #aecbfa;
-    --color-hover: rgba(255, 255, 255, 0.1);
-    --color-border-on-dark: rgba(255, 255, 255, 0.15);
-    --story-step-bg: #2a2a2a;
-    --story-step-fg: #e8e8e8;
-    --story-step-bg-inactive: #222;
-    --story-step-fg-inactive: #666;
+    --color-bg: var(--color-bg-dark);
+    --color-fg: var(--color-fg-dark);
+    --color-hover: var(--color-hover-dark);
+    --color-border: var(--color-border-dark);
+    --color-link: var(--color-link-dark);
+    --color-link-hover: var(--color-link-hover-dark);
   }
 }
 
 /* Theme toggle: force dark mode when .dark class is present */
 :root.dark {
   color-scheme: dark;
-  --color-gray-100: rgb(45, 45, 45);
-  --color-gray-200: rgb(55, 55, 55);
-  --color-gray-300: rgb(75, 75, 75);
-  --color-gray-400: rgb(100, 100, 100);
-  --color-gray-600: rgb(160, 160, 160);
-  --color-gray-700: rgb(180, 180, 180);
-  --color-gray-800: rgb(200, 200, 200);
-  --color-gray-900: rgb(225, 225, 225);
-  --color-tertiary-gray: rgba(255, 255, 255, 0.5);
-  --color-bg: #1a1a1a;
-  --color-fg: #e8e8e8;
-  --color-muted: #888;
-  --color-border: rgba(255, 255, 255, 0.15);
-  --color-link: #8ab4f8;
-  --color-link-hover: #aecbfa;
-  --color-hover: rgba(255, 255, 255, 0.1);
-  --color-border-on-dark: rgba(255, 255, 255, 0.15);
-  --story-step-bg: #2a2a2a;
-  --story-step-fg: #e8e8e8;
-  --story-step-bg-inactive: #222;
-  --story-step-fg-inactive: #666;
 
-  --bg: var(--bg-dark);
-  --fg: var(--fg-dark);
-  --hover: var(--hover-dark);
+  --color-bg: var(--color-bg-dark);
+  --color-fg: var(--color-fg-dark);
+  --color-hover: var(--color-hover-dark);
+  --color-border: var(--color-border-dark);
+  --color-link: var(--color-link-dark);
+  --color-link-hover: var(--color-link-hover-dark);
 
   --footer-bg: rgb(45, 45, 45);
-	--footer-border: rgba(255, 255, 255, 0.1);
+  --footer-border: rgba(255, 255, 255, 0.1);
 
-  --nav-bg: rgb(45, 45, 45);
+  --nav-bg: var(--color-bg);
   --nav-fg: var(--color-fg);
+  --nav-hover: var(--color-hover);
   --nav-border: rgba(255, 255, 255, 0.1);
-
 }
 
 /* Interactive elements get pointer cursor by default */
@@ -231,14 +157,14 @@ summary {
   cursor: pointer;
 }
 
-/* Link styling - uses light-dark() to respect color-scheme */
+/* Link styling */
 a {
-  color: light-dark(rgb(55, 55, 55), #8ab4f8);
+  color: var(--color-link);
   cursor: pointer !important;
 }
 
 a:hover {
-  color: light-dark(var(--color-accent), #aecbfa);
+  color: var(--color-link-hover);
 }
 
 /* =============================================================================
@@ -366,9 +292,9 @@ main > :last-child {
   color-scheme: dark;
   --story-bg: #353839;
   --story-fg: white;
-  --story-step-bg: whitesmoke;
-  --story-step-fg: #333;
-  --story-step-bg-inactive: rgba(255, 255, 255, 0.9);
+  --story-step-bg: #2a2a2a;
+  --story-step-fg: #e8e8e8;
+  --story-step-bg-inactive: #222;
   --story-step-fg-inactive: #666;
 }
 
