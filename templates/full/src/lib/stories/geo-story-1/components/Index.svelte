@@ -2,7 +2,7 @@
     import BackToHome from '$lib/components/helpers/BackToHome.svelte';
     import GeoScrollyPlot from './GeoScrollyPlot.svelte';
     import StoryHeader from '$lib/components/StoryHeader.svelte';
-    import { ScrollIndicator, renderTextContent, ScrollyContent } from '@vcsi/scrolly-kit';
+    import { ScrollIndicator, RenderTextContent, ScrollyContent } from '@vcsi/scrolly-kit';
     import Footer from '$lib/components/Footer.svelte';
 
     let { story, data } = $props();
@@ -24,7 +24,7 @@
 
     <section id="intro">
         {#each data.introduction as item}
-            {@render renderTextContent(item)}
+            <RenderTextContent {item} />
         {/each}
     </section>
 
@@ -38,14 +38,14 @@
     <h2>Conclusion</h2>
     <section id="conclusion">
         {#each data.conclusion as item}
-            {@render renderTextContent(item)}
+            <RenderTextContent {item} />
         {/each}
     </section>
 
     <h2>Appendix</h2>
     <section id="appendix">
         {#each data.appendix as item}
-            {@render renderTextContent(item)}
+            <RenderTextContent {item} />
         {/each}
     </section>
 </article>
