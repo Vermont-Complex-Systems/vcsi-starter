@@ -2,36 +2,76 @@
     import type { Story } from '$lib/story.remote';
 
     let { stories }: { stories: Story[] } = $props();
+
+    // Group stories by level
+    let storiesByLevel = $derived.by(() => {
+        const groups: Record<string, Story[]> = {};
+        for (const story of stories) {
+            const level = story.level || '1';
+            if (!groups[level]) {
+                groups[level] = [];
+            }
+            groups[level].push(story);
+        }
+        // Sort by level number and return as entries
+        return Object.entries(groups).sort((a, b) => Number(a[0]) - Number(b[0]));
+    });
 </script>
 
-<div class="story-grid">
-    {#each stories as story (story.slug)}
-        <a href="/{story.slug}" class="story-card">
-            <div class="card-content">
-                <h3>{story.title}</h3>
-                <p class="description">{story.description}</p>
-                {#if story.tags}
-                    <div class="tags">
-                        {#each story.tags.split(',').map(t => t.trim()).filter(Boolean) as tag}
-                            <span class="tag">{tag}</span>
-                        {/each}
+{#each storiesByLevel as [level, levelStories] (level)}
+    <section class="level-section">
+        {#if +level === 1}
+            <h2 class="level-heading">Level {level}: building blocks</h2>
+        {:else}
+            <h2 class="level-heading">Level {level}</h2>
+        {/if}
+        <div class="story-grid">
+            {#each levelStories as story (story.slug)}
+                <a href="/{story.slug}" class="story-card">
+                    <div class="card-content">
+                        <h3>{story.title}</h3>
+                        <p class="description">{story.description}</p>
+                        {#if story.tags}
+                            <div class="tags">
+                                {#each story.tags.split(',').map(t => t.trim()).filter(Boolean) as tag (tag)}
+                                    <span class="tag">{tag}</span>
+                                {/each}
+                            </div>
+                        {/if}
+                        <div class="card-footer">
+                            <p class="date">{story.date}</p>
+                            <span class="read-more">Read more →</span>
+                        </div>
                     </div>
-                {/if}
-                <div class="card-footer">
-                    <p class="date">{story.date}</p>
-                    <span class="read-more">Read more →</span>
-                </div>
-            </div>
-        </a>
-    {/each}
-</div>
+                </a>
+            {/each}
+        </div>
+    </section>
+{/each}
 
 <style>
+    .level-section {
+        margin-bottom: 3rem;
+    }
+
+    .level-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .level-heading {
+        font-size: 1.5rem;
+        font-family: var(--serif);
+        margin: 0 0 1.5rem 0;
+        color: var(--color-fg);
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
     .story-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
         gap: 2rem;
-        margin: 2rem 0;
+        margin: 0;
     }
 
     .story-card {
@@ -40,7 +80,7 @@
         border-radius: 16px;
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        min-height: 280px;
+        height: 285px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         text-decoration: none;
         color: inherit;
@@ -68,7 +108,7 @@
     }
 
     .card-content {
-        padding: 2rem;
+        padding: 0rem 1.5rem;
         display: flex;
         flex-direction: column;
         height: 100%;

@@ -36,7 +36,7 @@
             <ScrollyPlot {scrollyIndex} />
         </div>
 
-        <div class="stepContainer">
+        <div class="scrolly-content">
             <ScrollyContent steps={data.steps} bind:value={scrollyIndex} topSpacer={false}/>
         </div>
     </section>
@@ -61,7 +61,7 @@
 
 <style>
     @media (min-width: 769px) {
-        .stepContainer {
+        .scrolly-content {
             --story-step-bg: transparent;
             --story-step-bg-inactive: transparent;
             --step-box-shadow: none;

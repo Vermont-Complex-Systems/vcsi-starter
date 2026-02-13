@@ -3,9 +3,16 @@
 	import { Youtube, Github, Linkedin, ExternalLink } from "@lucide/svelte";
 
 	let { theme }: { theme?: 'light' | 'dark' } = $props();
+
 </script>
 
-<footer class="footer" class:theme-light={theme === 'light'} class:theme-dark={theme === 'dark'}>
+<footer
+	class={[
+		'footer',
+		theme === 'light' && 'theme-light',
+		theme === 'dark' && 'theme-dark'
+	]}
+>
 	<div class="footer-inner">
 		<div class="footer-logo">
 			<img src="{base}/UVM_Logo_Primary_Horiz_W_PunchOut.png" alt="Logo" class="logo-img" />
@@ -51,27 +58,22 @@
 	.footer {
 		width: 100%;
 		/* Default: UVM green for light mode */
-		background-color: var(--footer-bg, var(--color-uvm-green));
-		border-top: 1px solid var(--footer-border, rgba(255, 255, 255, 0.2));
+		background-color: var(--footer-bg);
+		border-top: 1px solid var(--footer-border);
 		padding: 3rem 0 2rem;
-	}
-
-	/* Global dark mode toggle (mode-watcher) - only when no explicit theme */
-	:global(.dark) .footer:not(.theme-light):not(.theme-dark) {
-		background-color: var(--footer-bg, var(--color-gray-100));
-		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
 	}
 
 	/* theme="light" - forces UVM green, ignores global dark mode */
 	.footer.theme-light {
-		background-color: var(--footer-bg, var(--color-uvm-green));
-		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.2));
+		--footer-bg: var(--color-uvm-green);
+		--footer-border: rgba(255, 255, 255, 0.2);
 	}
+
 
 	/* theme="dark" - forces dark theme (explicit color, not variable that flips) */
 	.footer.theme-dark {
-		background-color: var(--footer-bg, rgb(45, 45, 45));
-		border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
+		--footer-bg: rgb(45, 45, 45);
+		--footer-border: rgba(255, 255, 255, 0.1);
 	}
 
 	/* Inner container aligns content with header/main page */

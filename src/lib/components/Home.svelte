@@ -179,7 +179,7 @@ Uses padding-bottom: 0 to make the centering symmetric
 .hero-text p {
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
   margin: 0;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
 }
 
 .code-blocks {
@@ -193,7 +193,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   align-items: center;
   font-family: var(--sans);
   font-size: 0.9rem;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
   margin-top: 0.25rem;
 }
 
@@ -216,7 +216,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   display: flex;
   align-items: flex-start;
   gap: 0.35rem;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
 }
 
 .tip-row p {
@@ -247,11 +247,7 @@ Uses padding-bottom: 0 to make the centering symmetric
 /* ---------------- Why Svelte Section ---------------- */
 .why-svelte {
   padding: 4rem var(--page-inline-padding);
-  background: rgba(0, 0, 0, 0.02);
-}
-
-:global(.dark) .why-svelte {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--color-hover);
 }
 
 .why-svelte h2 {
@@ -271,11 +267,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   padding: 1.5rem;
   background: var(--color-bg);
   border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-:global(.dark) .reason {
-  border-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
 }
 
 .reason h3 {
@@ -290,14 +282,14 @@ Uses padding-bottom: 0 to make the centering symmetric
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
 }
 
 .svelte-cta {
   text-align: center;
   margin-top: 2rem;
   font-size: 1rem;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
 }
 
 .svelte-cta a {
@@ -331,21 +323,20 @@ Uses padding-bottom: 0 to make the centering symmetric
   padding: 1.5rem;
   margin: 0;
   overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.85rem;
   line-height: 1.5;
   color: #1f2328;
-}
-
-.tree-view code {
-  background: none;
-  padding: 0;
 }
 
 :global(.dark) .tree-view {
   background: #161b22;
   border-color: #30363d;
   color: #e6edf3;
+}
+
+.tree-view code {
+  background: none;
+  padding: 0;
 }
 
 .structure-explanations {
@@ -358,11 +349,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   padding: 1.25rem;
   background: var(--color-bg);
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-:global(.dark) .explanation {
-  border-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
 }
 
 .explanation h3 {
@@ -377,19 +364,15 @@ Uses padding-bottom: 0 to make the centering symmetric
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0;
-  color: var(--color-gray-700);
+  color: var(--color-muted);
 }
 
 .explanation code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--mono);
   font-size: 0.8em;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-hover);
   padding: 0.15rem 0.35rem;
   border-radius: 4px;
-}
-
-:global(.dark) .explanation code {
-  background: rgba(255, 255, 255, 0.1);
 }
 
 /* ---------------- Responsive ---------------- */

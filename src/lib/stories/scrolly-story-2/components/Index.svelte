@@ -16,33 +16,33 @@ let scrollyIndex = $state(undefined);
 <BackToHome />
 <ScrollIndicator />
 
-<article class="story dark" style="--story-bg: #353839; --story-fg: white; --story-step-bg: #222; --story-step-bg-inactive: #333;">
-        <StoryHeader
-            title={data.title}
-            subtitle={data.subtitle}
-            authors={data.authors}
-            date={data.date}
-        />
+<article class="story dark">
+    <StoryHeader
+        title={data.title}
+        subtitle={data.subtitle}
+        authors={data.authors}
+        date={data.date}
+    />
 
-        <section id="intro">
-            {#each data.introduction as item}
-                {@render renderTextContent(item)}
-            {/each}
-        </section>
+    <section id="intro">
+        {#each data.introduction as item}
+            {@render renderTextContent(item)}
+        {/each}
+    </section>
 
-        <section id="scrolly" class="fullscreen-layout">
-            <div class="sticky-panel">
-                <BackgroundPlot {scrollyIndex} />
-            </div>
-            <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
-        </section>
+    <section id="scrolly" class="fullscreen-layout">
+        <div class="sticky-panel">
+            <BackgroundPlot {scrollyIndex} />
+        </div>
+        <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
+    </section>
 
-        <h2>Conclusion</h2>
-        <section id="conclusion">
-            {#each data.conclusion as item}
-                {@render renderTextContent(item)}
-            {/each}
-        </section>
+    <h2>Conclusion</h2>
+    <section id="conclusion">
+        {#each data.conclusion as item}
+            {@render renderTextContent(item)}
+        {/each}
+    </section>
 </article>
 
 <!-- putting inside the Footer to inehrit the story-class -->

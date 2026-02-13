@@ -20,7 +20,7 @@
     height: 2.25rem;
     border-radius: 0.5rem;
     background: transparent;
-    color: var(--color-fg);
+    color: var(--nav-fg, var(--fg));
     border: none;
     cursor: pointer;
     transition: all var(--transition-medium);

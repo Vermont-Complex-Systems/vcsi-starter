@@ -31,6 +31,7 @@ export interface Story {
   date: string;
   externalUrl: string;
   tags: string;
+  level: string;
 }
 
 const stories = storiesData as Story[];

@@ -1,0 +1,133 @@
+{
+  // Story variables
+  "--story-bg": {
+    "prefix": "--story-bg",
+    "body": "--story-bg: ${1:#353839};",
+    "description": "Story page background color"
+  },
+  "--story-fg": {
+    "prefix": "--story-fg",
+    "body": "--story-fg: ${1:white};",
+    "description": "Story page text color"
+  },
+  "--story-step-bg": {
+    "prefix": "--story-step-bg",
+    "body": "--story-step-bg: ${1:#2a2a2a};",
+    "description": "Background for scrolly step boxes"
+  },
+  "--story-step-fg": {
+    "prefix": "--story-step-fg",
+    "body": "--story-step-fg: ${1:#e8e8e8};",
+    "description": "Text color for scrolly step boxes"
+  },
+  "--story-step-bg-inactive": {
+    "prefix": "--story-step-bg-inactive",
+    "body": "--story-step-bg-inactive: ${1:#222};",
+    "description": "Background for inactive/faded step boxes"
+  },
+  "--story-step-fg-inactive": {
+    "prefix": "--story-step-fg-inactive",
+    "body": "--story-step-fg-inactive: ${1:#666};",
+    "description": "Text color for inactive step boxes"
+  },
+  "--story-max-width": {
+    "prefix": "--story-max-width",
+    "body": "--story-max-width: ${1:600px};",
+    "description": "Max width for story prose content"
+  },
+
+  // Step/Scrolly variables
+  "--step-height": {
+    "prefix": "--step-height",
+    "body": "--step-height: ${1:90vh};",
+    "description": "Height of each scroll step"
+  },
+  "--step-max-width": {
+    "prefix": "--step-max-width",
+    "body": "--step-max-width: ${1:400px};",
+    "description": "Max width of step text boxes"
+  },
+  "--step-padding": {
+    "prefix": "--step-padding",
+    "body": "--step-padding: ${1:1.5rem};",
+    "description": "Padding inside step boxes"
+  },
+  "--step-border-radius": {
+    "prefix": "--step-border-radius",
+    "body": "--step-border-radius: ${1:8px};",
+    "description": "Border radius of step boxes"
+  },
+  "--step-box-shadow": {
+    "prefix": "--step-box-shadow",
+    "body": "--step-box-shadow: ${1:1px 1px 10px rgba(0, 0, 0, 0.2)};",
+    "description": "Shadow for step boxes"
+  },
+
+  // Scrolly layout variables
+  "--scrolly-max-width": {
+    "prefix": "--scrolly-max-width",
+    "body": "--scrolly-max-width: ${1:600px};",
+    "description": "Max width of scrolly content container"
+  },
+  "--scrolly-pointer-events": {
+    "prefix": "--scrolly-pointer-events",
+    "body": "--scrolly-pointer-events: ${1|auto,none|};",
+    "description": "Pointer events (auto or none for click-through)"
+  },
+  "--content-padding-inline": {
+    "prefix": "--content-padding-inline",
+    "body": "--content-padding-inline: ${1:2rem};",
+    "description": "Horizontal padding for content areas"
+  },
+
+  // Panel/Layout variables
+  "--panel-height": {
+    "prefix": "--panel-height",
+    "body": "--panel-height: ${1:min(80vh, 600px)};",
+    "description": "Sticky panel height in layouts"
+  },
+  "--panel-width": {
+    "prefix": "--panel-width",
+    "body": "--panel-width: ${1:45%};",
+    "description": "Sticky panel width in split layout"
+  },
+  "--panel-min-width": {
+    "prefix": "--panel-min-width",
+    "body": "--panel-min-width: ${1:450px};",
+    "description": "Min sticky panel width"
+  },
+  "--layout-gap": {
+    "prefix": "--layout-gap",
+    "body": "--layout-gap: ${1:2rem};",
+    "description": "Gap between layout columns"
+  },
+
+  // Color semantic tokens
+  "--color-bg": {
+    "prefix": "--color-bg",
+    "body": "--color-bg: ${1:var(--color-bg-light)};",
+    "description": "Page background (auto-switches with theme)"
+  },
+  "--color-fg": {
+    "prefix": "--color-fg",
+    "body": "--color-fg: ${1:var(--color-fg-light)};",
+    "description": "Page text color (auto-switches with theme)"
+  },
+
+  // Useful var() wrappers
+  "var(--story-step-bg)": {
+    "prefix": "var--story",
+    "body": "var(--story-${1|step-bg,step-fg,step-bg-inactive,step-fg-inactive,bg,fg,max-width|})",
+    "description": "Story CSS variable reference"
+  },
+  "var(--step-*)": {
+    "prefix": "var--step",
+    "body": "var(--step-${1|height,max-width,padding,border-radius,box-shadow|})",
+    "description": "Step CSS variable reference"
+  },
+  "var(--color-*)": {
+    "prefix": "var--color",
+    "body": "var(--color-${1|bg,fg,hover,border,link,link-hover,muted,bg-light,bg-dark,fg-light,fg-dark|})",
+    "description": "Color CSS variable reference"
+  }
+}
