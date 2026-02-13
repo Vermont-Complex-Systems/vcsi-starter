@@ -31,6 +31,14 @@ npx degit Vermont-Complex-Systems/website-template example
 
 #### Install dependencies
 
+Make sure you're in the project directory that you just created (`example` in our case) before trying the following commands.
+
+```
+cd example
+```
+
+Then, install dependencies
+
 ```
 npm i
 ```
