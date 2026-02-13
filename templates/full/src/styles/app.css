@@ -30,6 +30,20 @@
   --sans: var(--scrolly-sans);
   --serif: var(--scrolly-serif);
   --mono: var(--scrolly-mono);
+
+  /* Layout aliases for Nav component */
+  --page-max-width: var(--scrolly-page-max-width);
+  --page-inline-padding: 5%;
+
+  /* Theme color aliases for Nav component */
+  --color-bg-light: var(--scrolly-bg-light);
+  --color-fg-light: var(--scrolly-fg-light);
+  --color-hover-light: var(--scrolly-hover-light);
+  --color-border-light: var(--scrolly-border-light);
+  --color-bg-dark: var(--scrolly-bg-dark);
+  --color-fg-dark: var(--scrolly-fg-dark);
+  --color-hover-dark: var(--scrolly-hover-dark);
+  --color-border-dark: var(--scrolly-border-dark);
 }
 
 /* =============================================================================
@@ -42,8 +56,8 @@ button, [role="button"], summary {
   cursor: pointer;
 }
 
-/* Nav styling */
-nav {
+/* Nav styling - the Nav component uses <header class="header"> */
+header.header {
   --nav-height: 4.5rem;
   --nav-bg: var(--scrolly-bg);
   --nav-fg: var(--scrolly-fg);
