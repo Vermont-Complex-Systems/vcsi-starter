@@ -17,7 +17,7 @@ const options = defineAddonOptions()
   .build();
 
 export default defineAddon({
-  id: '@vcsi/openalex',
+  id: '@the-vcsi/openalex',
   options,
 
   setup: ({ dependsOn }) => {

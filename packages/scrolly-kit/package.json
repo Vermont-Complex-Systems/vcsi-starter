@@ -1,5 +1,5 @@
 {
-  "name": "@vcsi/scrolly-kit",
+  "name": "@the-vcsi/scrolly-kit",
   "version": "0.0.1",
   "description": "Scrollytelling components and layouts for SvelteKit",
   "type": "module",

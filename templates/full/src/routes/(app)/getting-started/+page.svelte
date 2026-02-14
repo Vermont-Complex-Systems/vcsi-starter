@@ -1,7 +1,7 @@
 <script>
     import Meta from "$lib/components/Meta.svelte";
     import vlogData from '$data/vlog.csv';
-    import { MarkdownRenderer } from '@vcsi/scrolly-kit';
+    import { MarkdownRenderer } from '@the-vcsi/scrolly-kit';
 
     // Process CSV data into video objects
     const videos = vlogData

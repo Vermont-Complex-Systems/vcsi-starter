@@ -4,7 +4,7 @@
   
   import Meta from "$lib/components/Meta.svelte";
   import Member from "$lib/components/Member.svelte";
-  import { Spinner } from '@vcsi/scrolly-kit';
+  import { Spinner } from '@the-vcsi/scrolly-kit';
   
   const preloadFont = [
     "/assets/fonts/tiempos/TiemposTextWeb-Regular.woff2",

@@ -1,6 +1,6 @@
 <!-- VCSI-configured Meta wrapper -->
 <script>
-  import { Meta } from '@vcsi/scrolly-kit';
+  import { Meta } from '@the-vcsi/scrolly-kit';
 
   let {
     title,

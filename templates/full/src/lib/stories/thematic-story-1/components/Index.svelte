@@ -1,5 +1,5 @@
 <script>
-    import { scrollReveal } from '@vcsi/scrolly-kit';
+    import { scrollReveal } from '@the-vcsi/scrolly-kit';
     import BackToHome from '$lib/components/helpers/BackToHome.svelte';
     import Footer from '$lib/components/Footer.svelte';
 </script>

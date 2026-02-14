@@ -12,7 +12,7 @@
     import ScatterDots from './ScatterDots.svelte';
     import XAxis from './XAxis.svelte';
     import YAxis from './YAxis.svelte';
-    import { SimpleToggle } from '@vcsi/scrolly-kit';
+    import { SimpleToggle } from '@the-vcsi/scrolly-kit';
 
     import allData from '../data/owid_combined.csv';
 

@@ -4,7 +4,7 @@ import Menu from "./Nav.Menu.svelte";
 
 let { theme }: { theme?: 'light' | 'dark' } = $props();
 
-import { ThemeToggle } from "@vcsi/scrolly-kit";
+import { ThemeToggle } from "@the-vcsi/scrolly-kit";
 import { Menu as MenuIcon } from "@lucide/svelte";
 
 let isMenuOpen = $state(false);

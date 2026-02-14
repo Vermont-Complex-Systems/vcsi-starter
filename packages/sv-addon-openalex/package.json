@@ -1,5 +1,5 @@
 {
-  "name": "@vcsi/sv-addon-openalex",
+  "name": "@the-vcsi/sv-addon-openalex",
   "version": "0.0.1",
   "description": "sv CLI add-on for OpenAlex academic data integration",
   "type": "module",

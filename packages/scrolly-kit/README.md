@@ -1,18 +1,18 @@
-# @vcsi/scrolly-kit
+# @the-vcsi/scrolly-kit
 
 Scrollytelling components and layouts for SvelteKit.
 
 ## Installation
 
 ```bash
-npm install @vcsi/scrolly-kit
+npm install @the-vcsi/scrolly-kit
 ```
 
 ## Usage
 
 ```svelte
 <script>
-  import { Scrolly, ScrollyContent, type ContentItem } from '@vcsi/scrolly-kit';
+  import { Scrolly, ScrollyContent, type ContentItem } from '@the-vcsi/scrolly-kit';
 
   let scrollIndex = $state(0);
 
@@ -35,7 +35,7 @@ npm install @vcsi/scrolly-kit
 ## CSS
 
 ```css
-@import '@vcsi/scrolly-kit/styles/all.css';
+@import '@the-vcsi/scrolly-kit/styles/all.css';
 ```
 
 ## Components

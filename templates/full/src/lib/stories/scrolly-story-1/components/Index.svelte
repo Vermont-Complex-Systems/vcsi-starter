@@ -6,7 +6,7 @@
 		RenderTextContent,
 		ScrollyContent,
 		StoryHeader
-	} from '@vcsi/scrolly-kit';
+	} from '@the-vcsi/scrolly-kit';
 	import Footer from '$lib/components/Footer.svelte';
 
 	let { story, data } = $props();

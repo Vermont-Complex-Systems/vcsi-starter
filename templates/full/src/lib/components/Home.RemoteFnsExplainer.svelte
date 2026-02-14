@@ -1,5 +1,5 @@
 <script>
-  import { CodeBlock } from '@vcsi/scrolly-kit';
+  import { CodeBlock } from '@the-vcsi/scrolly-kit';
   import hljs from 'highlight.js/lib/core';
   import typescript from 'highlight.js/lib/languages/typescript';
 

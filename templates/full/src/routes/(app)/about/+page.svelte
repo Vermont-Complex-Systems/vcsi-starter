@@ -1,6 +1,6 @@
 <script>
     import Meta from "$lib/components/Meta.svelte";
-    import { Spinner } from '@vcsi/scrolly-kit';
+    import { Spinner } from '@the-vcsi/scrolly-kit';
     import About from "$lib/components/About.svelte";
 
     import { getMembers } from '$lib/story.remote'

@@ -27,7 +27,7 @@ npm run dev
 The core components are available as an npm package:
 
 ```bash
-npm install @vcsi/scrolly-kit
+npm install @the-vcsi/scrolly-kit
 ```
 
 ### Components
@@ -45,13 +45,13 @@ npm install @vcsi/scrolly-kit
 Import the styles you need:
 
 ```css
-@import '@vcsi/scrolly-kit/styles/all.css';  /* Everything */
+@import '@the-vcsi/scrolly-kit/styles/all.css';  /* Everything */
 
 /* Or individually: */
-@import '@vcsi/scrolly-kit/styles/reset.css';
-@import '@vcsi/scrolly-kit/styles/tokens.css';
-@import '@vcsi/scrolly-kit/styles/typography.css';
-@import '@vcsi/scrolly-kit/styles/layouts.css';
+@import '@the-vcsi/scrolly-kit/styles/reset.css';
+@import '@the-vcsi/scrolly-kit/styles/tokens.css';
+@import '@the-vcsi/scrolly-kit/styles/typography.css';
+@import '@the-vcsi/scrolly-kit/styles/layouts.css';
 ```
 
 ### Layouts

@@ -18,7 +18,7 @@ const options = defineAddonOptions()
   .build();
 
 export default defineAddon({
-  id: '@vcsi/msgraph',
+  id: '@the-vcsi/msgraph',
   options,
 
   run: ({ sv, options: opts }) => {

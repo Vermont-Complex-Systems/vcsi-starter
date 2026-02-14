@@ -1,5 +1,5 @@
 <script>
-    import { ScrollyContent, CodeExplainer, MarkdownRenderer as Md, renderCodeHtml } from '@vcsi/scrolly-kit';
+    import { ScrollyContent, CodeExplainer, MarkdownRenderer as Md, renderCodeHtml } from '@the-vcsi/scrolly-kit';
     import ToggleLayout from './ToggleLayout.svelte';
     import SimpleChart from './simpleChart.svelte';
 
