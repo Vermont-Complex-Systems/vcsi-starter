@@ -1,7 +1,6 @@
 <script>
 import BackgroundPlot from './BackgroundPlot.svelte';
-import StoryHeader from '$lib/components/StoryHeader.svelte';
-import { ScrollIndicator, RenderTextContent, ScrollyContent } from '@vcsi/scrolly-kit';
+import { ScrollIndicator, RenderTextContent, ScrollyContent, StoryHeader } from '@vcsi/scrolly-kit';
 import BackToHome from '$lib/components/helpers/BackToHome.svelte';
 import Footer from '$lib/components/Footer.svelte';
 

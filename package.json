@@ -5,6 +5,8 @@
 	"type": "module",
 	"workspaces": ["packages/*", "templates/*"],
 	"scripts": {
+		"dev": "npm run package:watch --workspace=@vcsi/scrolly-kit & npm run dev --workspace=full",
+		"dev:template": "npm run dev --workspace=full",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
 	},

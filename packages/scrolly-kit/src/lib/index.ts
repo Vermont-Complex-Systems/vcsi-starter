@@ -11,6 +11,8 @@ export { default as ScrollIndicator } from './components/ScrollIndicator.svelte'
 export { default as CopyCodeBlock } from './components/CopyCodeBlock.svelte';
 export { default as CodeExplainer } from './components/CodeExplainer.svelte';
 export { default as Spinner } from './components/Spinner.svelte';
+export { default as Meta } from './components/Meta.svelte';
+export { default as StoryHeader } from './components/StoryHeader.svelte';
 
 // Content rendering
 export { default as RenderTextContent } from './components/RenderTextContent.svelte';

@@ -53,7 +53,12 @@ export default defineAddon({
     });
 
     console.log('\n  Microsoft Graph integration added!');
-    console.log('  1. Copy .env.example to .env and fill in your Azure credentials');
-    console.log('  2. Run: npm run fetch:sharepoint');
+    console.log('  1. Copy .env.example to .env');
+    console.log('  2. Get credentials from Azure Portal > App registrations:');
+    console.log('     - tenantId: Directory (tenant) ID');
+    console.log('     - clientId: Application (client) ID');
+    console.log('     - clientSecret: Certificates & secrets > New client secret');
+    console.log('  3. Run: npm install');
+    console.log('  4. Run: npm run fetch:sharepoint');
   }
 });

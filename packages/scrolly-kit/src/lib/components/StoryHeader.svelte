@@ -1,11 +1,24 @@
 <script lang="ts">
+  
+  interface Author {
+    name: string;
+    url?: string;
+  }
+
   let {
     title,
     subtitle,
     authors,
     date,
     class: className = ''
+  }: {
+    title: string;
+    subtitle?: string;
+    authors?: Author[];
+    date?: string;
+    class?: string;
   } = $props();
+  
 </script>
 
 <header class={`story-header ${className}`}>

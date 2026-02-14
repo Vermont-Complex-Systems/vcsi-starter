@@ -1,33 +1,38 @@
-<!-- src/lib/components/Meta.svelte -->
+<!-- SEO meta tags component for pages and stories -->
 <script>
-  import { page } from "$app/state"; // Updated for Svelte 5
+  import { page } from "$app/state";
   import { base } from "$app/paths";
-  
-  let { 
-    title, 
-    description, 
+
+  let {
+    title,
+    description,
+    baseUrl = "",
+    siteName = "",
     keywords = "",
     image = "/default-og-image.jpg",
-    author = "Vermont Complex Systems Institute"
+    author = ""
   } = $props();
-  
-  const baseUrl = "https://vermontcomplexsystems.org"; // Your actual domain
+
   // Normalize pathname to remove base and ensure clean path
   let pathname = $derived(page.url.pathname.replace(base, '').replace(/^\/+/, '/'));
-  let url = $derived(`${baseUrl}${pathname}`);
-  let fullImageUrl = $derived(image.startsWith('http') ? image : `${baseUrl}${image}`);
+  let url = $derived(baseUrl ? `${baseUrl}${pathname}` : pathname);
+  let fullImageUrl = $derived(image.startsWith('http') ? image : (baseUrl ? `${baseUrl}${image}` : image));
 </script>
 
 <svelte:head>
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="author" content={author} />
+  {#if author}
+    <meta name="author" content={author} />
+  {/if}
   {#if keywords}
     <meta name="keywords" content={keywords} />
   {/if}
 
   <meta property="og:title" content={title} />
-  <meta property="og:site_name" content="VCSI website" />
+  {#if siteName}
+    <meta property="og:site_name" content={siteName} />
+  {/if}
   <meta property="og:url" content={url} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="article" />

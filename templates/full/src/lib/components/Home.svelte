@@ -2,7 +2,7 @@
   import DotsToImage from '$lib/components/DotsToImage.svelte';
   import StoryGrid from '$lib/components/StoryGrid.svelte';
   import { CopyCodeBlock } from '@vcsi/scrolly-kit';
-  import RemoteFunctionsSection from '$lib/components/RemoteFnsExplainer.svelte';
+  import RemoteFunctionsSection from '$lib/components/Home.RemoteFnsExplainer.svelte';
   import { getStories } from '$lib/story.remote';
   import { ArrowRight } from '@lucide/svelte';
 </script>

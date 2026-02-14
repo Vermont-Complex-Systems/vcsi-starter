@@ -9,9 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const POPULATE_SCRIPT = readFileSync(join(__dirname, 'templates/populate-openalex-db.js'), 'utf8');
 const SCHEMA_ADDITION = readFileSync(join(__dirname, 'templates/schema-addition.ts'), 'utf8');
 
-const SCHEMA_IMPORTS = `import { sqliteTable, integer, text, real } from 'drizzle-orm/sqlite-core';
-`;
-
 const options = defineAddonOptions()
   .add('email', {
     question: 'Contact email for OpenAlex API (polite pool):',
@@ -32,27 +29,28 @@ export default defineAddon({
     const populateScript = POPULATE_SCRIPT.replace(/__CONTACT_EMAIL__/g, opts.email || 'your-email@example.com');
     sv.file('scripts/populate-openalex-db.js', () => populateScript);
 
-    // Append OpenAlex tables to existing schema
+    // Create separate OpenAlex schema file
+    sv.file('src/lib/server/db/openalex-schema.ts', (content) => {
+      if (content) return content; // Already exists
+      return SCHEMA_ADDITION;
+    });
+
+    // Re-export from main schema
     sv.file('src/lib/server/db/schema.ts', (content) => {
-      // Check if already has OpenAlex tables
-      if (content && content.includes('openalex_authors')) {
-        return content;
+      const reexport = "export * from './openalex-schema';";
+      if (content && content.includes('openalex-schema')) {
+        return content; // Already has re-export
       }
+      return (content || '') + '\n' + reexport + '\n';
+    });
 
-      // If file exists, check if it has the imports we need
-      if (content) {
-        if (!content.includes('real')) {
-          // Add real to imports - insert before closing brace
-          content = content.replace(
-            /\}\s*from\s*['"]drizzle-orm\/sqlite-core['"]/,
-            ", real } from 'drizzle-orm/sqlite-core'"
-          );
-        }
-        return content + '\n' + SCHEMA_ADDITION;
-      }
-
-      // File doesn't exist - create with imports
-      return SCHEMA_IMPORTS + '\n' + SCHEMA_ADDITION;
+    // Create template members.csv if it doesn't exist
+    sv.file('src/data/members.csv', (content) => {
+      if (content) return content; // Already exists
+      return `id,name,role,openAlexId
+alice,Alice Smith,Researcher,A5012345678
+bob,Bob Jones,Graduate Student,A5087654321
+`;
     });
 
     // Add npm script and d3-dsv dependency

@@ -112,6 +112,15 @@
   --sans: var(--scrolly-sans);
   --serif: var(--scrolly-serif);
   --mono: var(--scrolly-mono);
+
+  /* Font size aliases */
+  --font-size-giant: var(--scrolly-font-size-giant);
+  --font-size-xl: var(--scrolly-font-size-xl);
+  --font-size-large: var(--scrolly-font-size-lg);
+  --font-size-medium: var(--scrolly-font-size-md);
+  --font-size-base: var(--scrolly-font-size-base);
+  --font-size-small: var(--scrolly-font-size-small);
+  --font-size-xs: var(--scrolly-font-size-sm);
 }
 
 /* Dark mode via system preference */

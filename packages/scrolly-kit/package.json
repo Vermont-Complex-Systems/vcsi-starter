@@ -22,6 +22,7 @@
     "dev": "vite dev",
     "build": "vite build && npm run package",
     "package": "svelte-kit sync && svelte-package -o dist",
+    "package:watch": "svelte-kit sync && svelte-package -o dist --watch",
     "prepublishOnly": "npm run package",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
