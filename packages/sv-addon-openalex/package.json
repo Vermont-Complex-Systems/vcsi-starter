@@ -1,0 +1,19 @@
+{
+  "name": "@vcsi/sv-addon-openalex",
+  "version": "0.0.1",
+  "description": "sv CLI add-on for OpenAlex academic data integration",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "keywords": ["sv-add", "svelte", "sveltekit", "openalex", "academic", "research"],
+  "dependencies": {
+    "sv": "^0.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vermont-Complex-Systems/vcsi-scrollytelling"
+  },
+  "license": "MIT"
+}

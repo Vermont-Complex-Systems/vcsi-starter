@@ -1,0 +1,582 @@
+/* =============================================================================
+   SCROLLY-KIT LAYOUTS
+   Layout patterns for scrollytelling stories.
+   ============================================================================= */
+
+/* =============================================================================
+   LIGHT STORY THEME (default)
+   Stories default to light mode, independent of global dark mode toggle.
+   Customize with: style="--scrolly-story-bg: #fff; --scrolly-story-fg: #333;"
+   ============================================================================= */
+
+.story {
+  color-scheme: light;
+  /* Isolate from global dark mode - force light semantic tokens */
+  --scrolly-bg: var(--scrolly-bg-light);
+  --scrolly-fg: var(--scrolly-fg-light);
+  --scrolly-hover: var(--scrolly-hover-light);
+  --scrolly-border: var(--scrolly-border-light);
+
+  /* Story-specific tokens */
+  --scrolly-story-bg: var(--scrolly-color-beige, #f4efea);
+  --scrolly-story-fg: rgb(55, 55, 55);
+  --scrolly-story-step-bg: #fff;
+  --scrolly-story-step-fg: #333;
+  --scrolly-story-step-bg-inactive: #f5f5f5;
+  --scrolly-story-step-fg-inactive: #ccc;
+  --scrolly-story-max-width: 600px;
+
+  /* Step box color aliases (used by ScrollyContent) */
+  --story-step-bg: var(--scrolly-story-step-bg);
+  --story-step-fg: var(--scrolly-story-step-fg);
+  --story-step-bg-inactive: var(--scrolly-story-step-bg-inactive);
+  --story-step-fg-inactive: var(--scrolly-story-step-fg-inactive);
+}
+
+/* =============================================================================
+   LAYOUT: STORY
+   Full-width container for scrollytelling stories.
+   ============================================================================= */
+
+.story {
+  width: 100%;
+  padding-top: 5.5rem;
+  padding-bottom: 7.5rem;
+  background: var(--scrolly-story-bg);
+  color: var(--scrolly-story-fg);
+}
+
+@media (max-width: 768px) {
+  .story {
+    padding-top: 6rem; /* Clear the BackToHome logo */
+  }
+}
+
+/* =============================================================================
+   STORY PROSE (default for content)
+   Direct children get centered, readable width by default.
+   Layout classes break out to full width.
+   ============================================================================= */
+
+.story > h1,
+.story > h2,
+.story > h3,
+.story > p,
+.story > section,
+.story > header,
+.story > ul,
+.story > ol,
+.story > blockquote,
+.story > pre {
+  width: 100%;
+  max-width: var(--scrolly-story-max-width);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+
+/* Layout classes break out to full width */
+.story > .split-layout,
+.story > .fullscreen-layout,
+.story > .triple-layout,
+.story > .scrolly-section {
+  max-width: none;
+  padding-inline: 0;
+}
+
+
+/* =============================================================================
+   DARK STORY THEME
+   Add class="story dark" for stories with dark backgrounds.
+   Customize with: style="--scrolly-story-bg: #353839; --scrolly-story-fg: white;"
+   ============================================================================= */
+
+.story.dark {
+  color-scheme: dark;
+  --scrolly-story-bg: #353839;
+  --scrolly-story-fg: white;
+  --scrolly-story-step-bg: #2a2a2a;
+  --scrolly-story-step-fg: #e8e8e8;
+  --scrolly-story-step-bg-inactive: #222;
+  --scrolly-story-step-fg-inactive: #666;
+
+  /* Step box color aliases (used by ScrollyContent) */
+  --story-step-bg: var(--scrolly-story-step-bg);
+  --story-step-fg: var(--scrolly-story-step-fg);
+  --story-step-bg-inactive: var(--scrolly-story-step-bg-inactive);
+  --story-step-fg-inactive: var(--scrolly-story-step-fg-inactive);
+}
+
+/* Ensure all text in dark stories uses the story foreground color */
+.story.dark,
+.story.dark h1,
+.story.dark h2,
+.story.dark h3,
+.story.dark p,
+.story.dark a,
+.story.dark section {
+  color: var(--scrolly-story-fg);
+}
+
+
+/* =============================================================================
+   LAYOUT: SPLIT (Two-Column)
+   Generic side-by-side layout with one sticky panel and one scrolling content area.
+   Default: content on left, sticky panel on right. Add .reversed to flip.
+
+   Usage:
+     <section class="split-layout">
+       <div class="sticky-panel">...</div>
+       <div class="scrolly-content">...</div>
+     </section>
+
+     <!-- Reversed: panel on left, content on right -->
+     <section class="split-layout reversed">
+       ...
+     </section>
+   ============================================================================= */
+
+.split-layout {
+  /* Panel configuration (specific to two-column layout) */
+  --scrolly-panel-min-width: 450px;
+  --scrolly-panel-width: 45%;
+  --scrolly-panel-height: min(80vh, 600px); /* Capped so top-offset calc stays accurate */
+  --scrolly-panel-top-offset: calc((100vh - var(--scrolly-panel-height)) / 2); /* auto-center vertically */
+  --scrolly-layout-gap: 2rem;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr minmax(var(--scrolly-panel-min-width), var(--scrolly-panel-width));
+  gap: var(--scrolly-layout-gap);
+  align-items: start;
+  padding-inline: var(--scrolly-content-padding-inline, 2rem);
+
+  /* Override shared defaults for this layout */
+  --scrolly-max-width: none;
+}
+
+/* Reversed: panel on left, content on right */
+.split-layout.reversed {
+  grid-template-columns: minmax(var(--scrolly-panel-min-width), var(--scrolly-panel-width)) 1fr;
+}
+
+.split-layout .sticky-panel {
+  position: sticky;
+  top: var(--scrolly-panel-top-offset);
+  height: var(--scrolly-panel-height);
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.split-layout.reversed .sticky-panel {
+  grid-column: 1;
+}
+
+.split-layout .scrolly-content {
+  grid-column: 1;
+  margin: 0;
+}
+
+.split-layout.reversed .scrolly-content {
+  grid-column: 2;
+}
+
+@media (max-width: 768px) {
+  .split-layout {
+    grid-template-columns: 1fr;
+    padding-inline: 0;
+    --scrolly-step-max-width: 100%;
+    max-width: 100vw;
+    overflow-x: clip; /* clip instead of hidden to preserve sticky */
+  }
+
+  .split-layout .sticky-panel {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0; /* Allow shrinking below content size */
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* On mobile, both occupy same grid cell for natural overlap.
+     Safari mobile needs physical overlap for z-index to work during client-side nav */
+  .split-layout .scrolly-content,
+  .split-layout .scrolly-outer {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 1;
+    pointer-events: none;
+    padding-inline: var(--scrolly-content-padding-inline, 2rem);
+  }
+
+  /* Reversed has no effect on mobile (stacks vertically) */
+  .split-layout.reversed .sticky-panel,
+  .split-layout.reversed .scrolly-content {
+    grid-column: 1;
+  }
+}
+
+
+/* =============================================================================
+   LAYOUT: FULLSCREEN
+   Full-viewport background with centered text overlay.
+   Use for immersive, full-bleed visualizations.
+
+   Usage:
+     <section class="fullscreen-layout">
+       <div class="sticky-panel">...</div>
+       <div class="scrolly-content">...</div>
+     </section>
+   ============================================================================= */
+
+.fullscreen-layout {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+
+  /* Override shared defaults for immersive fullscreen experience */
+  --scrolly-step-max-width: 500px;
+  --scrolly-step-padding: 2rem;
+  --scrolly-pointer-events: none; /* Let events pass to panel behind */
+}
+
+.fullscreen-layout .sticky-panel {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.fullscreen-layout .scrolly-content {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+
+/* =============================================================================
+   LAYOUT: TRIPLE (Three-Column)
+   Three equal columns: content (steps), code panel, and visualization.
+   All three panels share equal width with the code and chart panels sticky.
+
+   Usage:
+     <section class="triple-layout">
+       <div class="scrolly-content">...</div>
+       <div class="code-panel">...</div>
+       <div class="chart-panel">...</div>
+     </section>
+   ============================================================================= */
+
+.triple-layout {
+  --scrolly-panel-height: min(95vh, 900px);
+  --scrolly-panel-top-offset: calc((100vh - var(--scrolly-panel-height)) / 2);
+  --scrolly-layout-gap: 1.5rem;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--scrolly-layout-gap);
+  align-items: start;
+  padding-inline: var(--scrolly-content-padding-inline, 2rem);
+}
+
+.triple-layout .scrolly-content {
+  grid-column: 1;
+}
+
+.triple-layout .code-panel {
+  position: sticky;
+  top: var(--scrolly-panel-top-offset);
+  height: var(--scrolly-panel-height);
+  grid-column: 2;
+}
+
+.triple-layout .chart-panel {
+  position: sticky;
+  top: var(--scrolly-panel-top-offset);
+  height: var(--scrolly-panel-height);
+  grid-column: 3;
+}
+
+@media (max-width: 1024px) {
+  .triple-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .triple-layout .chart-panel {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .triple-layout .code-panel {
+    display: none; /* Hide code on tablet, show only steps and chart */
+  }
+}
+
+@media (max-width: 768px) {
+  .triple-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .triple-layout .chart-panel {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    max-height: none;
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .triple-layout .scrolly-content {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 1;
+    pointer-events: none;
+    padding-inline: var(--scrolly-content-padding-inline, 2rem);
+  }
+}
+
+
+/* =============================================================================
+   LAYOUT: DASHBOARD
+   Grid layout with collapsible sidebar and main content area.
+   Sidebar resizes on collapse, main content expands to fill space.
+
+   Usage:
+     <article class="dashboard-layout">
+       <aside class="dashboard-sidebar">...</aside>
+       <main class="dashboard-main">...</main>
+     </article>
+   ============================================================================= */
+
+.dashboard-layout {
+  --scrolly-sidebar-width: 280px;
+  --scrolly-sidebar-collapsed-width: 48px;
+  --scrolly-sidebar-transition: 300ms ease;
+  --scrolly-sidebar-bg: #ebe6e1;
+  --scrolly-z-overlay: 1000;
+
+  display: grid;
+  grid-template-columns: var(--scrolly-sidebar-width) 1fr;
+  height: 100vh;
+  width: 100%;
+  transition: grid-template-columns var(--scrolly-sidebar-transition);
+}
+
+.dashboard-layout.sidebar-collapsed {
+  grid-template-columns: var(--scrolly-sidebar-collapsed-width) 1fr;
+}
+
+.dashboard-sidebar {
+  position: relative;
+  background: var(--scrolly-sidebar-bg);
+  border-right: 1px solid var(--scrolly-border);
+  overflow: hidden;
+  transition: width var(--scrolly-sidebar-transition);
+}
+
+.dashboard-layout .sidebar-toggle {
+  position: absolute;
+  top: 1rem;
+  left: calc(var(--scrolly-sidebar-width) - 32px - 1rem);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--scrolly-border);
+  border-radius: 4px;
+  background: var(--scrolly-color-white, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: left var(--scrolly-sidebar-transition), transform var(--scrolly-sidebar-transition);
+  z-index: 10;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar-toggle {
+  left: 8px;
+  transform: rotate(180deg);
+}
+
+.dashboard-sidebar .sidebar-content {
+  padding: 4rem 1.5rem 1.5rem;
+  opacity: 1;
+  transition: opacity calc(var(--scrolly-sidebar-transition) / 2);
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboard-main {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Dashboard sidebar form elements */
+.dashboard-sidebar h3 {
+  font-family: var(--scrolly-sans, system-ui, sans-serif);
+  font-size: var(--scrolly-font-size-small, 14px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.5rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar label {
+  display: block;
+  font-family: var(--scrolly-sans, system-ui, sans-serif);
+  font-size: var(--scrolly-font-size-sm, 12px);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--scrolly-sans, system-ui, sans-serif);
+  font-size: var(--scrolly-font-size-small, 14px);
+  border: 1px solid var(--scrolly-border);
+  border-radius: 4px;
+  background: var(--scrolly-color-white, #fff);
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-sidebar fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.dashboard-sidebar legend {
+  font-family: var(--scrolly-sans, system-ui, sans-serif);
+  font-size: var(--scrolly-font-size-sm, 12px);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-sidebar .checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.dashboard-sidebar .checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--scrolly-color-accent, #154734);
+}
+
+/* Dashboard mobile: slide-down drawer from top */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    display: block;
+    position: relative;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 95vh;
+    height: auto;
+    z-index: var(--scrolly-z-overlay);
+    transform: translateY(-100%);
+    transition: transform var(--scrolly-sidebar-transition);
+    border-right: none;
+    border-bottom: 1px solid var(--scrolly-border);
+    overflow-y: auto;
+  }
+
+  .dashboard-layout.sidebar-open .dashboard-sidebar {
+    transform: translateY(0);
+  }
+
+  .dashboard-sidebar .sidebar-content {
+    opacity: 1;
+    pointer-events: auto;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .dashboard-layout .sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--scrolly-gray-900, rgb(38, 38, 38));
+    z-index: calc(var(--scrolly-z-overlay) + 1);
+    transform: none;
+  }
+
+  .dashboard-layout .sidebar-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .dashboard-layout.sidebar-open .sidebar-toggle {
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    transform: none;
+  }
+
+  .dashboard-main {
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+  }
+
+  .dashboard-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--scrolly-z-overlay) - 1);
+  }
+
+  .dashboard-layout.sidebar-open .dashboard-backdrop {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .dashboard-backdrop {
+    display: none;
+  }
+}

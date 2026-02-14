@@ -1,0 +1,60 @@
+{
+  "name": "@vcsi/scrolly-kit",
+  "version": "0.0.1",
+  "description": "Scrollytelling components and layouts for SvelteKit",
+  "type": "module",
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles/reset.css": "./dist/styles/reset.css",
+    "./styles/tokens.css": "./dist/styles/tokens.css",
+    "./styles/layouts.css": "./dist/styles/layouts.css",
+    "./styles/typography.css": "./dist/styles/typography.css",
+    "./styles/all.css": "./dist/styles/all.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build && npm run package",
+    "package": "svelte-kit sync && svelte-package -o dist",
+    "package:watch": "svelte-kit sync && svelte-package -o dist --watch",
+    "prepublishOnly": "npm run package",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0",
+    "@sveltejs/kit": "^2.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^2.49.1",
+    "@sveltejs/package": "^2.3.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "svelte": "^5.45.6",
+    "svelte-check": "^4.3.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6"
+  },
+  "dependencies": {
+    "bits-ui": "^2.15.5",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.16.27",
+    "mode-watcher": "^1.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-highlight-code-lines": "^1.2.1",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "^7.0.0",
+    "remark-math": "^6.0.0",
+    "svelte-exmarkdown": "^5.0.2"
+  },
+  "keywords": ["svelte", "sveltekit", "scrollytelling", "data-visualization", "journalism"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vermont-Complex-Systems/vcsi-scrollytelling"
+  },
+  "license": "MIT"
+}

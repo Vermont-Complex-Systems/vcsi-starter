@@ -1,0 +1,106 @@
+/* Typography styles for scrollytelling */
+
+body {
+  font-family: var(--scrolly-serif, Georgia, serif);
+  font-size: var(--scrolly-font-size-base, 1rem);
+  background: var(--scrolly-bg);
+  color: var(--scrolly-fg);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--scrolly-serif, Georgia, serif);
+  font-weight: 700;
+}
+
+h1 { font-size: var(--scrolly-font-size-xl); margin: 2.5rem 0 1rem; }
+h2 { font-size: var(--scrolly-font-size-lg); margin: 2.5rem 0 1rem; }
+h3 { font-size: var(--scrolly-font-size-md); margin: 2rem 0 0.75rem; }
+h4 { font-size: var(--scrolly-font-size-base); margin: 1.5rem 0 0.5rem; }
+
+p {
+  font-size: var(--scrolly-font-size-base);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Code blocks */
+pre {
+  background: light-dark(#f6f8fa, #161b22);
+  border: 1px solid light-dark(#d1d9e0, #30363d);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-family: var(--scrolly-mono, monospace);
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: light-dark(#1f2328, #e6edf3);
+}
+
+/* Inline code */
+:where(p, li) code {
+  font-family: var(--scrolly-mono, monospace);
+  font-size: 0.8em;
+  background: light-dark(rgb(235, 235, 235), rgb(55, 55, 55));
+  padding: 0.125rem 0.35rem;
+  border-radius: 3px;
+}
+
+/* Blockquotes */
+blockquote {
+  margin: 2rem 0;
+  padding: 0 0 0 1.5rem;
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: light-dark(#2c5aa0, #4a90e2);
+  border-left: 3px solid light-dark(#2c5aa0, #4a90e2);
+}
+
+blockquote p { margin: 0; }
+
+/* Links */
+a {
+  color: var(--color-link, var(--scrolly-fg));
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--scrolly-color-accent, #154734);
+}
+
+/* Interactive elements */
+button, [role="button"], summary {
+  cursor: pointer;
+}
+
+/* Code line highlighting */
+pre code .code-line {
+  display: inline-block;
+  min-width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-left: 3px solid transparent;
+}
+
+pre code .numbered-code-line::before {
+  content: attr(data-line-number);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: #6e7781;
+  user-select: none;
+}
+
+pre code .highlighted-code-line {
+  background: light-dark(rgba(255, 220, 100, 0.3), rgba(255, 220, 100, 0.15));
+  border-left-color: #f0c000;
+}

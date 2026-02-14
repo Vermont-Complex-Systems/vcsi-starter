@@ -1,0 +1,312 @@
+/* Import base styles from scrolly-kit */
+@import '@vcsi/scrolly-kit/styles/reset.css';
+@import '@vcsi/scrolly-kit/styles/tokens.css';
+@import '@vcsi/scrolly-kit/styles/typography.css';
+@import '@vcsi/scrolly-kit/styles/layouts.css';
+
+/* Import custom fonts (kept in template) */
+@import './fonts.css';
+
+/* =============================================================================
+   TEMPLATE CUSTOMIZATIONS
+   Override scrolly-kit tokens for your brand
+   ============================================================================= */
+
+:root {
+  /* Brand colors - override scrolly-kit defaults */
+  --scrolly-color-accent: #154734; /* UVM Green */
+  --color-uvm-green: #154734;
+  --color-uvm-gold: rgb(255, 209, 0);
+
+  /* Custom fonts - override scrolly-kit defaults */
+  --scrolly-sans: "Atlas Grotesk", system-ui, sans-serif;
+  --scrolly-serif: "Baskerville", Georgia, serif;
+  --scrolly-mono: "Atlas Typewriter", "SF Mono", monospace;
+
+  /* Template-specific layout */
+  --nav-height: 4.5rem;
+  --page-inline-padding: 5%;
+}
+
+/* =============================================================================
+   TEMPLATE-SPECIFIC STYLES
+   Styles specific to this template (Nav, Footer, Home, About, etc.)
+   ============================================================================= */
+
+/* Nav styling - the Nav component uses <header class="header"> */
+header.header {
+  --nav-height: 4.5rem;
+  --nav-bg: var(--scrolly-bg);
+  --nav-fg: var(--scrolly-fg);
+  --nav-hover: var(--scrolly-hover);
+  --nav-border: var(--scrolly-gray-400);
+}
+
+/* Footer styling */
+footer {
+  --footer-bg: var(--scrolly-color-accent);
+  --footer-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode footer */
+:root.dark footer {
+  --footer-bg: rgb(45, 45, 45);
+  --footer-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Page layout */
+.page {
+  width: 100%;
+  max-width: var(--scrolly-page-max-width, 1200px);
+  margin-inline: auto;
+  padding-inline: 5%;
+  padding-top: 5.5rem;
+  padding-bottom: 7.5rem;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: 3rem;
+  }
+}
+
+/* Body and main */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+main {
+  flex: 1;
+}
+
+/* Spacing before Footer for app layout pages */
+#content > :last-child {
+  padding-bottom: 7.5rem;
+}
+
+/* =============================================================================
+   DASHBOARD LAYOUT
+   Grid layout with collapsible sidebar and main content area.
+   (Template-specific, not part of scrolly-kit)
+   ============================================================================= */
+
+.dashboard-layout {
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 48px;
+  --sidebar-transition: 300ms ease;
+  --sidebar-bg: #ebe6e1;
+
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  height: 100vh;
+  width: 100%;
+  transition: grid-template-columns var(--sidebar-transition);
+}
+
+.dashboard-layout.sidebar-collapsed {
+  grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+}
+
+.dashboard-sidebar {
+  position: relative;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--scrolly-border);
+  overflow: hidden;
+  transition: width var(--sidebar-transition);
+}
+
+.dashboard-layout .sidebar-toggle {
+  position: absolute;
+  top: 1rem;
+  left: calc(var(--sidebar-width) - 32px - 1rem);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--scrolly-border);
+  border-radius: 4px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: left var(--sidebar-transition), transform var(--sidebar-transition);
+  z-index: 10;
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar-toggle {
+  left: 8px;
+  transform: rotate(180deg);
+}
+
+.dashboard-sidebar .sidebar-content {
+  padding: 4rem 1.5rem 1.5rem;
+  opacity: 1;
+  transition: opacity calc(var(--sidebar-transition) / 2);
+}
+
+.dashboard-layout.sidebar-collapsed .sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dashboard-main {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Dashboard sidebar form elements */
+.dashboard-sidebar h3 {
+  font-family: var(--sans);
+  font-size: var(--scrolly-font-size-small, 14px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.5rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar label {
+  display: block;
+  font-family: var(--sans);
+  font-size: var(--scrolly-font-size-sm, 12px);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--sans);
+  font-size: var(--scrolly-font-size-small, 14px);
+  border: 1px solid var(--scrolly-border);
+  border-radius: 4px;
+  background: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-sidebar fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.dashboard-sidebar legend {
+  font-family: var(--sans);
+  font-size: var(--scrolly-font-size-sm, 12px);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--scrolly-gray-700, rgb(78, 78, 78));
+}
+
+.dashboard-sidebar .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-sidebar .checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.dashboard-sidebar .checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-uvm-green);
+}
+
+/* Dashboard mobile: slide-down drawer from top */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    display: block;
+    position: relative;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 95vh;
+    height: auto;
+    z-index: 1000;
+    transform: translateY(-100%);
+    transition: transform var(--sidebar-transition);
+    border-right: none;
+    border-bottom: 1px solid var(--scrolly-border);
+    overflow-y: auto;
+  }
+
+  .dashboard-layout.sidebar-open .dashboard-sidebar {
+    transform: translateY(0);
+  }
+
+  .dashboard-sidebar .sidebar-content {
+    opacity: 1;
+    pointer-events: auto;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .dashboard-layout .sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--scrolly-gray-900, rgb(38, 38, 38));
+    z-index: 1001;
+    transform: none;
+  }
+
+  .dashboard-layout .sidebar-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .dashboard-layout.sidebar-open .sidebar-toggle {
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    transform: none;
+  }
+
+  .dashboard-main {
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+  }
+
+  .dashboard-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .dashboard-layout.sidebar-open .dashboard-backdrop {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .dashboard-backdrop {
+    display: none;
+  }
+}

@@ -1,0 +1,5 @@
+/* Import all scrolly-kit styles at once */
+@import './reset.css';
+@import './tokens.css';
+@import './typography.css';
+@import './layouts.css';

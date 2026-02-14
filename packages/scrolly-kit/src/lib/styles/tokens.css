@@ -1,0 +1,147 @@
+/* Design tokens for scrollytelling - override these in your app */
+
+:root {
+  color-scheme: light dark;
+
+  /* Core palette - customize these for your brand */
+  --scrolly-color-black: #000;
+  --scrolly-color-white: rgb(245, 245, 245);
+  --scrolly-color-beige: #f4efea;
+  --scrolly-color-accent: #154734;
+
+  /* Gray scale */
+  --scrolly-gray-100: rgb(239, 239, 239);
+  --scrolly-gray-200: rgb(223, 223, 223);
+  --scrolly-gray-300: rgb(202, 202, 202);
+  --scrolly-gray-400: rgb(168, 168, 168);
+  --scrolly-gray-600: rgb(109, 109, 109);
+  --scrolly-gray-700: rgb(78, 78, 78);
+  --scrolly-gray-800: rgb(55, 55, 55);
+  --scrolly-gray-900: rgb(38, 38, 38);
+
+  /* Typography */
+  --scrolly-sans: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --scrolly-serif: Georgia, "Times New Roman", Times, serif;
+  --scrolly-mono: "SF Mono", Monaco, Consolas, monospace;
+
+  /* Type scale */
+  --scrolly-font-size-giant: clamp(3rem, 10vw, 4rem);
+  --scrolly-font-size-xl: clamp(1.8rem, 5vw, 3rem);
+  --scrolly-font-size-lg: clamp(1.5rem, 2.5vw, 2.5rem);
+  --scrolly-font-size-md: clamp(1rem, 1.75vw, 1.5rem);
+  --scrolly-font-size-base: clamp(18px, 1.2vw, 1.5rem);
+  --scrolly-font-size-small: clamp(14px, 1.18vw, 1.2rem);
+  --scrolly-font-size-sm: clamp(12px, 1vw, 0.9rem);
+
+  /* Layout */
+  --scrolly-page-max-width: 1200px;
+  --scrolly-content-padding-inline: 2rem;
+  --scrolly-border-radius: 3px;
+  --scrolly-transition: 200ms ease;
+
+  /* Scrolly steps */
+  --scrolly-step-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+  --scrolly-step-height: 90vh;
+  --scrolly-step-max-width: 400px;
+  --scrolly-step-padding: 1.5rem;
+  --scrolly-step-border-radius: 8px;
+  --scrolly-max-width: 600px;
+  --scrolly-pointer-events: auto;
+
+  /* Raw tokens (light/dark pairs) */
+  --scrolly-bg-light: var(--scrolly-color-beige);
+  --scrolly-bg-dark: #1a1a1a;
+  --scrolly-fg-light: rgb(55, 55, 55);
+  --scrolly-fg-dark: #e8e8e8;
+  --scrolly-hover-light: rgba(0, 0, 0, 0.05);
+  --scrolly-hover-dark: rgba(255, 255, 255, 0.1);
+  --scrolly-border-light: rgb(202, 202, 202);
+  --scrolly-border-dark: rgba(255, 255, 255, 0.15);
+
+  /* Semantic tokens (auto-switch with theme) */
+  --scrolly-bg: var(--scrolly-bg-light);
+  --scrolly-fg: var(--scrolly-fg-light);
+  --scrolly-hover: var(--scrolly-hover-light);
+  --scrolly-border: var(--scrolly-border-light);
+
+  /* Link colors */
+  --scrolly-link-light: var(--scrolly-fg-light);
+  --scrolly-link-dark: #8ab4f8;
+  --scrolly-link: var(--scrolly-link-light);
+
+  /* =============================================================================
+     CONVENIENCE ALIASES
+     Non-prefixed versions for simpler usage in templates/components.
+     Templates can override these or use --scrolly-* directly.
+     ============================================================================= */
+
+  /* Colors */
+  --color-white: var(--scrolly-color-white);
+  --color-black: var(--scrolly-color-black);
+  --color-accent: var(--scrolly-color-accent);
+
+  /* Semantic colors (auto-switch) */
+  --color-bg: var(--scrolly-bg);
+  --color-fg: var(--scrolly-fg);
+  --color-hover: var(--scrolly-hover);
+  --color-border: var(--scrolly-border);
+  --color-muted: var(--scrolly-gray-600);
+  --color-link: var(--scrolly-link);
+
+  /* Light/dark pairs for components that need explicit access */
+  --color-bg-light: var(--scrolly-bg-light);
+  --color-fg-light: var(--scrolly-fg-light);
+  --color-hover-light: var(--scrolly-hover-light);
+  --color-border-light: var(--scrolly-border-light);
+  --color-bg-dark: var(--scrolly-bg-dark);
+  --color-fg-dark: var(--scrolly-fg-dark);
+  --color-hover-dark: var(--scrolly-hover-dark);
+  --color-border-dark: var(--scrolly-border-dark);
+
+  /* Step box aliases (used by ScrollyContent) */
+  --step-max-width: var(--scrolly-step-max-width);
+  --step-height: var(--scrolly-step-height);
+  --step-padding: var(--scrolly-step-padding);
+  --step-border-radius: var(--scrolly-step-border-radius);
+  --step-box-shadow: var(--scrolly-step-box-shadow);
+
+  /* Layout aliases */
+  --page-max-width: var(--scrolly-page-max-width);
+
+  /* Typography aliases */
+  --sans: var(--scrolly-sans);
+  --serif: var(--scrolly-serif);
+  --mono: var(--scrolly-mono);
+
+  /* Font size aliases */
+  --font-size-giant: var(--scrolly-font-size-giant);
+  --font-size-xl: var(--scrolly-font-size-xl);
+  --font-size-large: var(--scrolly-font-size-lg);
+  --font-size-medium: var(--scrolly-font-size-md);
+  --font-size-base: var(--scrolly-font-size-base);
+  --font-size-small: var(--scrolly-font-size-small);
+  --font-size-xs: var(--scrolly-font-size-sm);
+}
+
+/* Dark mode via system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --scrolly-bg: var(--scrolly-bg-dark);
+    --scrolly-fg: var(--scrolly-fg-dark);
+    --scrolly-hover: var(--scrolly-hover-dark);
+    --scrolly-border: var(--scrolly-border-dark);
+    --scrolly-link: var(--scrolly-link-dark);
+    --color-link: var(--scrolly-link-dark);
+  }
+}
+
+/* Dark mode via class toggle */
+:root.dark {
+  color-scheme: dark;
+  --scrolly-bg: var(--scrolly-bg-dark);
+  --scrolly-fg: var(--scrolly-fg-dark);
+  --scrolly-hover: var(--scrolly-hover-dark);
+  --scrolly-border: var(--scrolly-border-dark);
+  --scrolly-link: var(--scrolly-link-dark);
+  --color-link: var(--scrolly-link-dark);
+}

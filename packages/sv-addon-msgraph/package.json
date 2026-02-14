@@ -1,0 +1,19 @@
+{
+  "name": "@vcsi/sv-addon-msgraph",
+  "version": "0.0.1",
+  "description": "sv CLI add-on for Microsoft Graph / SharePoint integration",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "keywords": ["sv-add", "svelte", "sveltekit", "microsoft-graph", "sharepoint"],
+  "dependencies": {
+    "sv": "^0.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vermont-Complex-Systems/vcsi-scrollytelling"
+  },
+  "license": "MIT"
+}
