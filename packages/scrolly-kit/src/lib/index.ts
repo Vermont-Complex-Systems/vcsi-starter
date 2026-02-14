@@ -16,7 +16,28 @@ export { default as StoryHeader } from './components/StoryHeader.svelte';
 
 // Content rendering
 export { default as RenderTextContent } from './components/RenderTextContent.svelte';
-export { renderCodeHtml, type ContentItem } from './components/ScrollySnippets.svelte';
+export { renderCodeHtml } from './components/ScrollySnippets.svelte';
 
 // Actions
 export { scrollReveal } from './actions/scrollReveal';
+
+// Types - explicit exports for better IDE hints
+export type {
+  ScrollyProps,
+  ScrollyContentProps,
+  ContentItem,
+  Author,
+  StoryHeaderProps,
+  MarkdownRendererProps,
+  CodeBlockProps,
+  CopyCodeBlockProps,
+  SimpleToggleProps,
+  TooltipProps,
+  ScrollIndicatorProps,
+  SpinnerProps,
+  MetaProps,
+  RenderTextContentProps,
+  CodeStep,
+  CodeExplainerData,
+  CodeExplainerProps,
+} from './types';
