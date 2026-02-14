@@ -54,7 +54,7 @@
   "keywords": ["svelte", "sveltekit", "scrollytelling", "data-visualization", "journalism"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vermont-Complex-Systems/vcsi-scrollytelling"
+    "url": "https://github.com/Vermont-Complex-Systems/vcsi-starter"
   },
   "license": "MIT"
 }

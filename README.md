@@ -7,7 +7,7 @@ A scrollytelling framework for data-driven visual essays built with SvelteKit.
 ### Full Template (with examples)
 
 ```bash
-npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/full my-project
+npx degit Vermont-Complex-Systems/vcsi-starter/templates/full my-project
 cd my-project
 npm install
 npm run dev
@@ -16,7 +16,7 @@ npm run dev
 ### Minimal Template (clean slate)
 
 ```bash
-npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/minimal my-project
+npx degit Vermont-Complex-Systems/vcsi-starter/templates/minimal my-project
 cd my-project
 npm install
 npm run dev
