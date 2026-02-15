@@ -87,11 +87,11 @@
 
 /* =============================================================================
    DARK STORY THEME
-   Add class="story dark" for stories with dark backgrounds.
+   Add data-theme="dark" for stories with dark backgrounds.
    Customize with: style="--scrolly-story-bg: #353839; --scrolly-story-fg: white;"
    ============================================================================= */
 
-.story.dark {
+.story[data-theme="dark"] {
   color-scheme: dark;
   --scrolly-story-bg: #353839;
   --scrolly-story-fg: white;
@@ -108,13 +108,13 @@
 }
 
 /* Ensure all text in dark stories uses the story foreground color */
-.story.dark,
-.story.dark h1,
-.story.dark h2,
-.story.dark h3,
-.story.dark p,
-.story.dark a,
-.story.dark section {
+.story[data-theme="dark"],
+.story[data-theme="dark"] h1,
+.story[data-theme="dark"] h2,
+.story[data-theme="dark"] h3,
+.story[data-theme="dark"] p,
+.story[data-theme="dark"] a,
+.story[data-theme="dark"] section {
   color: var(--scrolly-story-fg);
 }
 
