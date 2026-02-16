@@ -1,9 +1,9 @@
 {
-	"name": "vcsi-scrollytelling",
+	"name": "vcsi-starter",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
-	"workspaces": ["packages/*", "templates/*"],
+	"workspaces": ["packages/*", "templates/*", "sites/*"],
 	"scripts": {
 		"dev": "npm run package:watch --workspace=@the-vcsi/scrolly-kit & npm run dev --workspace=full",
 		"dev:template": "npm run dev --workspace=full",
