@@ -109,12 +109,6 @@ npm install</pre>
     margin: 1rem 0;
   }
 
-  code {
-    background: var(--vcsi-gray-100);
-    padding: 0.125rem 0.375rem;
-    border-radius: 3px;
-    font-size: 0.9em;
-  }
 
   ul {
     margin: 1rem 0;
