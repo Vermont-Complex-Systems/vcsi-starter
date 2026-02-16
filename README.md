@@ -1,22 +1,22 @@
-# VCSI Scrollytelling
+# VCSI Scrolly Kit
 
-A scrollytelling framework for data-driven visual essays built with SvelteKit.
+A framework for data-driven visual essays built with SvelteKit.
 
 ## Quick Start
 
-### Full Template (with examples)
+### Baked Template (static, pre-rendered)
 
 ```bash
-npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/full my-project
+npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/baked my-project
 cd my-project
 npm install
 npm run dev
 ```
 
-### Minimal Template (clean slate)
+### Fresh Template (dynamic, server-rendered)
 
 ```bash
-npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/minimal my-project
+npx degit Vermont-Complex-Systems/vcsi-scrollytelling/templates/fresh my-project
 cd my-project
 npm install
 npm run dev
@@ -30,7 +30,7 @@ The core components are available as an npm package:
 npm install @the-vcsi/scrolly-kit
 ```
 
-### Components
+### Core Components
 
 - `Scrolly` - Core scroll detector using IntersectionObserver
 - `ScrollyContent` - Opinionated scroll step container with content rendering
@@ -54,7 +54,7 @@ Import the styles you need:
 @import '@the-vcsi/scrolly-kit/styles/layouts.css';
 ```
 
-### Layouts
+### Cuurent Layouts
 
 - `.story` - Story container with theme isolation
 - `.split-layout` - Two-column with sticky panel (add `.reversed` to flip)
@@ -68,9 +68,9 @@ Override CSS variables in your `app.css`:
 
 ```css
 :root {
-  --scrolly-color-accent: #your-brand;
-  --scrolly-serif: "Your Font", Georgia, serif;
-  --story-bg: #your-background;
+  --vcsi-color-accent: #your-brand;
+  --vcsi-font-serif: "Your Font", Georgia, serif;
+  --vcsi-bg: #your-background;
 }
 ```
 

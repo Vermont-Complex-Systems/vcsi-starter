@@ -16,8 +16,8 @@ This is a monorepo for VCSI scrollytelling websites. It contains:
 │   ├── sv-addon-msgraph/      # SharePoint integration add-on
 │   └── sv-addon-openalex/     # Academic data add-on
 └── templates/
-    ├── full/                  # Full template with all features
-    └── minimal/               # Minimal starter
+    ├── baked/                 # Static, pre-rendered template
+    └── fresh/                 # Dynamic, server-rendered template (coming soon)
 ```
 
 ## Commands
@@ -27,7 +27,7 @@ This is a monorepo for VCSI scrollytelling websites. It contains:
 npm install              # Install all dependencies
 npm run build            # Build all packages
 
-# Template development (from templates/full/ or templates/minimal/)
+# Template development (from templates/baked/ or templates/fresh/)
 npm run dev              # Start development server
 npm run build            # Build for production
 npm run preview          # Preview production build
@@ -46,8 +46,8 @@ npm run db:studio        # Open Drizzle Studio
 ## Scaffolding a New Project
 
 ```bash
-# Scaffold full template
-npx degit Vermont-Complex-Systems/vcsi-starter/templates/full my-project
+# Scaffold baked template (static)
+npx degit Vermont-Complex-Systems/vcsi-starter/templates/baked my-project
 
 # Add optional integrations
 cd my-project
@@ -86,7 +86,7 @@ Templates import styles:
 Templates customize the package defaults for their brand:
 
 ```css
-/* templates/full/src/styles/app.css */
+/* templates/baked/src/styles/app.css */
 :root {
   /* Override VCSI tokens */
   --vcsi-color-accent: #154734;  /* UVM Green */
