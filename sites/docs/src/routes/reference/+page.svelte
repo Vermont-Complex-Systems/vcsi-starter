@@ -1,36 +1,14 @@
 <script>
-  import { onMount } from 'svelte';
+  import TableOfContents from '$lib/components/TableOfContents.svelte';
 
   const sections = [
     { id: 'story', label: 'Story Container' },
-    { id: 'step-styling', label: 'Step Styling' },
     { id: 'split-layout', label: 'Split Layout' },
     { id: 'fullscreen-layout', label: 'Fullscreen Layout' },
     { id: 'dashboard-layout', label: 'Dashboard Layout' },
+    { id: 'step-styling', label: 'Step Styling' },
     { id: 'css-variables', label: 'CSS Variables' }
   ];
-
-  let activeSection = $state('story');
-
-  onMount(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            activeSection = entry.target.id;
-          }
-        });
-      },
-      { rootMargin: '-20% 0px -60% 0px' }
-    );
-
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  });
 </script>
 
 <svelte:head>
@@ -52,6 +30,28 @@
         <li>Padding and spacing for readability</li>
       </ul>
 
+      <div class="layout-diagram">
+        <div class="diagram-story">
+          <div class="diagram-label">.story</div>
+          <div class="diagram-padding-top">
+            <span>padding-top: 5.5rem</span>
+          </div>
+          <div class="diagram-prose">
+            <div class="diagram-label">Centered prose (600px)</div>
+            <p>Title & intro text...</p>
+          </div>
+          <div class="diagram-layout-break">
+            <div class="diagram-label">Layout (full width)</div>
+          </div>
+          <div class="diagram-prose">
+            <p>More prose content...</p>
+          </div>
+          <div class="diagram-padding-bottom">
+            <span>padding-bottom: 7.5rem</span>
+          </div>
+        </div>
+      </div>
+
       <pre class="docs-code">{`<article class="story">
   <h1>Story Title</h1>
   <p>Centered prose content...</p>
@@ -70,62 +70,6 @@
 </article>`}</pre>
     </section>
 
-    <!-- STEP STYLING -->
-    <section id="step-styling">
-      <h2>Step Styling</h2>
-      <p>Step boxes in scrolly layouts use these CSS variables for colors and sizing. These apply to both <code>.split-layout</code> and <code>.fullscreen-layout</code>.</p>
-
-      <div class="layout-diagram">
-        <div class="diagram-themes">
-          <div class="diagram-theme diagram-theme-light">
-            <div class="diagram-label">Light Theme</div>
-            <div class="diagram-step-preview active">Active Step</div>
-            <div class="diagram-step-preview inactive">Inactive Step</div>
-          </div>
-          <div class="diagram-theme diagram-theme-dark">
-            <div class="diagram-label">Dark Theme</div>
-            <div class="diagram-step-preview active">Active Step</div>
-            <div class="diagram-step-preview inactive">Inactive Step</div>
-          </div>
-        </div>
-      </div>
-
-      <h3>CSS Variables</h3>
-      <table class="docs-table">
-        <thead>
-          <tr><th>Variable</th><th>Light</th><th>Dark</th><th>Description</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><code>--story-step-bg</code></td><td>#fff</td><td>#2a2a2a</td><td>Active step background</td></tr>
-          <tr><td><code>--story-step-fg</code></td><td>#333</td><td>#e8e8e8</td><td>Active step text color</td></tr>
-          <tr><td><code>--story-step-bg-inactive</code></td><td>#f5f5f5</td><td>#222</td><td>Inactive step background</td></tr>
-          <tr><td><code>--story-step-fg-inactive</code></td><td>#ccc</td><td>#666</td><td>Inactive step text color</td></tr>
-          <tr><td><code>--step-box-shadow</code></td><td colspan="2">1px 1px 10px rgba(0,0,0,0.2)</td><td>Step box shadow</td></tr>
-          <tr><td><code>--step-max-width</code></td><td colspan="2">600px</td><td>Maximum width of step box</td></tr>
-          <tr><td><code>--step-padding</code></td><td colspan="2">1rem</td><td>Padding inside step box</td></tr>
-          <tr><td><code>--step-border-radius</code></td><td colspan="2">5px</td><td>Step box corner radius</td></tr>
-          <tr><td><code>--step-text-align</code></td><td colspan="2">center</td><td>Text alignment in steps</td></tr>
-        </tbody>
-      </table>
-      <p><strong><code>--story-step-*</code></strong> variables control colors and are typically set globally in <code>app.css</code> for consistent theming across your story. <strong><code>--step-*</code></strong> variables control layout and can be set per-section for local customization.</p>
-
-      <h3>Example Override</h3>
-      <pre class="docs-code">{`<section class="split-layout" style="
-  --story-step-bg: #154734;
-  --story-step-fg: #fff;
-">
-  ...
-</section>`}</pre>
-
-      <p>For a minimal look where only text floats over the visualization:</p>
-      <pre class="docs-code">{`<section class="split-layout" style="
-  --story-step-bg: transparent;
-  --story-step-bg-inactive: transparent;
-  --step-box-shadow: none;
-">
-  ...
-</section>`}</pre>
-    </section>
 
     <!-- SPLIT LAYOUT -->
     <section id="split-layout">
@@ -133,18 +77,36 @@
       <p>Two-column layout with a sticky visualization panel and scrolling content.</p>
 
       <div class="layout-diagram">
-        <div class="diagram-split">
-          <div class="diagram-content">
-            <div class="diagram-label">scrolly-content</div>
-            <div class="diagram-steps">
-              <div class="diagram-step">Step 1</div>
-              <div class="diagram-step">Step 2</div>
-              <div class="diagram-step">Step 3</div>
+        <div class="diagram-story">
+          <div class="diagram-label">.story</div>
+          <div class="diagram-padding-top">
+            <span>padding-top: 5.5rem</span>
+          </div>
+          <div class="diagram-prose">
+            <div class="diagram-label">Centered prose (600px)</div>
+            <p>Title & intro text...</p>
+          </div>
+          <div class="diagram-split">
+            <div class="diagram-content">
+              <div class="diagram-label">scrolly-content</div>
+              <div class="diagram-spacer">spacer</div>
+              <div class="diagram-steps">
+                <div class="diagram-step">Step 1</div>
+                <div class="diagram-step">Step 2</div>
+                <div class="diagram-step">Step 3</div>
+              </div>
+              <div class="diagram-spacer">spacer</div>
+            </div>
+            <div class="diagram-panel">
+              <div class="diagram-label">sticky-panel</div>
+              <div class="diagram-viz">Visualization</div>
             </div>
           </div>
-          <div class="diagram-panel">
-            <div class="diagram-label">sticky-panel</div>
-            <div class="diagram-viz">Visualization</div>
+          <div class="diagram-prose">
+            <p>More prose content...</p>
+          </div>
+          <div class="diagram-padding-bottom">
+            <span>padding-bottom: 7.5rem</span>
           </div>
         </div>
       </div>
@@ -173,6 +135,8 @@
           <tr><td><code>--vcsi-panel-min-width</code></td><td>450px</td><td>Minimum panel width</td></tr>
           <tr><td><code>--vcsi-panel-height</code></td><td>min(80vh, 600px)</td><td>Panel height</td></tr>
           <tr><td><code>--vcsi-layout-gap</code></td><td>2rem</td><td>Gap between columns</td></tr>
+          <tr><td><code>--step-height</code></td><td>90vh</td><td>Vertical space between steps</td></tr>
+          <tr><td><code>--spacer-height</code></td><td>65vh</td><td>Height of top/bottom spacers</td></tr>
         </tbody>
       </table>
 
@@ -267,6 +231,63 @@
       <p>On mobile, sidebar becomes a slide-down drawer. Toggle <code>.sidebar-open</code> class to show.</p>
     </section>
 
+    <!-- STEP STYLING -->
+    <section id="step-styling">
+      <h2>Step Styling</h2>
+      <p>Step boxes in scrolly layouts use these CSS variables for colors and sizing. These apply to both <code>.split-layout</code> and <code>.fullscreen-layout</code>.</p>
+
+      <div class="layout-diagram">
+        <div class="diagram-themes">
+          <div class="diagram-theme diagram-theme-light">
+            <div class="diagram-label">Light Theme</div>
+            <div class="diagram-step-preview active">Active Step</div>
+            <div class="diagram-step-preview inactive">Inactive Step</div>
+          </div>
+          <div class="diagram-theme diagram-theme-dark">
+            <div class="diagram-label">Dark Theme</div>
+            <div class="diagram-step-preview active">Active Step</div>
+            <div class="diagram-step-preview inactive">Inactive Step</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>CSS Variables</h3>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Light</th><th>Dark</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--story-step-bg</code></td><td>#fff</td><td>#2a2a2a</td><td>Active step background</td></tr>
+          <tr><td><code>--story-step-fg</code></td><td>#333</td><td>#e8e8e8</td><td>Active step text color</td></tr>
+          <tr><td><code>--story-step-bg-inactive</code></td><td>#f5f5f5</td><td>#222</td><td>Inactive step background</td></tr>
+          <tr><td><code>--story-step-fg-inactive</code></td><td>#ccc</td><td>#666</td><td>Inactive step text color</td></tr>
+          <tr><td><code>--step-box-shadow</code></td><td colspan="2">1px 1px 10px rgba(0,0,0,0.2)</td><td>Step box shadow</td></tr>
+          <tr><td><code>--step-max-width</code></td><td colspan="2">600px</td><td>Maximum width of step box</td></tr>
+          <tr><td><code>--step-padding</code></td><td colspan="2">1rem</td><td>Padding inside step box</td></tr>
+          <tr><td><code>--step-border-radius</code></td><td colspan="2">5px</td><td>Step box corner radius</td></tr>
+          <tr><td><code>--step-text-align</code></td><td colspan="2">center</td><td>Text alignment in steps</td></tr>
+        </tbody>
+      </table>
+      <p><strong><code>--story-step-*</code></strong> variables control colors and are typically set globally in <code>app.css</code> for consistent theming across your story. <strong><code>--step-*</code></strong> variables control layout and can be set per-section for local customization.</p>
+
+      <h3>Example Override</h3>
+      <pre class="docs-code">{`<section class="split-layout" style="
+  --story-step-bg: #154734;
+  --story-step-fg: #fff;
+">
+  ...
+</section>`}</pre>
+
+      <p>For a minimal look where only text floats over the visualization:</p>
+      <pre class="docs-code">{`<section class="split-layout" style="
+  --story-step-bg: transparent;
+  --story-step-bg-inactive: transparent;
+  --step-box-shadow: none;
+">
+  ...
+</section>`}</pre>
+    </section>
+
     <!-- CSS VARIABLES -->
     <section id="css-variables">
       <h2>Global CSS Variables</h2>
@@ -324,28 +345,10 @@
           <tr><td><code>--vcsi-story-max-width</code></td><td>Max width for prose (600px)</td></tr>
         </tbody>
       </table>
-
-      <p>For step styling variables (<code>--story-step-*</code>), see the <a href="#step-styling">Step Styling</a> section.</p>
     </section>
   </article>
 
-  <aside class="sidebar">
-    <nav class="sidebar-nav">
-      <div class="sidebar-header">Content</div>
-      <ul>
-        {#each sections as { id, label }}
-          <li>
-            <a
-              href="#{id}"
-              class:active={activeSection === id}
-            >
-              {label}
-            </a>
-          </li>
-        {/each}
-      </ul>
-    </nav>
-  </aside>
+  <TableOfContents {sections} />
 </div>
 
 <style>
@@ -354,60 +357,6 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 2rem 0;
-  }
-
-  .sidebar {
-    position: absolute;
-    top: 0;
-    left: calc(100% + 2rem);
-    width: 180px;
-    height: 100%; /* Full height so sticky nav works */
-  }
-
-  .sidebar-nav {
-    position: sticky;
-    top: 5rem;
-  }
-
-  .sidebar-header {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--vcsi-gray-500);
-    margin-bottom: 1rem;
-  }
-
-  .sidebar-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-left: 1px solid var(--vcsi-border);
-  }
-
-  .sidebar-nav li {
-    margin: 0;
-  }
-
-  .sidebar-nav a {
-    display: block;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    color: var(--vcsi-gray-600);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    margin-left: -1px;
-    transition: all 0.15s ease;
-  }
-
-  .sidebar-nav a:hover {
-    color: var(--vcsi-fg);
-  }
-
-  .sidebar-nav a.active {
-    color: var(--vcsi-fg);
-    border-left-color: var(--vcsi-color-accent, #333);
-    font-weight: 500;
   }
 
   .page h1 {
@@ -431,13 +380,6 @@
     font-size: 0.9em;
   }
 
-  /* Hide sidebar on narrower screens */
-  @media (max-width: 1100px) {
-    .sidebar {
-      display: none;
-    }
-  }
-
   @media (max-width: 900px) {
     .reference-layout {
       padding: 1rem;
@@ -449,7 +391,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    height: 200px;
+    min-height: 200px;
   }
 
   .diagram-content,
@@ -485,6 +427,72 @@
     padding: 0.5rem;
     text-align: center;
     font-size: 0.8rem;
+  }
+
+  /* Story diagram */
+  .diagram-story {
+    border: 2px dashed var(--vcsi-border);
+    border-radius: 4px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--vcsi-gray-50);
+  }
+
+  .diagram-prose {
+    background: white;
+    border: 1px solid var(--vcsi-border);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    max-width: 200px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--vcsi-gray-600);
+  }
+
+  .diagram-prose p {
+    margin: 0;
+  }
+
+  .diagram-layout-break {
+    background: var(--vcsi-gray-200);
+    border: 1px dashed var(--vcsi-border);
+    border-radius: 4px;
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .diagram-padding-top,
+  .diagram-padding-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--vcsi-gray-500);
+    border: 1px dashed var(--vcsi-gray-300);
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      var(--vcsi-gray-100) 4px,
+      var(--vcsi-gray-100) 8px
+    );
+  }
+
+  .diagram-spacer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    font-size: 0.65rem;
+    color: var(--vcsi-gray-400);
+    border: 1px dashed var(--vcsi-gray-300);
+    border-radius: 3px;
+    background: var(--vcsi-gray-100);
   }
 
   /* Step theme diagram */
@@ -581,23 +589,6 @@
   }
 
   /* Dark mode overrides */
-  :global(.dark) .sidebar-header {
-    color: var(--vcsi-gray-400);
-  }
-
-  :global(.dark) .sidebar-nav ul {
-    border-left-color: var(--vcsi-gray-700);
-  }
-
-  :global(.dark) .sidebar-nav a {
-    color: var(--vcsi-gray-400);
-  }
-
-  :global(.dark) .sidebar-nav a:hover,
-  :global(.dark) .sidebar-nav a.active {
-    color: var(--vcsi-fg);
-  }
-
   :global(.dark) code {
     background: var(--vcsi-gray-800);
     color: var(--vcsi-gray-200);
@@ -616,5 +607,37 @@
 
   :global(.dark) .diagram-label {
     color: var(--vcsi-gray-400);
+  }
+
+  :global(.dark) .diagram-story {
+    background: var(--vcsi-gray-900);
+  }
+
+  :global(.dark) .diagram-prose {
+    background: var(--vcsi-gray-800);
+    color: var(--vcsi-gray-300);
+  }
+
+  :global(.dark) .diagram-layout-break {
+    background: var(--vcsi-gray-800);
+  }
+
+  :global(.dark) .diagram-padding-top,
+  :global(.dark) .diagram-padding-bottom {
+    color: var(--vcsi-gray-500);
+    border-color: var(--vcsi-gray-700);
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      var(--vcsi-gray-800) 4px,
+      var(--vcsi-gray-800) 8px
+    );
+  }
+
+  :global(.dark) .diagram-spacer {
+    color: var(--vcsi-gray-500);
+    border-color: var(--vcsi-gray-700);
+    background: var(--vcsi-gray-800);
   }
 </style>

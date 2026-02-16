@@ -24,6 +24,7 @@ body {
   min-height: 100vh;
   background: var(--vcsi-bg);
   color: var(--vcsi-fg);
+  
 }
 
 main {
@@ -113,7 +114,7 @@ main {
 /* Mobile nav */
 @media (max-width: 600px) {
   .docs-nav {
-    padding: 0.5rem 1rem 0rem 0rem;
+    padding: 0.5rem 1rem 0rem 0.5rem;
   }
 
   .docs-nav-logo-desktop {
@@ -123,16 +124,16 @@ main {
   .docs-nav-logo-mobile {
     display: block;
     height: auto;
-    max-height: 6rem;
+    max-height: 8rem;
     object-fit: contain;
   }
 
   .docs-nav-links {
-    gap: 1rem;
+    gap: 0.25rem;
   }
 
   .docs-nav-links a {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .docs-nav-version {
