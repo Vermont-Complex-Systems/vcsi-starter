@@ -1,16 +1,17 @@
 <script lang="ts">
     import type { ScaleOrdinal } from 'd3';
 
-    let { regions, colorScale, selectedRegions = $bindable(), innerWidth }: {
+    let { regions, colorScale, selectedRegions = $bindable(), innerWidth, isMobile = false }: {
         regions: string[];
         colorScale: ScaleOrdinal<string, string>;
         selectedRegions: Set<string>;
         innerWidth: number;
+        isMobile?: boolean;
     } = $props();
 
-    // Legend layout - wrap on smaller screens
-    const legendItemWidth = 110;
-    const legendItemHeight = 20;
+    // Legend layout - more compact on mobile
+    let legendItemWidth = $derived(isMobile ? 85 : 110);
+    let legendItemHeight = $derived(isMobile ? 18 : 20);
     let legendItemsPerRow = $derived(Math.max(2, Math.floor((innerWidth - 40) / legendItemWidth)));
 
     function getLegendPosition(index: number) {
@@ -25,7 +26,6 @@
             : new Set([...selectedRegions, region]);
     }
 
-    $inspect(selectedRegions);
 </script>
 
 {#each regions.filter(r => r !== 'Unknown') as region, i (region)}
@@ -41,14 +41,14 @@
         <circle
             cx={0}
             cy={0}
-            r={6}
+            r={isMobile ? 5 : 6}
             fill={colorScale(region)}
             opacity={selectedRegions.size === 0 || selectedRegions.has(region) ? 0.7 : 0.2}
         />
         <text
-            x={12}
+            x={isMobile ? 10 : 12}
             y={4}
-            font-size="10"
+            font-size={isMobile ? "9" : "10"}
             fill="white"
         >
             {region}

@@ -81,7 +81,6 @@ Story header with title, subtitle, authors, and date.
 }
 
 .story-header h1 {
-  font-size: var(--font-size-giant);
   padding-top: 4rem;
 }
 

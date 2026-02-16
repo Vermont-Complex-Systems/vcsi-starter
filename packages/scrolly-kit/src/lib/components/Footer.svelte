@@ -90,9 +90,9 @@ let {
 <style>
 .footer {
 	width: 100%;
-	/* Default: UVM green background */
-	background-color: var(--vcsi-color-accent);
-	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	/* Inherits --footer-bg from parent, or falls back to accent color */
+	background-color: var(--footer-bg, var(--vcsi-color-accent));
+	border-top: 1px solid var(--footer-border, rgba(255, 255, 255, 0.2));
 	padding: var(--vcsi-space-2xl) 0 var(--vcsi-space-xl);
 }
 
@@ -104,16 +104,6 @@ let {
 
 /* theme="dark" - forces dark theme */
 .footer.theme-dark {
-	background-color: rgb(45, 45, 45);
-	border-top-color: rgba(255, 255, 255, 0.1);
-}
-
-/* No theme prop: respect global dark mode for app pages */
-.footer:not(.theme-light):not(.theme-dark) {
-	background-color: var(--vcsi-color-accent);
-}
-
-:global(.dark) .footer:not(.theme-light):not(.theme-dark) {
 	background-color: rgb(45, 45, 45);
 	border-top-color: rgba(255, 255, 255, 0.1);
 }

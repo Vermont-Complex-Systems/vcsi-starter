@@ -53,6 +53,11 @@
         overflow-x: auto;
     }
 
+    /* Reset pre margin inside code-block so language badge aligns with the box */
+    .code-block :global(pre) {
+        margin: 0;
+    }
+
     .code-language {
         position: absolute;
         top: 0;

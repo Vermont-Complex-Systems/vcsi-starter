@@ -47,7 +47,7 @@
 <!-- Axis label -->
 <text
     x={innerWidth / 2}
-    y={innerHeight + 50}
+    y={innerHeight + 45}
     text-anchor="middle"
     font-size="14"
     font-weight="500"

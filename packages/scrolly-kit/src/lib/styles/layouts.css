@@ -206,7 +206,7 @@
     grid-row: 1;
     z-index: 1;
     pointer-events: none;
-    padding-inline: var(--vcsi-content-padding-inline, 2rem);
+    padding-inline: 0.5rem;
   }
 
   /* Reversed has no effect on mobile (stacks vertically) */
@@ -252,6 +252,30 @@
   position: relative;
   z-index: 1;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .fullscreen-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow-x: clip; /* clip instead of hidden to preserve sticky */
+  }
+
+  .fullscreen-layout .sticky-panel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  /* On mobile, both occupy same grid cell for natural overlap.
+     Safari mobile needs physical overlap for z-index to work during client-side nav */
+  .fullscreen-layout .scrolly-content,
+  .fullscreen-layout .scrolly-outer {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 1;
+    pointer-events: none;
+    padding-inline: 0.5rem;
+  }
 }
 
 
@@ -337,7 +361,7 @@
     grid-row: 1;
     z-index: 1;
     pointer-events: none;
-    padding-inline: var(--vcsi-content-padding-inline, 2rem);
+    padding-inline: 0.5rem;
   }
 }
 

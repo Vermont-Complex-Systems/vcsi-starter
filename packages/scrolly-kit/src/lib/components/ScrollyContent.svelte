@@ -186,4 +186,16 @@ const steps = [
         border-bottom: 1px solid;
         z-index: 1;
     }
+
+    /* Mobile: step boxes take most of the screen width */
+    @media (max-width: 768px) {
+        .step {
+            padding: 0.25rem;
+        }
+
+        .step-box {
+            max-width: 100%;
+            border-radius: 0; /* Full-bleed edges */
+        }
+    }
 </style>

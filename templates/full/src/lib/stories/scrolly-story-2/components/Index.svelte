@@ -29,7 +29,9 @@ let scrollyIndex = $state(undefined);
         <div class="sticky-panel">
             <BackgroundPlot {scrollyIndex} />
         </div>
-        <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
+        <div class="scrolly-content">
+            <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
+        </div>
     </section>
 
     <h2>Conclusion</h2>
@@ -42,3 +44,11 @@ let scrollyIndex = $state(undefined);
 
 <!-- putting inside the Footer to inehrit the story-class -->
 <Footer theme="dark" />
+
+<style>
+    @media (max-width: 769px) {
+		.scrolly-content {
+			--step-height: 50rem;
+		}
+	}
+</style>

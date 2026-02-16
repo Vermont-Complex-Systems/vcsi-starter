@@ -47,14 +47,14 @@
   --vcsi-font-mono: "Atlas Typewriter", "SF Mono", monospace;
   --vcsi-font-heading: var(--vcsi-font-serif); /* Alias for heading font */
 
-  /* Font weights (following GCDS pattern) */
+  /* Font weights */
   --vcsi-font-weight-light: 300;
   --vcsi-font-weight-regular: 400;
   --vcsi-font-weight-medium: 500;
   --vcsi-font-weight-semibold: 600;
   --vcsi-font-weight-bold: 700;
 
-  /* Line heights (following GCDS ranges) */
+  /* Line heights */
   --vcsi-line-height-tight: 1.17;    /* Large headings */
   --vcsi-line-height-snug: 1.33;     /* Subheadings */
   --vcsi-line-height-normal: 1.5;    /* Body text */

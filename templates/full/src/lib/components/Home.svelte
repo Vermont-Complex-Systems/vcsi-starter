@@ -15,11 +15,11 @@
       <p>A maintainable, reusable and extensible website template to tell your stories.</p>
       <div class="code-blocks">
         <CopyCodeBlock
-        command="npx degit Vermont-Complex-Systems/website-template example"
+        command="npx degit Vermont-Complex-Systems/vcsi-starter example"
         label="Main branch"
         />
         <CopyCodeBlock
-          command="npx degit Vermont-Complex-Systems/website-template#annotated-boxes example"
+          command="npx degit Vermont-Complex-Systems/vcsi-starter#annotated-boxes example"
           label="Annotated branch"
         />
         <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/website-template" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>

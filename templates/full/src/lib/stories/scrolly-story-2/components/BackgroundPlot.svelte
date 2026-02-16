@@ -25,15 +25,25 @@
     let width = $state(800);
     let height = $state(600);
 
-    const navHeight = 200;
-    const margin = { top: 60, right: 40, bottom: 70, left: 70 };
+    // Mobile breakpoint
+    let isMobile = $derived(width < 768);
+
+    // On mobile, make chart square by using width as height
+    let chartHeight = $derived(isMobile ? width : height);
+
+    // Responsive margins - tighter on mobile
+    let navHeight = $derived(isMobile ? 0 : 200);
+    let margin = $derived(isMobile
+        ? { top: 40, right: 20, bottom: 50, left: 50 }
+        : { top: 60, right: 40, bottom: 70, left: 70 }
+    );
 
     let innerWidth = $derived(
         width - margin.left - margin.right
     );
 
     let innerHeight = $derived(
-        height - margin.top - margin.bottom - navHeight / 2
+        chartHeight - margin.top - margin.bottom - navHeight / 2
     );
 
 
@@ -96,7 +106,7 @@
     let radiusScale = $derived(
         scaleSqrt()
             .domain([0, 1.4e9])
-            .range([3, 30])
+            .range(isMobile ? [2, 18] : [3, 30])
     );
 
 
@@ -112,8 +122,8 @@
 
     let xTicks = $derived(
         xConfig.scale === 'log'
-            ? [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]
-            : [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+            ? (isMobile ? [500, 5000, 50000] : [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000])
+            : (isMobile ? [0, 0.5, 1.0] : [0, 0.2, 0.4, 0.6, 0.8, 1.0])
     );
 
 
@@ -146,7 +156,7 @@
             .range([innerHeight, 0])
     );
 
-    const yTicks = [20, 30, 40, 50, 60, 70, 80, 90];
+    let yTicks = $derived(isMobile ? [40, 60, 80] : [20, 30, 40, 50, 60, 70, 80, 90]);
 
 
     /* =====================================================
@@ -161,7 +171,7 @@
 
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
-    <svg viewBox={`0 0 ${width} ${height-navHeight}`}>
+    <svg viewBox={`0 0 ${width} ${chartHeight-navHeight}`}>
         
         <!-- Small hack to deal with Tweening axes ventring above and below the chart... -->
         <defs>
@@ -177,7 +187,9 @@
             <XAxis {xScale} {innerWidth} {innerHeight} ticks={xTicks} label={xConfig.label} isLogScale={xConfig.scale === 'log'} />
             <YAxis {yScale} {innerWidth} {innerHeight} ticks={yTicks} label="Life Expectancy (years)" />
 
-            <RegressionLines data={filteredData} {xScale} {yScale} {colorScale} isLogScale={xConfig?.scale === 'log'}/>
+            {#if !isMobile || (selectedRegions.size >= 1 && selectedRegions.size <= 3)}
+                <RegressionLines data={filteredData} {xScale} {yScale} {colorScale} isLogScale={xConfig?.scale === 'log'}/>
+            {/if}
 
             <ScatterDots
                 data={filteredData}
@@ -191,49 +203,49 @@
 
             <!-- Year label -->
             <text
-                x={margin.left + 35}
-                y={30}
-                text-anchor="end"
-                font-size="48"
+                x={isMobile ? innerWidth / 2 : margin.left + 35}
+                y={isMobile ? innerHeight / 2 : 30}
+                text-anchor={isMobile ? "middle" : "end"}
+                font-size={isMobile ? 72 : 48}
                 font-weight="700"
                 fill="#ccc"
-                opacity="0.5"
+                opacity="0.3"
             >
                 {currentYear}
             </text>
         </g>
 
-        <!-- Legend and X-variable selector -->
+        <!-- Region legend -->
         <g transform={`translate(${margin.left + 20}, 20)`}>
-            <RegionLegend {regions} {colorScale} bind:selectedRegions {innerWidth} />
+            <RegionLegend {regions} {colorScale} bind:selectedRegions {innerWidth} {isMobile} />
         </g>
 
     </svg>
 
-    <!-- Controls positioned outside SVG -->
-    <div class="chart-controls">
-        
-        <!-- using vanilla html -->
-        <select class="x-selector" bind:value={selectedXVar}>
-            {#each xVariables as opt}
-                <option value={opt.value}>{opt.label}</option>
-            {/each}
-        </select>
-        
-        <!-- using the bits-ui library -->
-        <SimpleToggle bind:isTrue={usePopulationSize} onText="Show population size" offText="Show population size" />
-    </div>
+    <!-- Controls (desktop only) -->
+    {#if !isMobile}
+        <div class="chart-controls">
+            <select class="x-selector" bind:value={selectedXVar}>
+                {#each xVariables as opt (opt.value)}
+                    <option value={opt.value}>{opt.label}</option>
+                {/each}
+            </select>
+            <SimpleToggle bind:isTrue={usePopulationSize} onText="Show population size" offText="Show population size" />
+        </div>
+    {/if}
 </div>
 
-<ChartTooltip
-    data={hoveredData}
-    {xScale}
-    {yScale}
-    {margin}
-    {width}
-    xLabel={xConfig?.label}
-    isLogScale={xConfig?.scale === 'log'}
-/>
+{#if !isMobile}
+    <ChartTooltip
+        data={hoveredData}
+        {xScale}
+        {yScale}
+        {margin}
+        {width}
+        xLabel={xConfig?.label}
+        isLogScale={xConfig?.scale === 'log'}
+    />
+{/if}
 
 <style>
     .chart-container {
@@ -249,6 +261,15 @@
         width: 100%;
         height: 100%;
         max-height: 100%;
+    }
+
+    /* Mobile: constrain SVG to square aspect ratio */
+    @media (max-width: 768px) {
+        svg {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1;
+        }
     }
 
     .chart-controls {

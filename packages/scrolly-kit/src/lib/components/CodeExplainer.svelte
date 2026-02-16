@@ -28,10 +28,12 @@
 <section class="split-layout" class:reversed>
     <div class="sticky-panel">
         <div class="code-explainer-chart">
-            {#if data.filename}
-                <div class="filename-tab">{data.filename}</div>
-            {/if}
-            <Md text={renderCodeHtml(data.code, data.language, currentHighlight)} />
+            <div class="code-wrapper">
+                {#if data.filename}
+                    <div class="filename-tab">{data.filename}</div>
+                {/if}
+                <Md text={renderCodeHtml(data.code, data.language, currentHighlight)} />
+            </div>
         </div>
     </div>
     <div class="stepContainer">
@@ -52,33 +54,40 @@
     }
 
     .code-explainer-chart {
-        position: relative;
         width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 1rem;
-        overflow: hidden; /* contain the pre within the panel */
+        overflow: hidden;
     }
 
-    .code-explainer-chart :global(pre) {
+    .code-wrapper {
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .code-wrapper :global(pre) {
         margin: 0;
         max-width: 100%;
-        max-height: 100%; /* respect parent's height, not viewport */
+        max-height: 100%;
         overflow: auto;
     }
 
     .filename-tab {
         position: absolute;
-        top: 4rem;
-        right: 1rem;
+        top: 0;
+        right: 0;
         font-family: var(--font-mono, monospace);
-        font-size: 0.9rem;
-        padding: 0.2rem 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        color: #888;
-        border-radius: 4px;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        background: #e1e4e8;
+        color: #57606a;
+        border-left: 1px solid #d1d9e0;
+        border-bottom: 1px solid #d1d9e0;
+        border-radius: 0 6px 0 6px;
         z-index: 1;
     }
 </style>
