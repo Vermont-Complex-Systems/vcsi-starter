@@ -245,4 +245,12 @@
   --vcsi-hover: var(--vcsi-hover-light);
   --vcsi-border: var(--vcsi-border-light);
   --vcsi-link: var(--vcsi-link-light);
+
+  /* Code tokens */
+  --vcsi-code-bg: var(--vcsi-code-bg-light);
+  --vcsi-code-fg: var(--vcsi-code-fg-light);
+  --vcsi-code-border: var(--vcsi-code-border-light);
+  --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
+  --vcsi-blockquote: var(--vcsi-blockquote-light);
+  --vcsi-code-highlight: var(--vcsi-code-highlight-light);
 }
