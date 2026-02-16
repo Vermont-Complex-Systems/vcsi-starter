@@ -11,7 +11,7 @@
   <ul class="docs-nav-links">
     <li><a href="{base}/" aria-current={$page.url.pathname === base + '/' ? 'page' : undefined}>Getting Started</a></li>
     <li><a href="{base}/reference" aria-current={$page.url.pathname === base + '/reference' ? 'page' : undefined}>Reference</a></li>
-    <li><a href="{base}/examples" aria-current={$page.url.pathname === base + '/examples' ? 'page' : undefined}>Examples</a></li>
+    <li><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a></li>
   </ul>
 </nav>
 

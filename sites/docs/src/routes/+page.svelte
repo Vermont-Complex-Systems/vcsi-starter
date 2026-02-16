@@ -62,7 +62,7 @@ npm install</pre>
   <h2>Next Steps</h2>
   <ul>
     <li><a href="{base}/reference">Reference</a> - Layout patterns and CSS variables</li>
-    <li><a href="{base}/examples">Examples</a> - See real stories built with scrolly-kit</li>
+    <li><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a> - See real stories built with scrolly-kit</li>
   </ul>
 </article>
 
