@@ -2,6 +2,7 @@
 
 ```bash
 npx degit Vermont-Complex-Systems/vcsi-starter/templates/baked example
+cd example
 ```
 
 You can see this template live at [vcsi.cmplxsys.w3.uvm.edu](https://vcsi.cmplxsys.w3.uvm.edu/).
