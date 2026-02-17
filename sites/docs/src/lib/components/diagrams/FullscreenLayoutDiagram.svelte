@@ -65,7 +65,7 @@ Shows:
   .diagram-fullscreen {
     position: relative;
     height: 200px;
-    border: 2px solid var(--vcsi-color-accent, #154734);
+    border: 2px solid var(--matisse-orange);
     border-radius: 4px;
   }
 
@@ -116,7 +116,7 @@ Shows:
     font-size: 0.6rem;
     font-family: var(--vcsi-font-mono);
     color: white;
-    background: var(--vcsi-color-accent, #154734);
+    background: var(--matisse-orange);
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
     white-space: nowrap;
@@ -155,7 +155,7 @@ Shows:
   }
 
   :global(.dark) .diagram-fullscreen {
-    border-color: var(--vcsi-color-accent, #154734);
+    border-color: var(--matisse-orange);
   }
 
   :global(.dark) .diagram-viz {

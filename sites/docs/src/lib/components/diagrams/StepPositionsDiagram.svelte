@@ -40,7 +40,7 @@ Shows:
     padding: 1rem;
     background: var(--vcsi-gray-100);
     border-radius: 4px;
-    border: 2px solid var(--vcsi-color-accent, #154734);
+    border: 2px solid --matisse-orange;
   }
 
   .diagram-position {
@@ -76,7 +76,7 @@ Shows:
   }
 
   .diagram-position.center .diagram-position-label {
-    color: var(--vcsi-color-accent, #154734);
+    color: --matisse-orange;
     font-weight: 600;
   }
 

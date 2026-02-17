@@ -71,7 +71,7 @@ Shows:
   }
 
   .diagram-col-label.custom {
-    background: var(--vcsi-color-accent, #154734);
+    background: --matisse-orange;
     color: white;
   }
 
@@ -102,7 +102,7 @@ Shows:
     font-size: 0.6rem;
     font-family: var(--vcsi-font-mono);
     color: white;
-    background: var(--vcsi-color-accent, #154734);
+    background: --matisse-orange;
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
   }

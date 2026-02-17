@@ -26,6 +26,12 @@
       thumbnail: '/visualizing-neglect.jpg',
       source: 'Nadieh Bremer'
     },
+    {
+      title: 'A Guide to the Circular Deals Underpinning the AI Boom',
+      url: 'https://www.bloomberg.com/graphics/2026-ai-circular-deals/?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb3VyY2UiOiJTdWJzY3JpYmVyR2lmdGVkQXJ0aWNsZSIsImlhdCI6MTc3MTMzNjc1MCwiZXhwIjoxNzcxOTQxNTUwLCJhcnRpY2xlSWQiOiJUOUFENFhLSVVQU1QwMCIsImJjb25uZWN0SWQiOiIwQ0NDMzAxQUU3QTQ0RDI0QjcwQzhDQTIwNjdCNENFOSJ9.eqGZyj5Rg5VxDa-TzjWU98Am_xtYItKUU0SlXPe7UZA&leadSource=uverify%20wall',
+      thumbnail: '/2026-ai-circular-deals.jpg',
+      source: 'Bloomberg'
+    }
   ];
 
   const sections = [

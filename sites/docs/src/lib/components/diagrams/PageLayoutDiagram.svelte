@@ -59,7 +59,7 @@ Shows how Nav, Footer, and .page all share the same CSS variables for consistent
   .diagram-page-full {
     display: flex;
     flex-direction: column;
-    border: 2px solid var(--vcsi-color-accent, #154734);
+    border: 2px solid --matisse-orange;
     border-radius: 4px;
     overflow: hidden;
   }
@@ -75,7 +75,7 @@ Shows how Nav, Footer, and .page all share the same CSS variables for consistent
   .diagram-footer-bar {
     display: flex;
     align-items: stretch;
-    background: var(--vcsi-color-accent, #154734);
+    background: --matisse-orange;
     color: white;
     min-height: 40px;
   }
@@ -144,7 +144,7 @@ Shows how Nav, Footer, and .page all share the same CSS variables for consistent
     font-size: 0.6rem;
     font-family: var(--vcsi-font-mono);
     color: white;
-    background: var(--vcsi-color-accent, #154734);
+    background: --matisse-orange;
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
   }

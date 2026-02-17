@@ -19,7 +19,7 @@
   <CopyCodeBlock command={`npx degit Vermont-Complex-Systems/vcsi-starter/templates/baked my-project
 cd my-project
 npm install`} />
-
+  <p>At the moment, we have a single static-site generator template, or the <code>baked</code> template. It is baked because the website content is baked-in when building, or pre-rendered. We are planning to provide a second template soon enough, the <code>fresh</code> template, where we showcase how dynamic websites can be used to augment visual data essays with backend capabilities.</p>
   
   <p class="tip"><strong>Tip:</strong> <a href="https://github.com/Rich-Harris/degit" target="_blank" rel="noopener">degit</a> copies a Git repo without its history—like cloning, but faster and cleaner. Requires <a href="https://nodejs.org/en/download" target="_blank" rel="noopener">Node.js</a>.</p>
 
@@ -36,7 +36,7 @@ npm install`} />
   </ul>
 
   <h3>4. Add optional integrations (optional)</h3>
-  
+  <p>With any template scaffolded using <code>degit</code>, you can make use of Svelte's <code>sv</code> CLI to install additional extensions</p>
   <CopyCodeBlock command={`npx sv add @the-vcsi/msgraph`} />
   <p class="tip"><strong>msgraph:</strong> Sync your <code>copy.json</code> story content from an Excel sheet on SharePoint—great for collaborative editing with non-technical teammates.</p>
 

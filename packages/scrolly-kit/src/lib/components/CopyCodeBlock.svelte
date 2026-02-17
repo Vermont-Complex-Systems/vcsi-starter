@@ -1,6 +1,6 @@
 <!--
 @component
-Copyable code block with one-click clipboard support.
+Copyable code block with one-click clipboard support and optional syntax highlighting.
 
 Displays a command or code snippet with a copy button. Shows a checkmark
 when successfully copied, reverting after 2 seconds.
@@ -8,6 +8,7 @@ when successfully copied, reverting after 2 seconds.
 ## Props
 - `command` - The text to display and copy (required)
 - `label` - Optional label shown above the code block
+- `language` - Optional language for syntax highlighting (e.g., 'svelte', 'javascript', 'bash')
 
 ## Usage
 ```svelte
@@ -17,10 +18,19 @@ when successfully copied, reverting after 2 seconds.
   command="npx degit Vermont-Complex-Systems/vcsi-starter my-project"
   label="Scaffold a new project"
 />
+
+<CopyCodeBlock
+  command={`<script>
+  let count = $state(0);
+<\/script>`}
+  language="svelte"
+/>
 ```
 -->
 <script>
-    let { command, label = '' } = $props();
+    import Md from './MarkdownRenderer.svelte';
+
+    let { command, label = '', language = '' } = $props();
     let copied = $state(false);
 
     async function copyCommand() {
@@ -28,15 +38,29 @@ when successfully copied, reverting after 2 seconds.
         copied = true;
         setTimeout(() => copied = false, 2000);
     }
+
+    /** Escape HTML entities so code displays as text, not rendered HTML */
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
 </script>
 
 <div class="code-block-wrapper">
     {#if label}
         <span class="code-label">{label}</span>
     {/if}
-    <div class="code-block">
-        <code>{command}</code>
-        <button class="copy-btn" onclick={copyCommand} aria-label="Copy command">
+    <div class="code-block" class:has-highlight={language}>
+        {#if language}
+            <div class="highlighted-code">
+                <Md text={`<pre><code class="language-${language}">${escapeHtml(command)}</code></pre>`} />
+            </div>
+        {:else}
+            <code>{command}</code>
+        {/if}
+        <button class="copy-btn" onclick={copyCommand} aria-label="Copy code">
             {#if copied}
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             {:else}
@@ -62,6 +86,7 @@ when successfully copied, reverting after 2 seconds.
     }
 
     .code-block {
+        position: relative;
         display: flex;
         align-items: flex-start;
         gap: var(--vcsi-space-sm);
@@ -75,21 +100,61 @@ when successfully copied, reverting after 2 seconds.
         transition: background-color var(--vcsi-transition-base);
     }
 
-    :global(.dark) .code-block {
+    /* When using syntax highlighting, let the pre/code handle background */
+    .code-block.has-highlight {
+        background: transparent;
+        padding: 0;
+    }
+
+    :global(.dark) .code-block:not(.has-highlight) {
         background: rgba(255, 255, 255, 0.1);
     }
 
-    .code-block code {
+    .code-block > code {
         color: var(--vcsi-fg);
         white-space: pre;
         background: transparent;
+        flex: 1;
+    }
+
+    /* Highlighted code container */
+    .highlighted-code {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+    /* Reset any wrapper margins from Markdown component */
+    .highlighted-code :global(> *) {
+        margin: 0;
+    }
+
+    .highlighted-code :global(pre) {
+        margin: 0;
+        padding: 0.75rem 1rem;
+        padding-right: 3rem; /* Space for copy button */
+        border-radius: var(--vcsi-radius-md);
+    }
+
+    .highlighted-code :global(code) {
+        background: transparent;
+        padding-left: 0;
+    }
+
+    /* Hide line numbers in CopyCodeBlock */
+    .highlighted-code :global([data-line-number]::before) {
+        display: none;
+    }
+
+    .highlighted-code :global(.code-line) {
+        padding-left: 0;
     }
 
     .copy-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: auto;
+        flex-shrink: 0;
         background: none;
         border: none;
         padding: var(--vcsi-space-xs);
@@ -97,6 +162,18 @@ when successfully copied, reverting after 2 seconds.
         color: var(--vcsi-fg);
         opacity: 0.6;
         transition: opacity var(--vcsi-transition-base);
+    }
+
+    /* Position copy button absolutely when using highlighting */
+    .code-block.has-highlight .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 1;
+    }
+
+    .code-block:not(.has-highlight) .copy-btn {
+        margin-left: auto;
     }
 
     .copy-btn:hover {
