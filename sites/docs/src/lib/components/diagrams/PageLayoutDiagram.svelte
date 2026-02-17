@@ -44,8 +44,16 @@ Shows the body flex layout structure:
           <div class="diagram-page-max-width">
             <span>max-width: 1200px</span>
           </div>
+          <!-- Top padding -->
+          <div class="diagram-vertical-padding top">
+            <span>padding-top: 5.5rem</span>
+          </div>
           <div class="diagram-page-inner">
             <p>Centered content...</p>
+          </div>
+          <!-- Bottom margin -->
+          <div class="diagram-vertical-padding bottom">
+            <span>margin-bottom: 7.5rem</span>
           </div>
         </div>
         <div class="diagram-page-padding right">
@@ -227,6 +235,40 @@ Shows the body flex layout structure:
     margin: 0;
   }
 
+  .diagram-vertical-padding {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--vcsi-gray-100),
+      var(--vcsi-gray-100) 4px,
+      var(--vcsi-gray-200) 4px,
+      var(--vcsi-gray-200) 8px
+    );
+    border: 1px dashed var(--vcsi-gray-300);
+    border-radius: 3px;
+  }
+
+  .diagram-vertical-padding.top {
+    height: 24px;
+    margin-bottom: 0.5rem;
+  }
+
+  .diagram-vertical-padding.bottom {
+    height: 32px;
+    margin-top: 0.5rem;
+  }
+
+  .diagram-vertical-padding span {
+    font-size: 0.55rem;
+    font-family: var(--vcsi-font-mono);
+    color: var(--vcsi-gray-500);
+    background: var(--vcsi-gray-50);
+    padding: 0.1rem 0.25rem;
+    border-radius: 2px;
+  }
+
   .diagram-label {
     font-size: 0.75rem;
     font-weight: 600;
@@ -293,6 +335,22 @@ Shows the body flex layout structure:
   }
 
   :global(.dark) .diagram-label {
+    color: var(--vcsi-gray-400);
+  }
+
+  :global(.dark) .diagram-vertical-padding {
+    background: repeating-linear-gradient(
+      45deg,
+      var(--vcsi-gray-900),
+      var(--vcsi-gray-900) 4px,
+      var(--vcsi-gray-800) 4px,
+      var(--vcsi-gray-800) 8px
+    );
+    border-color: var(--vcsi-gray-700);
+  }
+
+  :global(.dark) .diagram-vertical-padding span {
+    background: var(--vcsi-gray-800);
     color: var(--vcsi-gray-400);
   }
 </style>

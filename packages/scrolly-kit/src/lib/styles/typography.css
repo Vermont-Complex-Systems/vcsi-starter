@@ -13,8 +13,9 @@ body {
   min-height: 100dvh;
 }
 
+/* Ensures the footer stays at the bottom even when content is short. */
 main {
-  flex: 1;
+  flex: 1; /* expands to fill available space from body */
 }
 
 h1, h2, h3, h4, h5, h6 {
