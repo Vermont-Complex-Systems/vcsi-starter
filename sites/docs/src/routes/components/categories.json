@@ -1,0 +1,53 @@
+[
+  {
+    "id": "scrolling",
+    "label": "Scrolling",
+    "description": "Core components for scroll-driven storytelling",
+    "components": [
+      { "id": "Scrolly", "desc": "Base scroll detection using IntersectionObserver" },
+      { "id": "ScrollyContent", "desc": "Step boxes with content rendering" }
+    ]
+  },
+  {
+    "id": "layout",
+    "label": "Layout",
+    "description": "Structural components for page layout",
+    "components": [
+      { "id": "StoryHeader", "desc": "Story header with title, authors, date" },
+      { "id": "Nav", "desc": "Responsive navigation bar" },
+      { "id": "Footer", "desc": "Site footer with social links" }
+    ]
+  },
+  {
+    "id": "content",
+    "label": "Content",
+    "description": "Components for rendering text, markdown, and code",
+    "components": [
+      { "id": "MarkdownRenderer", "desc": "Renders markdown with KaTeX math support" },
+      { "id": "RenderTextContent", "desc": "Renders content items by type" },
+      { "id": "CopyCodeBlock", "desc": "Copyable code block with clipboard support" },
+      { "id": "CodeBlock", "desc": "Syntax-highlighted code display" }
+    ]
+  },
+  {
+    "id": "ui",
+    "label": "UI Controls",
+    "description": "Interactive UI components",
+    "components": [
+      { "id": "ThemeToggle", "desc": "Dark/light mode toggle" },
+      { "id": "SimpleSelect", "desc": "Dropdown select component" },
+      { "id": "SimpleToggle", "desc": "On/off toggle switch" },
+      { "id": "Tooltip", "desc": "Hover tooltip" }
+    ]
+  },
+  {
+    "id": "utilities",
+    "label": "Utilities",
+    "description": "Helper components for common patterns",
+    "components": [
+      { "id": "Meta", "desc": "SEO meta tags for social sharing" },
+      { "id": "Spinner", "desc": "Loading indicator" },
+      { "id": "ScrollIndicator", "desc": "Animated scroll-down arrow" }
+    ]
+  }
+]

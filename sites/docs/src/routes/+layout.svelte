@@ -24,7 +24,8 @@
       <span class="docs-nav-version">v0.0.5</span>
     </div>
     <ul class="docs-nav-links">
-      <li><a href="{base}/reference" aria-current={$page.url.pathname === base + '/reference' ? 'page' : undefined}>Docs</a></li>
+      <li><a href="{base}/reference" aria-current={$page.url.pathname === base + '/reference' ? 'page' : undefined}>Styling</a></li>
+      <li><a href="{base}/components" aria-current={$page.url.pathname === base + '/components' ? 'page' : undefined}>Components</a></li>
       <li><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a></li>
       <li>
         <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main" target="_blank" rel="noopener" aria-label="GitHub" class="github-link">

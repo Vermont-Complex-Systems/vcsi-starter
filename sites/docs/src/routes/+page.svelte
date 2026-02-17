@@ -69,13 +69,23 @@ npm install`} />
   --vcsi-font-serif: "Your Serif", Georgia;
 }`}</pre>
 
-  <p>See the <a href="{base}/reference">Reference</a> for all available CSS variables.</p>
+  <p>See the <a href="{base}/reference">Styling</a> for all available CSS variables.</p>
+
+  <h2>Inspiration</h2>
+  <ul>
+    <li><a href="https://picocss.com/" target="_blank" rel="noopener">pico.css</a> - Minimal CSS Framework for Semantic HTML. This is our core inspiration for making scrolly-kit into a library.</li>
+    <li><a href="https://astro.build//" target="_blank" rel="noopener">astrojs</a> - The web framework for content-driven websites. This is our core inspiration for making cool static-site templates.</li>
+    <li><a href="https://design-system.canada.ca/en/start-to-use/" target="_blank" rel="noopener">GC Design System</a> and  <a href="https://frontend.design-system.service.gov.uk/" target="_blank" rel="noopener">GOV.UK Frontend</a> - Governments have to provide services to everybody, forcing them to be super sharp in terms of accessibility. The value of this should not be overlooked.</li>
+    <li><a href="https://layercake.graphics/" target="_blank" rel="noopener">Layer Cake</a> - Headless graphics framework for Svelte. On top of being awesome charting library, they showcase the beauty of simply copy-pasting well-designed components.</li>
+  </ul>
 
   <h2>Next Steps</h2>
   <ul>
-    <li><a href="{base}/reference">Reference</a> - Layout patterns and CSS variables</li>
+    <li><a href="{base}/reference">Styling</a> - Layout patterns and CSS variables</li>
+    <li><a href="{base}/components">Components</a> - Reusable components used across templates </li>
     <li><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a> - See pedagogical stories built with scrolly-kit</li>
   </ul>
+  
 </article>
 
 <style>
