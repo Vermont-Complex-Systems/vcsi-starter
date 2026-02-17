@@ -59,12 +59,14 @@
 <Footer theme="light" />
 
 <style>
+	/* desktop only */
 	@media (min-width: 769px) {
 		.scrolly-content {
 			--story-step-bg: transparent;
 			--story-step-bg-inactive: transparent;
 			--step-box-shadow: none;
 			--step-height: 90vh;
+			--step-max-width: 400px;
 		}
 	}
 </style>

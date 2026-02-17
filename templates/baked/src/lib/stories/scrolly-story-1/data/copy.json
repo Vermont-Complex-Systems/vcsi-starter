@@ -40,7 +40,7 @@
 	"markdownRenderer": [
 		{
 			"type": "markdown",
-			"value": "We also have a powerful markdown renderer that is worth mentioning. In the copy.json, you can use [markdown](https://www.markdownguide.org/), as one would expect.\n You can create newlines using `\n` directly in the json, or add a different entry. The newline is useful for example when doing quote block\n>Dorothy followed her through many of the beautiful rooms in her castle."
+			"value": "We also have a powerful markdown renderer that is worth mentioning. In the copy.json, you can use [markdown](https://www.markdownguide.org/), as one would expect.\n You can create newlines using `\\n` directly in the json, or add a different entry. The newline is useful for example when doing quote block\n>Dorothy followed her through many of the beautiful rooms in her castle."
 		},
 		{
 			"type": "markdown",

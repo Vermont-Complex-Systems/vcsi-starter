@@ -34,10 +34,9 @@ let {
 	logoAlt = 'Site logo',
 	homeHref = '/',
 	links = [
-		{ href: '/about', label: 'About' },
-		{ href: '/getting-started', label: 'Videos & Tutorials' }
+		{ href: '/about', label: 'About' }
 	],
-	githubUrl = 'https://github.com/Vermont-Complex-Systems/website-template',
+	githubUrl = 'https://github.com/Vermont-Complex-Systems/vcsi-starter',
 	showThemeToggle = true,
 	position = 'fixed'
 }: Props = $props();

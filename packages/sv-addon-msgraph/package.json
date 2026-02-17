@@ -1,5 +1,5 @@
 {
-  "name": "@the-vcsi/sv-addon-msgraph",
+  "name": "@the-vcsi/msgraph",
   "version": "0.0.1",
   "description": "sv CLI add-on for Microsoft Graph / SharePoint integration",
   "type": "module",

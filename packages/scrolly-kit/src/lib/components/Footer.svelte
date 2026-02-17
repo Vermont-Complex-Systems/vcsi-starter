@@ -90,19 +90,26 @@ let {
 <style>
 .footer {
 	width: 100%;
-	/* Inherits --footer-bg from parent, or falls back to accent color */
-	background-color: var(--footer-bg, var(--vcsi-color-accent));
+	/* Default: UVM green in light mode */
+	background-color: var(--footer-bg, var(--vcsi-color-uvm-green));
 	border-top: 1px solid var(--footer-border, rgba(255, 255, 255, 0.2));
 	padding: var(--vcsi-space-2xl) 0 var(--vcsi-space-xl);
 }
 
-/* theme="light" - forces UVM green (same as default, but explicit) */
+/* Global dark mode - only when no explicit theme prop */
+/* Respects --footer-bg if set by parent, otherwise uses dark fallback */
+:global(.dark) .footer:not(.theme-light):not(.theme-dark) {
+	background-color: var(--footer-bg, rgb(45, 45, 45));
+	border-top-color: var(--footer-border, rgba(255, 255, 255, 0.1));
+}
+
+/* theme="light" - forces UVM green regardless of global mode */
 .footer.theme-light {
 	background-color: var(--vcsi-color-uvm-green);
 	border-top-color: rgba(255, 255, 255, 0.2);
 }
 
-/* theme="dark" - forces dark theme */
+/* theme="dark" - forces dark regardless of global mode */
 .footer.theme-dark {
 	background-color: rgb(45, 45, 45);
 	border-top-color: rgba(255, 255, 255, 0.1);

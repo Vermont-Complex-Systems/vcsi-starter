@@ -6,6 +6,16 @@ body {
   line-height: var(--vcsi-line-height-relaxed, 1.6);
   background: var(--vcsi-bg);
   color: var(--vcsi-fg);
+
+  /* Layout: flex column for footer spacing */
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  gap: var(--vcsi-space-2xl);
+}
+
+main {
+  flex: 1;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -200,10 +200,6 @@
     --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
     --vcsi-blockquote: var(--vcsi-blockquote-dark);
     --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
-
-    /* Footer defaults for dark mode */
-    --footer-bg: rgb(45, 45, 45);
-    --footer-border: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -227,10 +223,6 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
   --vcsi-blockquote: var(--vcsi-blockquote-dark);
   --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
-
-  /* Footer defaults for dark mode */
-  --footer-bg: rgb(45, 45, 45);
-  --footer-border: rgba(255, 255, 255, 0.1);
 }
 
 /* =============================================================================

@@ -17,6 +17,14 @@
   --vcsi-hover: var(--vcsi-hover-light);
   --vcsi-border: var(--vcsi-border-light);
 
+  /* Code tokens - isolate from global dark mode */
+  --vcsi-code-bg: var(--vcsi-code-bg-light);
+  --vcsi-code-fg: var(--vcsi-code-fg-light);
+  --vcsi-code-border: var(--vcsi-code-border-light);
+  --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
+  --vcsi-blockquote: var(--vcsi-blockquote-light);
+  --vcsi-code-highlight: var(--vcsi-code-highlight-light);
+
   /* Story-specific tokens */
   --vcsi-story-bg: var(--vcsi-color-beige, #f4efea);
   --vcsi-story-fg: rgb(55, 55, 55);
@@ -36,8 +44,9 @@
 
 .story {
   width: 100%;
+  min-height: 71vh; /* accomodating the footer */
   padding-top: 5.5rem;
-  padding-bottom: 7.5rem;
+  padding-bottom: var(--vcsi-space-xl);
   background: var(--vcsi-story-bg);
   color: var(--vcsi-story-fg);
 }
@@ -91,6 +100,14 @@
   color-scheme: dark;
   --vcsi-story-bg: #353839;
   --vcsi-story-fg: white;
+
+  /* Code tokens for dark theme */
+  --vcsi-code-bg: var(--vcsi-code-bg-dark);
+  --vcsi-code-fg: var(--vcsi-code-fg-dark);
+  --vcsi-code-border: var(--vcsi-code-border-dark);
+  --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
+  --vcsi-blockquote: var(--vcsi-blockquote-dark);
+  --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
 
   /* ScrollyContent step colors for dark theme */
   --story-step-bg: #2a2a2a;
@@ -616,11 +633,5 @@
   margin-inline: auto;
   padding-inline: var(--vcsi-page-inline-padding, 5%);
   padding-top: 5.5rem;
-  padding-bottom: 7.5rem;
-}
-
-@media (max-width: 768px) {
-  .page {
-    padding-bottom: var(--vcsi-space-2xl, 3rem);
-  }
+  padding-bottom: var(--vcsi-space-xl);
 }

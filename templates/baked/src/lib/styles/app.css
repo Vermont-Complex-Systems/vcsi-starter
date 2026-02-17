@@ -13,14 +13,7 @@
    --vcsi-* tokens directly from the package.
    ============================================================================= */
 
-/* Body and main */
+/* Dark mode transition (template-specific) */
 body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
   transition: background-color var(--vcsi-transition-base), color var(--vcsi-transition-base);
-}
-
-main {
-  flex: 1;
 }

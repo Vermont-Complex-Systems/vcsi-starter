@@ -1,0 +1,11 @@
+{
+	"title": "Example Story 1",
+	"subtitle": "Story subtitle",
+	"authors": [
+		{
+			"name": "Author Name",
+			"url": ""
+		}
+	],
+	"date": "Feb 17, 2026"
+}
