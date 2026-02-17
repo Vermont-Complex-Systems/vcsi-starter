@@ -1,6 +1,7 @@
 <script>
   import TableOfContents from '$lib/components/TableOfContents.svelte';
   import ShowcaseGrid from '$lib/components/ShowcaseGrid.svelte';
+  import LinkableHeader from '$lib/components/LinkableHeader.svelte';
   import { CopyCodeBlock } from '@the-vcsi/scrolly-kit';
 
   import PageLayoutDiagram from '$lib/components/diagrams/PageLayoutDiagram.svelte';
@@ -56,7 +57,7 @@
 
     <!-- PAGE LAYOUT -->
     <section id="page">
-      <h2>Page Layout</h2>
+      <LinkableHeader id="page">Page Layout</LinkableHeader>
       <p>The <code>.page</code> class provides a centered, width-constrained container for standard content pages. It's typically used with <code>Nav</code> and <code>Footer</code> components.</p>
 
       <PageLayoutDiagram />
@@ -96,7 +97,7 @@
 
     <!-- STORY CONTAINER -->
     <section id="story">
-      <h2>Story Container</h2>
+      <LinkableHeader id="story">Story Container</LinkableHeader>
       <p>The <code>.story</code> class is the main container for scrollytelling content. It provides:</p>
       <ul>
         <li>Centered prose by default (max-width 600px)</li>
@@ -127,7 +128,7 @@
 
     <!-- SPLIT LAYOUT -->
     <section id="split-layout">
-      <h2>Split Layout</h2>
+      <LinkableHeader id="split-layout">Split Layout</LinkableHeader>
       <p>Two-column layout with a sticky visualization panel and scrolling content. While it breaks out of the prose max-width, it maintains its own side padding (2rem by default) rather than going edge-to-edge like <code>.fullscreen-layout</code>.</p>
 
       <SplitLayoutDiagram />
@@ -183,7 +184,7 @@
 
     <!-- FULLSCREEN LAYOUT -->
     <section id="fullscreen-layout">
-      <h2>Fullscreen Layout</h2>
+      <LinkableHeader id="fullscreen-layout">Fullscreen Layout</LinkableHeader>
       <p>Full-viewport immersive layout for dramatic visualizations.</p>
 
       <FullscreenLayoutDiagram />
@@ -229,7 +230,7 @@
 
     <!-- DASHBOARD LAYOUT -->
     <section id="dashboard-layout">
-      <h2>Dashboard Layout</h2>
+      <LinkableHeader id="dashboard-layout">Dashboard Layout</LinkableHeader>
       <p>Sidebar + main content for interactive data dashboards.</p>
 
       <DashboardLayoutDiagram />
@@ -267,7 +268,7 @@
 
     <!-- STEP STYLING -->
     <section id="step-styling">
-      <h2>Step Styling</h2>
+      <LinkableHeader id="step-styling">Step Styling</LinkableHeader>
       <p>Step boxes in scrolly layouts use these CSS variables for colors and sizing. These apply to both <code>.split-layout</code> and <code>.fullscreen-layout</code>.</p>
 
       <StepThemesDiagram />
@@ -307,7 +308,7 @@
 
     <!-- CSS VARIABLES -->
     <section id="css-variables">
-      <h2>Global CSS Variables</h2>
+      <LinkableHeader id="css-variables">Global CSS Variables</LinkableHeader>
       <p>These tokens are available throughout your project. See the full <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/blob/main/packages/scrolly-kit/src/lib/styles/tokens.css" target="_blank" rel="noopener">tokens.css source</a> for all available variables.</p>
 
       <h3>Colors</h3>
