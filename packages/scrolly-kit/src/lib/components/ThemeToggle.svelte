@@ -20,7 +20,7 @@
     height: 2.25rem;
     border-radius: 0.5rem;
     background: transparent;
-    color: var(--vcsi-fg);
+    color: var(--vcsi-nav-fg);
     border: none;
     cursor: pointer;
     transition: all var(--vcsi-transition-base, 200ms ease);

@@ -4,7 +4,12 @@
 	let { children } = $props();
 </script>
 
-<Nav />
+<Nav
+  links={[
+    { href: '/about', label: 'About' },
+    { href: '/getting-started', label: 'Videos & Tutorials' }
+  ]}
+/>
 
 <main id="content">
 	{@render children?.()}
