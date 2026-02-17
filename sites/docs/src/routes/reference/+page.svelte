@@ -84,7 +84,8 @@
         <tbody>
           <tr><td><code>--vcsi-page-max-width</code></td><td>1200px</td><td>Maximum content width (shared by Nav, Footer, .page)</td></tr>
           <tr><td><code>--vcsi-page-inline-padding</code></td><td>5%</td><td>Side padding (shared by Nav, Footer, .page)</td></tr>
-          <tr><td><code>--vcsi-nav-height</code></td><td>5.5rem</td><td>Nav height (.page has padding-top to clear it)</td></tr>
+          <tr><td><code>--vcsi-nav-height</code></td><td>4.5rem</td><td>Nav height (.page has padding-top to clear it)</td></tr>
+          <tr><td><code>--vcsi-bottom-padding</code></td><td>7.5rem</td><td>Bottom padding for pages and stories</td></tr>
         </tbody>
       </table>
 
@@ -117,6 +118,18 @@
 
   <p>Back to centered prose...</p>
 </article>`} />
+
+      <h3>CSS Variables</h3>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Default (Light)</th><th>Default (Dark)</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-story-bg</code></td><td>#f4efea</td><td>#353839</td><td>Story background color</td></tr>
+          <tr><td><code>--vcsi-story-fg</code></td><td>rgb(55, 55, 55)</td><td>white</td><td>Story text color</td></tr>
+          <tr><td><code>--vcsi-story-max-width</code></td><td colspan="2">600px</td><td>Max width for prose content</td></tr>
+        </tbody>
+      </table>
 
       <h3>Dark Theme</h3>
       <p>Add <code>data-theme="dark"</code> for dark stories:</p>
@@ -156,7 +169,9 @@
           <tr><td><code>--vcsi-panel-width</code></td><td>45%</td><td>Width of sticky panel</td></tr>
           <tr><td><code>--vcsi-panel-min-width</code></td><td>450px</td><td>Minimum panel width</td></tr>
           <tr><td><code>--vcsi-panel-height</code></td><td>min(80vh, 600px)</td><td>Panel height</td></tr>
+          <tr><td><code>--vcsi-panel-top-offset</code></td><td>auto-centered</td><td>Vertical position of sticky panel</td></tr>
           <tr><td><code>--vcsi-layout-gap</code></td><td>2rem</td><td>Gap between columns</td></tr>
+          <tr><td><code>--vcsi-content-padding-inline</code></td><td>2rem</td><td>Horizontal padding for the layout</td></tr>
           <tr><td><code>--step-height</code></td><td>90vh</td><td>Vertical space between steps</td></tr>
           <tr><td><code>--spacer-height</code></td><td>65vh</td><td>Height of top/bottom spacers</td></tr>
         </tbody>
@@ -206,6 +221,7 @@
         <tbody>
           <tr><td><code>--vcsi-step-max-width</code></td><td>500px</td><td>Max width of step boxes</td></tr>
           <tr><td><code>--vcsi-step-padding</code></td><td>2rem</td><td>Padding inside steps</td></tr>
+          <tr><td><code>--vcsi-step-pointer-events</code></td><td>none</td><td>Allows clicks to pass through to panel</td></tr>
         </tbody>
       </table>
 
@@ -256,6 +272,8 @@
           <tr><td><code>--vcsi-sidebar-width</code></td><td>280px</td><td>Sidebar width when open</td></tr>
           <tr><td><code>--vcsi-sidebar-collapsed-width</code></td><td>48px</td><td>Sidebar width when collapsed</td></tr>
           <tr><td><code>--vcsi-sidebar-bg</code></td><td>#ebe6e1</td><td>Sidebar background</td></tr>
+          <tr><td><code>--vcsi-sidebar-transition</code></td><td>300ms ease</td><td>Animation timing for collapse/expand</td></tr>
+          <tr><td><code>--vcsi-z-overlay</code></td><td>1000</td><td>Z-index for mobile overlay</td></tr>
         </tbody>
       </table>
 
@@ -309,19 +327,36 @@
     <!-- CSS VARIABLES -->
     <section id="css-variables">
       <LinkableHeader id="css-variables">Global CSS Variables</LinkableHeader>
-      <p>These tokens are available throughout your project. See the full <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/blob/main/packages/scrolly-kit/src/lib/styles/tokens.css" target="_blank" rel="noopener">tokens.css source</a> for all available variables.</p>
+      <p>Design tokens available throughout your project. See <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/blob/main/packages/scrolly-kit/src/lib/styles/tokens.css" target="_blank" rel="noopener">tokens.css</a> for the full source.</p>
 
       <h3>Colors</h3>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Value</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-color-accent</code></td><td>#154734</td><td>Brand accent (UVM Green)</td></tr>
+          <tr><td><code>--vcsi-color-uvm-green</code></td><td>#154734</td><td>UVM Green</td></tr>
+          <tr><td><code>--vcsi-color-uvm-gold</code></td><td>rgb(255, 209, 0)</td><td>UVM Gold</td></tr>
+          <tr><td><code>--vcsi-color-beige</code></td><td>#f4efea</td><td>Warm beige</td></tr>
+          <tr><td><code>--vcsi-gray-100</code> to <code>900</code></td><td>scale</td><td>Gray scale (100, 200, 300, 400, 600, 700, 800, 900)</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Semantic Colors (auto-switch with dark mode)</h4>
       <table class="docs-table">
         <thead>
           <tr><th>Variable</th><th>Description</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>--vcsi-color-accent</code></td><td>Brand accent color</td></tr>
-          <tr><td><code>--vcsi-bg</code></td><td>Background (respects dark mode)</td></tr>
-          <tr><td><code>--vcsi-fg</code></td><td>Foreground text (respects dark mode)</td></tr>
+          <tr><td><code>--vcsi-bg</code></td><td>Background color</td></tr>
+          <tr><td><code>--vcsi-fg</code></td><td>Text color</td></tr>
           <tr><td><code>--vcsi-border</code></td><td>Border color</td></tr>
-          <tr><td><code>--vcsi-hover</code></td><td>Hover state background</td></tr>
+          <tr><td><code>--vcsi-hover</code></td><td>Hover state</td></tr>
+          <tr><td><code>--vcsi-link</code></td><td>Link color</td></tr>
+          <tr><td><code>--vcsi-muted</code></td><td>Muted/secondary text</td></tr>
+          <tr><td><code>--vcsi-code-bg</code></td><td>Code block background</td></tr>
+          <tr><td><code>--vcsi-code-fg</code></td><td>Code text color</td></tr>
         </tbody>
       </table>
 
@@ -331,9 +366,44 @@
           <tr><th>Variable</th><th>Default</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>--vcsi-font-sans</code></td><td>system-ui, sans-serif</td></tr>
-          <tr><td><code>--vcsi-font-serif</code></td><td>Georgia, serif</td></tr>
-          <tr><td><code>--vcsi-font-mono</code></td><td>ui-monospace, monospace</td></tr>
+          <tr><td><code>--vcsi-font-sans</code></td><td>"Atlas Grotesk", system-ui, sans-serif</td></tr>
+          <tr><td><code>--vcsi-font-serif</code></td><td>"Baskerville", Georgia, serif</td></tr>
+          <tr><td><code>--vcsi-font-mono</code></td><td>"Atlas Typewriter", "SF Mono", monospace</td></tr>
+          <tr><td><code>--vcsi-font-heading</code></td><td>var(--vcsi-font-serif)</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Font Sizes (responsive clamp)</h4>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Range</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-font-size-giant</code></td><td>3rem → 4rem</td></tr>
+          <tr><td><code>--vcsi-font-size-xl</code></td><td>1.8rem → 3rem</td></tr>
+          <tr><td><code>--vcsi-font-size-lg</code></td><td>1.5rem → 2.5rem</td></tr>
+          <tr><td><code>--vcsi-font-size-md</code></td><td>1.25rem → 1.75rem</td></tr>
+          <tr><td><code>--vcsi-font-size-base</code></td><td>1.125rem → 1.25rem</td></tr>
+          <tr><td><code>--vcsi-font-size-small</code></td><td>1rem → 1.125rem</td></tr>
+          <tr><td><code>--vcsi-font-size-xs</code></td><td>0.875rem → 1rem</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Font Weights &amp; Line Heights</h4>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-font-weight-light</code></td><td>300</td></tr>
+          <tr><td><code>--vcsi-font-weight-regular</code></td><td>400</td></tr>
+          <tr><td><code>--vcsi-font-weight-medium</code></td><td>500</td></tr>
+          <tr><td><code>--vcsi-font-weight-semibold</code></td><td>600</td></tr>
+          <tr><td><code>--vcsi-font-weight-bold</code></td><td>700</td></tr>
+          <tr><td><code>--vcsi-line-height-tight</code></td><td>1.17 (headings)</td></tr>
+          <tr><td><code>--vcsi-line-height-snug</code></td><td>1.33 (subheadings)</td></tr>
+          <tr><td><code>--vcsi-line-height-normal</code></td><td>1.5 (body)</td></tr>
+          <tr><td><code>--vcsi-line-height-relaxed</code></td><td>1.6 (long-form)</td></tr>
         </tbody>
       </table>
 
@@ -352,17 +422,31 @@
         </tbody>
       </table>
 
-      <h3>Story-Specific</h3>
+      <h3>Border Radius</h3>
       <table class="docs-table">
         <thead>
-          <tr><th>Variable</th><th>Description</th></tr>
+          <tr><th>Variable</th><th>Value</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>--vcsi-story-bg</code></td><td>Story background color</td></tr>
-          <tr><td><code>--vcsi-story-fg</code></td><td>Story text color</td></tr>
-          <tr><td><code>--vcsi-story-max-width</code></td><td>Max width for prose (600px)</td></tr>
+          <tr><td><code>--vcsi-radius-sm</code></td><td>3px</td></tr>
+          <tr><td><code>--vcsi-radius-md</code></td><td>6px</td></tr>
+          <tr><td><code>--vcsi-radius-lg</code></td><td>8px</td></tr>
+          <tr><td><code>--vcsi-radius-full</code></td><td>9999px</td></tr>
         </tbody>
       </table>
+
+      <h3>Transitions</h3>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-transition-fast</code></td><td>150ms ease</td></tr>
+          <tr><td><code>--vcsi-transition-base</code></td><td>200ms ease</td></tr>
+          <tr><td><code>--vcsi-transition-slow</code></td><td>300ms ease</td></tr>
+        </tbody>
+      </table>
+
     </section>
   </article>
 

@@ -9,11 +9,28 @@
 
 /* =============================================================================
    TEMPLATE CUSTOMIZATIONS
-   Override VCSI tokens here if needed. Nav and Footer components use
-   --vcsi-* tokens directly from the package.
+   Override VCSI tokens here. Variables follow the pattern:
+   --vcsi-[context]-[property] (e.g., --vcsi-story-bg, --vcsi-panel-height)
+
+   See full reference: https://docs.scrolly-kit.dev/reference
    ============================================================================= */
 
-/* Dark mode transition (template-specific) */
-body {
-  transition: background-color var(--vcsi-transition-base), color var(--vcsi-transition-base);
+/* Example: Custom story colors
+:root {
+  --vcsi-story-bg: #1a1a2e;
+  --vcsi-story-fg: #eee;
 }
+*/
+
+/* Example: Wider prose in stories
+.story {
+  --vcsi-story-max-width: 720px;
+}
+*/
+
+/* Example: Larger split-layout panels
+.split-layout {
+  --vcsi-panel-width: 55%;
+  --vcsi-panel-height: min(85vh, 700px);
+}
+*/

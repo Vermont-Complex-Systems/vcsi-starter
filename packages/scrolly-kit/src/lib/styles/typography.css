@@ -6,6 +6,7 @@ body {
   line-height: var(--vcsi-line-height-relaxed, 1.6);
   background: var(--vcsi-bg);
   color: var(--vcsi-fg);
+  transition: background-color var(--vcsi-transition-base), color var(--vcsi-transition-base);
 
   /* Layout: flex column for footer positioning */
   display: flex;
