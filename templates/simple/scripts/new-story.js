@@ -158,6 +158,9 @@ const indexSvelteDetailed = `<!--
 			<ScrollyContent steps={data.steps} bind:value={scrollyIndex}/>
 		</div>
 	</section>
+
+	<h2>Conclusion</h2>
+	<p>{data.conclusion}</p>
 </article>
 
 <!-- Footer - use theme="light" or theme="dark" to match your story's theme -->
@@ -358,6 +361,11 @@ const scrollyPlotDetailed = `<!--
 	svg {
 		width: 100%;
 		height: auto;
+	}
+
+	rect {
+		transform: translateY(0);
+		transition: all 0.4s ease;
 	}
 
 	text {
