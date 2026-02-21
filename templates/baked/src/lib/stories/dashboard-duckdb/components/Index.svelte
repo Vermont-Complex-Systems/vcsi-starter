@@ -16,12 +16,19 @@
 	// Tier 1: all embeddings loaded via DuckDB on mount
 	let rows = $state([]);
 	let loading = $state(true);
+	let error = $state(null);
 
 	onMount(async () => {
-		rows = await storyQuery(story.slug, `
-			SELECT * FROM '${story.slug}.parquet'
-		`);
-		loading = false;
+		try {
+			rows = await storyQuery(story.slug, `
+				SELECT * FROM '${story.slug}.parquet'
+			`);
+		} catch (e) {
+			error = e;
+			console.error('Failed to load DuckDB data:', e);
+		} finally {
+			loading = false;
+		}
 	});
 
 	let width = $state(800);
@@ -79,6 +86,7 @@
 
 	let xExtent = $derived.by(() => {
 		const d = filteredData.length > 0 ? filteredData : rows;
+		if (d.length === 0) return [0, 1];
 		const [min, max] = extent(d, r => r.umap_1);
 		const padding = (max - min) * 0.05;
 		return [min - padding, max + padding];
@@ -86,6 +94,7 @@
 
 	let yExtent = $derived.by(() => {
 		const d = filteredData.length > 0 ? filteredData : rows;
+		if (d.length === 0) return [0, 1];
 		const [min, max] = extent(d, r => r.umap_2);
 		const padding = (max - min) * 0.05;
 		return [min - padding, max + padding];
@@ -112,6 +121,10 @@
 	<div class="loading-container">
 		<Spinner />
 		<p class="loading-text">Loading DuckDB...</p>
+	</div>
+{:else if error}
+	<div class="loading-container">
+		<p class="loading-text">Failed to load data. Please refresh the page.</p>
 	</div>
 {:else}
 	<Sidebar.Provider>
