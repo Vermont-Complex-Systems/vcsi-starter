@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { DuckQuery } from '$lib/db/duck.svelte';
   import LiveResult from './LiveResult.svelte';
+  import ResultTable from './ResultTable.svelte';
 
   interface Props {
     flights: DuckQuery;
@@ -9,16 +10,20 @@
 
   let { flights, badge = 'live' }: Props = $props();
 
-  const carriers = flights.distinct('carrier');
-  const origins = flights.distinct('origin');
+  const withComputed = flights
+    .mutate({
+      gain: 'dep_delay - arr_delay',
+      speed: 'ROUND(distance / air_time * 60, 1)'
+    })
+    .select('year', 'month', 'day', 'carrier', 'dep_delay', 'arr_delay', 'gain', 'speed')
+    .head(8);
 </script>
 
 <LiveResult {badge}>
-  {#if carriers.loading}
+  {#if withComputed.loading}
     <p class="loading">Loading…</p>
   {:else}
-    <p><strong>{carriers.items.length}</strong> unique carriers: <code>{carriers.items.join(', ')}</code></p>
-    <p><strong>{origins.items.length}</strong> unique origins: <code>{origins.items.join(', ')}</code></p>
+    <ResultTable rows={withComputed.rows} />
   {/if}
 </LiveResult>
 

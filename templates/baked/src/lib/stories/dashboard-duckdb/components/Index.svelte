@@ -2,7 +2,7 @@
 	import { scaleLinear, scaleOrdinal, extent, zoomIdentity } from 'd3';
 
 	import { Sidebar, ChartTooltip, Spinner, useIsMobile } from '@the-vcsi/scrolly-kit';
-	import { from, ilike, or } from '$lib/db/duck.svelte';
+	import { database, ilike, or } from '$lib/db/duck.svelte';
 
 	import AppSidebar from './AppSidebar.svelte';
 	import SectionCards from './SectionCards.svelte';
@@ -19,7 +19,8 @@
 
 	// ── DuckDB queries via builder ──
 
-	const embeddings = from(`'${story.slug}.parquet'`);
+	const db = database({ embeddings: `${story.slug}.parquet` });
+	const embeddings = db.from('embeddings');
 
 	// Unfiltered — runs once, stable scales & background dots
 	const allData    = embeddings.rows();

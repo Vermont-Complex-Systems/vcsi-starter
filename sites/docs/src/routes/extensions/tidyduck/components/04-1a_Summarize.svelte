@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { from } from '$lib/db/duck.svelte';
+  import type { DuckQuery } from '$lib/db/duck.svelte';
   import LiveResult from './LiveResult.svelte';
   import StatCards from './StatCards.svelte';
 
   interface Props {
-    flights: ReturnType<typeof from>;
+    flights: DuckQuery;
     badge?: string;
   }
 

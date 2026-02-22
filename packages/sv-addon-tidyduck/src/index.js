@@ -109,9 +109,10 @@ export default defineAddon({
     console.log('  1. Run: npm install');
     console.log('  2. Place .parquet files in static/data/');
     console.log('  3. Import the query builder:');
-    console.log("     import { from, ilike, or } from '$lib/db/duck.svelte';");
-    console.log('  4. Use reactive queries:');
-    console.log("     const data = from(`'my-file.parquet'`);");
+    console.log("     import { database } from '$lib/db/duck.svelte';");
+    console.log('  4. Register tables and query:');
+    console.log("     const db = database({ mydata: 'my-file.parquet' });");
+    console.log("     const data = db.from('mydata');");
     console.log('     const allRows = data.rows();');
     console.log('     const total = data.count();');
     console.log("     const filtered = data.between('year', () => range).rows();");

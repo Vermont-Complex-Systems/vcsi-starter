@@ -2,10 +2,16 @@
   import hljs from 'highlight.js/lib/core';
   import typescript from 'highlight.js/lib/languages/typescript';
   import javascript from 'highlight.js/lib/languages/javascript';
+  import r from 'highlight.js/lib/languages/r';
+  import bash from 'highlight.js/lib/languages/bash';
+  import xml from 'highlight.js/lib/languages/xml';
   import 'highlight.js/styles/github.css';
 
   hljs.registerLanguage('typescript', typescript);
   hljs.registerLanguage('javascript', javascript);
+  hljs.registerLanguage('r', r);
+  hljs.registerLanguage('bash', bash);
+  hljs.registerLanguage('svelte', xml);
 
   let { code, filename = '', language = 'typescript' } = $props();
 
@@ -26,6 +32,7 @@
   position: relative;
   min-width: 0;
   max-width: 100%;
+  margin-block: var(--vcsi-space-md, 1rem);
 }
 
 .code-filename {
@@ -53,8 +60,7 @@
   background: #f6f8fa;
   border: 1px solid #d1d9e0;
   border-radius: 8px;
-  padding: 1.25rem;
-  padding-top: 2.25rem;
+  padding: 0.75rem;
   margin: 0;
   overflow-x: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -117,7 +123,7 @@
 
   .code-view {
     padding: 0.75rem;
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
     font-size: 0.65rem;
     border-radius: 6px;
   }

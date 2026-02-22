@@ -1,11 +1,11 @@
 <script lang="ts">
   import { formatNum } from './utils';
-  import type { from } from '$lib/db/duck.svelte';
+  import type { DuckQuery } from '$lib/db/duck.svelte';
   import { ilike, or } from '$lib/db/duck.svelte';
   import LiveResult from './LiveResult.svelte';
 
   interface Props {
-    flights: ReturnType<typeof from>;
+    flights: DuckQuery;
     badge?: string;
   }
 

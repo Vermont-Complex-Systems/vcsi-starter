@@ -7,9 +7,13 @@
 //   2. DuckQuery builder that chains filters and materializes reactive queries
 //
 // Usage:
-//   import { from, ilike, or } from '$lib/db/duck.svelte';
+//   import { database, ilike, or } from '$lib/db/duck.svelte';
 //
-//   const src = from(`'my-file.parquet'`);
+//   const db = database({
+//     papers: 'my-file.parquet',
+//   });
+//
+//   const src = db.from('papers');
 //   const allRows = src.rows();
 //
 //   const q = src
@@ -77,6 +81,11 @@ export function and(...clauses: (string | null)[]): string | null {
   return `(${valid.join(' AND ')})`;
 }
 
+/** Mark a column for descending order in arrange(). Like R's desc(). */
+export function desc(col: string): string {
+  return `${col} DESC`;
+}
+
 // ── Query builder ──
 
 type FilterFn = () => string | null;
@@ -84,10 +93,22 @@ type FilterFn = () => string | null;
 class DuckQuery {
   _table: string;
   _filters: FilterFn[];
+  _orderBy: string[];
+  _selectCols: string[] | null;
+  _mutations: [string, string][];
 
-  constructor(table: string, filters: FilterFn[] = []) {
+  constructor(
+    table: string,
+    filters: FilterFn[] = [],
+    orderBy: string[] = [],
+    selectCols: string[] | null = null,
+    mutations: [string, string][] = []
+  ) {
     this._table = table;
     this._filters = filters;
+    this._orderBy = orderBy;
+    this._selectCols = selectCols;
+    this._mutations = mutations;
   }
 
   // ── Filter verbs (immutable — each returns a new DuckQuery) ──
@@ -118,16 +139,42 @@ class DuckQuery {
     return this._add(clauseFn);
   }
 
+  /** ORDER BY columns. Use 'col' for ASC, desc('col') for DESC. NULLs sort last (like R). */
+  arrange(...cols: string[]) {
+    return new DuckQuery(this._table, this._filters, cols, this._selectCols, this._mutations);
+  }
+
+  // ── Column verbs (immutable — each returns a new DuckQuery) ──
+
+  /** Pick specific columns. Like dplyr's select(). Use 'old AS new' to rename inline. */
+  select(...cols: string[]) {
+    return new DuckQuery(this._table, this._filters, this._orderBy, cols, this._mutations);
+  }
+
+  /** Add computed columns (keeps all existing). Like dplyr's mutate(). */
+  mutate(exprs: Record<string, string>) {
+    const newMuts: [string, string][] = Object.entries(exprs);
+    return new DuckQuery(this._table, this._filters, this._orderBy, this._selectCols, [...this._mutations, ...newMuts]);
+  }
+
+  /** Rename columns. Like dplyr's rename(). Keeps all columns. */
+  rename(mapping: Record<string, string>) {
+    const excludes = Object.values(mapping);
+    const aliases = Object.entries(mapping).map(([newName, oldCol]) => `${oldCol} AS ${newName}`);
+    const select = `* EXCLUDE (${excludes.join(', ')}), ${aliases.join(', ')}`;
+    return new DuckQuery(this._table, this._filters, this._orderBy, [select], this._mutations);
+  }
+
   // ── Materializations (each calls duck/duck_val/duck_col internally) ──
 
-  /** SELECT * → { rows, loading, error, queryTime, refresh } */
+  /** SELECT columns → { rows, loading, error, queryTime, refresh } */
   rows<T = Record<string, unknown>>() {
-    return duck<T>(() => `SELECT * FROM ${this._table} ${this._where()}`);
+    return duck<T>(() => `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} ${this._order()}`);
   }
 
   /** First N rows (like R's tibble print). Default 6. */
   head<T = Record<string, unknown>>(n: number = 6) {
-    return duck<T>(() => `SELECT * FROM ${this._table} ${this._where()} LIMIT ${n}`);
+    return duck<T>(() => `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} ${this._order()} LIMIT ${n}`);
   }
 
   /**
@@ -188,10 +235,23 @@ class DuckQuery {
     );
   }
 
-  /** SELECT DISTINCT col → { items, loading, error } */
-  distinct<T = string>(col: string) {
-    return duck_col<T>(() =>
-      `SELECT DISTINCT ${col} FROM ${this._table} ${this._where([`${col} IS NOT NULL`])} ORDER BY ${col}`
+  /** distinct('col') → { items } for dropdowns. distinct('a','b') → { rows } for unique combos. distinct() → all unique rows. */
+  distinct<T = string>(col: string): { readonly items: T[]; readonly loading: boolean; readonly error: string | null };
+  distinct(...cols: string[]): { readonly rows: Record<string, unknown>[]; readonly loading: boolean; readonly error: string | null; readonly queryTime: number; refresh: () => Promise<void> };
+  distinct(...cols: string[]) {
+    if (cols.length === 0) {
+      return duck(() => `SELECT DISTINCT * FROM ${this._table} ${this._where()}`);
+    }
+    if (cols.length === 1) {
+      const col = cols[0];
+      return duck_col(() =>
+        `SELECT DISTINCT ${col} FROM ${this._table} ${this._where([`${col} IS NOT NULL`])} ORDER BY ${col}`
+      );
+    }
+    const colList = cols.join(', ');
+    const notNull = cols.map(c => `${c} IS NOT NULL`);
+    return duck(() =>
+      `SELECT DISTINCT ${colList} FROM ${this._table} ${this._where(notNull)} ORDER BY ${colList}`
     );
   }
 
@@ -211,12 +271,49 @@ class DuckQuery {
     );
   }
 
-  /** SELECT expr1 as alias1, expr2 as alias2, ... → { rows, loading, error } */
-  summarize(aggs: Record<string, string>) {
+  /** Aggregate the whole table or per group. Like dplyr's summarize(.by = ...). */
+  summarize(aggs: Record<string, string>, by?: string | string[]) {
     const select = Object.entries(aggs)
       .map(([alias, expr]) => `${expr} as ${alias}`)
       .join(', ');
-    return duck(() => `SELECT ${select} FROM ${this._table} ${this._where()}`);
+    if (!by) {
+      return duck(() => `SELECT ${select} FROM ${this._table} ${this._where()}`);
+    }
+    const groups = Array.isArray(by) ? by : [by];
+    const groupCols = groups.join(', ');
+    return duck(() =>
+      `SELECT ${groupCols}, ${select} FROM ${this._table} ${this._where()} GROUP BY ${groupCols} ORDER BY ${groupCols}`
+    );
+  }
+
+  /** Top N rows by column, optionally per group. Like dplyr's slice_max(). */
+  sliceMax(col: string, n: number = 1, by?: string | string[], opts?: { withTies?: boolean }) {
+    const rankFn = opts?.withTies ? 'RANK' : 'ROW_NUMBER';
+    if (!by) {
+      return duck(() =>
+        `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} ORDER BY ${col} DESC NULLS LAST LIMIT ${n}`
+      );
+    }
+    const groups = Array.isArray(by) ? by : [by];
+    const partition = groups.join(', ');
+    return duck(() =>
+      `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} QUALIFY ${rankFn}() OVER (PARTITION BY ${partition} ORDER BY ${col} DESC NULLS LAST) <= ${n}`
+    );
+  }
+
+  /** Bottom N rows by column, optionally per group. Like dplyr's slice_min(). */
+  sliceMin(col: string, n: number = 1, by?: string | string[], opts?: { withTies?: boolean }) {
+    const rankFn = opts?.withTies ? 'RANK' : 'ROW_NUMBER';
+    if (!by) {
+      return duck(() =>
+        `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} ORDER BY ${col} ASC NULLS LAST LIMIT ${n}`
+      );
+    }
+    const groups = Array.isArray(by) ? by : [by];
+    const partition = groups.join(', ');
+    return duck(() =>
+      `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} QUALIFY ${rankFn}() OVER (PARTITION BY ${partition} ORDER BY ${col} ASC NULLS LAST) <= ${n}`
+    );
   }
 
   /** Raw SQL with the builder's WHERE injected. */
@@ -239,7 +336,7 @@ class DuckQuery {
   // ── Internal ──
 
   _add(filter: FilterFn): DuckQuery {
-    return new DuckQuery(this._table, [...this._filters, filter]);
+    return new DuckQuery(this._table, [...this._filters, filter], this._orderBy, this._selectCols, this._mutations);
   }
 
   _clauses(): string[] {
@@ -250,9 +347,70 @@ class DuckQuery {
     const all = [...this._clauses(), ...extraClauses];
     return all.length > 0 ? `WHERE ${all.join(' AND ')}` : '';
   }
+
+  _buildSelect(): string {
+    if (this._selectCols) {
+      // When select is active, inline mutation expressions for matching aliases
+      const mutMap = new Map(this._mutations);
+      const cols = this._selectCols.map(col => {
+        const expr = mutMap.get(col);
+        return expr ? `${expr} AS ${col}` : col;
+      });
+      return cols.join(', ');
+    }
+    if (this._mutations.length === 0) return '*';
+    const muts = this._mutations.map(([alias, expr]) => `${expr} AS ${alias}`).join(', ');
+    return `*, ${muts}`;
+  }
+
+  _order(): string {
+    if (this._orderBy.length === 0) return '';
+    const clauses = this._orderBy.map(col => `${col} NULLS LAST`);
+    return `ORDER BY ${clauses.join(', ')}`;
+  }
 }
 
-/** Create a reactive query builder for a DuckDB table/parquet source. */
-export function from(table: string): DuckQuery {
-  return new DuckQuery(table);
+/** Exported type so components can type props as `DuckQuery`. */
+export type { DuckQuery };
+
+/**
+ * Create a named table registry (like Observable's DuckDBClient.of()).
+ * Maps friendly names to parquet file paths, enabling `db.from('flights')`.
+ *
+ * Usage:
+ *   const db = database({
+ *     flights: 'nycflights13_flights.parquet',
+ *     airports: 'airports.parquet'
+ *   });
+ *
+ *   const q = db.from('flights');           // same builder API
+ *   const joined = db.sql<T>(sql => ...);   // raw SQL with all tables available
+ */
+export function database(tables: Record<string, string>) {
+  const registry = new Map(
+    Object.entries(tables).map(([name, path]) => [
+      name,
+      path.startsWith("'") ? path : `'${path}'`
+    ])
+  );
+
+  return {
+    /** Get a DuckQuery builder for a registered table. */
+    from(name: string): DuckQuery {
+      const path = registry.get(name);
+      if (!path) throw new Error(`Unknown table "${name}". Registered: ${[...registry.keys()].join(', ')}`);
+      return new DuckQuery(path);
+    },
+
+    /** Raw SQL with access to all registered tables. Use table names directly in your query. */
+    sql<T = Record<string, unknown>>(buildSQL: (tables: Record<string, string>) => string) {
+      const tableMap = Object.fromEntries(registry);
+      return duck<T>(() => buildSQL(tableMap));
+    },
+
+    /** List registered table names. */
+    get tables(): string[] {
+      return [...registry.keys()];
+    }
+  };
 }

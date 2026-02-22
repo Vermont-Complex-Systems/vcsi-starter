@@ -6,7 +6,9 @@ vi.mock('../src/templates/duckdb.svelte', () => ({
   registerParquet: vi.fn(),
 }));
 
-import { ilike, between, inList, eq, or, and, from } from '../src/templates/duck.svelte';
+import { ilike, between, inList, eq, or, and, database } from '../src/templates/duck.svelte';
+
+const db = database({ test: 'test.parquet' });
 
 // ── SQL fragment helpers ──────────────────────────────────────────────
 
@@ -167,69 +169,69 @@ describe('composability', () => {
 // ── DuckQuery builder — SQL generation ────────────────────────────────
 
 describe('DuckQuery builder', () => {
-  it('from() creates a builder with table reference', () => {
-    const q = from("'test.parquet'");
+  it('db.from() creates a builder with table reference', () => {
+    const q = db.from('test');
     expect(q.whereSQL).toBe('');
     expect(q.isFiltered).toBe(false);
   });
 
   it('.where() adds a filter', () => {
-    const q = from("'test.parquet'").where(() => "year = 2020");
+    const q = db.from('test').where(() => "year = 2020");
     expect(q.whereSQL).toBe('WHERE year = 2020');
     expect(q.isFiltered).toBe(true);
   });
 
   it('.where() returning null is skipped', () => {
-    const q = from("'test.parquet'").where(() => null);
+    const q = db.from('test').where(() => null);
     expect(q.whereSQL).toBe('');
     expect(q.isFiltered).toBe(false);
   });
 
   it('chained .where() clauses are ANDed', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .where(() => "a = 1")
       .where(() => "b = 2");
     expect(q.whereSQL).toBe('WHERE a = 1 AND b = 2');
   });
 
   it('.between() generates correct clause', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .between('year', () => [2000, 2020]);
     expect(q.whereSQL).toBe('WHERE year BETWEEN 2000 AND 2020');
   });
 
   it('.between() with fullRange skips when values match', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .between('year', () => [2000, 2025], () => [2000, 2025]);
     expect(q.whereSQL).toBe('');
   });
 
   it('.in() generates IN clause', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .in('college', () => ['CAS', 'CEMS']);
     expect(q.whereSQL).toBe("WHERE college IN ('CAS', 'CEMS')");
   });
 
   it('.in() with empty array is skipped', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .in('college', () => []);
     expect(q.whereSQL).toBe('');
   });
 
   it('.ilike() generates ILIKE clause', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .ilike('title', () => 'test');
     expect(q.whereSQL).toBe("WHERE title ILIKE '%test%'");
   });
 
   it('.eq() generates = clause', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .eq('college', () => 'CAS');
     expect(q.whereSQL).toBe("WHERE college = 'CAS'");
   });
 
   it('multiple filter verbs combine with AND', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .between('year', () => [2000, 2020])
       .in('college', () => ['CAS'])
       .ilike('title', () => 'test');
@@ -239,7 +241,7 @@ describe('DuckQuery builder', () => {
   });
 
   it('inactive filters are excluded from WHERE', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .between('year', () => [2000, 2025], () => [2000, 2025]) // full range → skip
       .in('college', () => [])  // empty → skip
       .ilike('title', () => '') // empty → skip
@@ -249,7 +251,7 @@ describe('DuckQuery builder', () => {
   });
 
   it('.where() with or(ilike, ilike) for multi-column search', () => {
-    const q = from("'test.parquet'")
+    const q = db.from('test')
       .where(() => or(
         ilike('title', 'machine'),
         ilike('author', 'machine'),
@@ -261,7 +263,7 @@ describe('DuckQuery builder', () => {
   });
 
   it('builder is immutable — each verb returns a new instance', () => {
-    const base = from("'test.parquet'");
+    const base = db.from('test');
     const filtered = base.where(() => "a = 1");
     expect(base.whereSQL).toBe('');
     expect(filtered.whereSQL).toBe('WHERE a = 1');
