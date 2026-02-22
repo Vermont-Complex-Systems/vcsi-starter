@@ -66,3 +66,45 @@ export function duck<T = Record<string, unknown>>(
     refresh: execute
   };
 }
+
+/**
+ * Scalar query — returns a single value (COUNT, MIN, MAX, SUM, etc.)
+ * Usage: `const total = duck_val(() => \`SELECT COUNT(*) FROM ...\`)`
+ *        then use `total.value`
+ */
+export function duck_val<T = number>(
+  buildSQL: () => string,
+  defaultValue?: T
+): { readonly value: T; readonly loading: boolean; readonly error: string | null } {
+  const q = duck<Record<string, T>>(buildSQL);
+  return {
+    get value() {
+      const row = q.rows[0];
+      if (!row) return defaultValue as T;
+      const vals = Object.values(row);
+      return vals[0] ?? defaultValue as T;
+    },
+    get loading() { return q.loading; },
+    get error() { return q.error; }
+  };
+}
+
+/**
+ * Single-column query — returns an array of values.
+ * Usage: `const colleges = duck_col(() => \`SELECT DISTINCT college FROM ...\`)`
+ *        then use `colleges.items`
+ */
+export function duck_col<T = string>(
+  buildSQL: () => string
+): { readonly items: T[]; readonly loading: boolean; readonly error: string | null } {
+  const q = duck<Record<string, T>>(buildSQL);
+  return {
+    get items() {
+      if (q.rows.length === 0) return [];
+      const key = Object.keys(q.rows[0])[0];
+      return q.rows.map(r => r[key]);
+    },
+    get loading() { return q.loading; },
+    get error() { return q.error; }
+  };
+}

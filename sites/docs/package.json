@@ -19,6 +19,7 @@
     "vite": "^7.2.6"
   },
   "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.29.0",
     "@lucide/svelte": "^0.564.0",
     "@the-vcsi/scrolly-kit": "*",
     "mode-watcher": "^1.1.0"

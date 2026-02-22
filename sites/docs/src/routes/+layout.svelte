@@ -18,6 +18,7 @@
   const navLinks = [
     { href: `${base}/reference`, label: 'Styling' },
     { href: `${base}/components`, label: 'Components' },
+    { href: `${base}/extensions`, label: 'Extensions' },
     { href: 'https://vcsi.cmplxsys.w3.uvm.edu/', label: 'Examples', external: true },
     { href: 'https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main', label: 'GitHub', external: true }
   ];
@@ -42,6 +43,7 @@
     <ul class="docs-nav-links">
       <li class="nav-link-item"><a href="{base}/reference" aria-current={$page.url.pathname === base + '/reference' ? 'page' : undefined}>Styling</a></li>
       <li class="nav-link-item"><a href="{base}/components" aria-current={$page.url.pathname === base + '/components' ? 'page' : undefined}>Components</a></li>
+      <li class="nav-link-item"><a href="{base}/extensions" aria-current={$page.url.pathname === base + '/extensions' ? 'page' : undefined}>Extensions</a></li>
       <li class="nav-link-item"><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a></li>
       <li class="nav-link-item">
         <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main" target="_blank" rel="noopener" aria-label="GitHub" class="github-link">

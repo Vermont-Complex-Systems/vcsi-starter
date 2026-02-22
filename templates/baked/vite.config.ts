@@ -6,7 +6,7 @@ import dsv from "@rollup/plugin-dsv";
 export default defineConfig({
 	optimizeDeps: {
 		exclude: [
-			'@tanstack/svelte-table', 
+			'@tanstack/svelte-table',
 			'@duckdb/duckdb-wasm'
 		]
 	},

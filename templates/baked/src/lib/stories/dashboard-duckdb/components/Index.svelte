@@ -2,7 +2,7 @@
 	import { scaleLinear, scaleOrdinal, extent, zoomIdentity } from 'd3';
 
 	import { Sidebar, ChartTooltip, Spinner, useIsMobile } from '@the-vcsi/scrolly-kit';
-	import { duck } from '$lib/db/sql.svelte';
+	import { from, ilike, or } from '$lib/db/duck.svelte';
 
 	import AppSidebar from './AppSidebar.svelte';
 	import SectionCards from './SectionCards.svelte';
@@ -12,78 +12,54 @@
 
 	let { story, data } = $props();
 
-	// ── Filter state (declared first so buildWhere can read them) ──
+	// ── Filter state ──
 	let selectedYear = $state([]);
 	let selectedColleges = $state(new Set());
 	let searchQuery = $state('');
 
-	const src = `'${story.slug}.parquet'`;
+	// ── DuckDB queries via builder ──
 
-	// Build WHERE clause from reactive filter state.
-	// Called inside duck() builders, so $effect auto-tracks the deps.
-	function buildWhere() {
-		const clauses = [];
-		if (selectedYear.length === 2 && !(selectedYear[0] === yearMin && selectedYear[1] === yearMax)) {
-			if (selectedYear[0] === selectedYear[1]) {
-				clauses.push(`publication_year = ${selectedYear[0]}`);
-			} else {
-				clauses.push(`publication_year BETWEEN ${selectedYear[0]} AND ${selectedYear[1]}`);
-			}
-		}
-		if (selectedColleges.size > 0) {
-			const list = [...selectedColleges].map(c => `'${c.replace(/'/g, "''")}'`).join(', ');
-			clauses.push(`college IN (${list})`);
-		}
-		if (searchQuery.trim()) {
-			const escaped = searchQuery.trim().replace(/'/g, "''");
-			clauses.push(`title ILIKE '%${escaped}%'`);
-		}
-		return clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : '';
-	}
+	const embeddings = from(`'${story.slug}.parquet'`);
 
-	// ── DuckDB queries ──
+	// Unfiltered — runs once, stable scales & background dots
+	const allData    = embeddings.rows();
+	const totalCount = embeddings.count();
+	const colleges   = embeddings.distinct('college');
+	// 2000 is just a reasonable placeholder
+	const yearMinVal = embeddings.min('publication_year', 2000);
+	const yearMaxVal = embeddings.max('publication_year', 2025);
 
-	// All rows — runs once, used for background dots and stable scales
-	const allData = duck(() => `SELECT * FROM ${src}`);
-
-	// Filtered embeddings — re-runs when any filter changes
-	const filtered = duck(() => `SELECT * FROM ${src} ${buildWhere()}`);
-
-	// Whether any filter is active
-	let isFiltered = $derived(buildWhere() !== '');
-
-	// Aggregation — re-runs with filters
-	const stats = duck(() => `
-		SELECT
-			COUNT(*) as paper_count,
-			COUNT(DISTINCT ego_display_name) as author_count,
-			COUNT(DISTINCT host_dept) as dept_count,
-			COUNT(DISTINCT college) as college_count
-		FROM ${src} ${buildWhere()}
-	`);
-
-	// Total count — runs once (no reactive deps in SQL)
-	const total = duck(() => `SELECT COUNT(*) as total FROM ${src}`);
-
-	// Sidebar metadata — runs once
-	const collegeMeta = duck(() => `
-		SELECT DISTINCT college FROM ${src}
-		WHERE college IS NOT NULL ORDER BY college
-	`);
-	const yearMeta = duck(() => `
-		SELECT MIN(publication_year) as yr_min, MAX(publication_year) as yr_max
-		FROM ${src} WHERE publication_year IS NOT NULL
-	`);
-
-	let colleges = $derived(collegeMeta.rows.map(r => r.college));
-	let yearMin = $derived(Number(yearMeta.rows[0]?.yr_min ?? 2000));
-	let yearMax = $derived(Number(yearMeta.rows[0]?.yr_max ?? 2025));
+	let yearMin = $derived(Number(yearMinVal.value));
+	let yearMax = $derived(Number(yearMaxVal.value));
 
 	// Initialize slider to full range once metadata loads
 	$effect(() => {
-		if (yearMeta.rows.length > 0 && selectedYear.length === 0) {
+		if (yearMinVal.value != null && selectedYear.length === 0) {
 			selectedYear = [yearMin, yearMax];
 		}
+	});
+
+	
+	// Filtered view — re-queries when any filter changes
+	const q = embeddings
+		.between('publication_year',
+			() => selectedYear,         // adds a year range filter.
+			() => [yearMin, yearMax])   // "full range" from the data
+		.in('college', () => [...selectedColleges]) // filter IN colleges
+		.where(() => or(
+			ilike('title', searchQuery),
+			ilike('ego_display_name', searchQuery),
+			ilike('abstract', searchQuery)
+		));
+
+	const filtered = q.rows();
+	let isFiltered = $derived(q.isFiltered);
+
+	const stats = q.summarize({
+		paper_count:   'COUNT(*)',
+		author_count:  'COUNT(DISTINCT ego_display_name)',
+		dept_count:    'COUNT(DISTINCT host_dept)',
+		college_count: 'COUNT(DISTINCT college)',
 	});
 
 	// ── Chart state ──
@@ -170,14 +146,14 @@
 				bind:searchQuery
 				bind:selectedYear
 				bind:selectedColleges
-				{colleges}
+				colleges={colleges.items}
 				{yearMin}
 				{yearMax}
 				{colorScale}
 			/>
 
 			<Sidebar.Inset>
-				<SectionCards stats={stats.rows[0]} totalCount={total.rows[0]?.total ?? 0} />
+				<SectionCards stats={stats.rows[0]} totalCount={totalCount.value} />
 				<div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
 					<svg viewBox={`0 0 ${width} ${height}`}>
 						<Grid xScale={zoomedXScale} yScale={zoomedYScale} {width} {height} {margin} />

@@ -22,7 +22,7 @@
         <input
             id="search-input"
             type="text"
-            placeholder="Paper title..."
+            placeholder="Paper title, abstract or author..."
             bind:value={searchQuery}
             class="search-input"
         />
