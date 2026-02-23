@@ -42,6 +42,7 @@
 
 	
 	// Filtered view — re-queries when any filter changes
+	// Pretty powerful if you ask me.
 	const q = embeddings
 		.between('publication_year',
 			() => selectedYear,         // adds a year range filter.

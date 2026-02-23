@@ -1,0 +1,105 @@
+{
+    "title": "Geo Scrolly story",
+    "subtitle": "Fullscreen mode with geo data and data orchestration",
+    "authors": [
+        {
+            "name": "Jonathan St-Onge",
+            "url": "https://complexstories.uvm.edu/author/jonathan-st-onge"
+        }
+    ],
+    "date": "Feb 2, 2026",
+    "SectionTitle": "Hello world",
+    "introduction": [
+        {
+            "type": "markdown",
+            "value": "This code is a follow up from [this story](https://vcsi.cmplxsys.w3.uvm.edu/scrolly-story-2/), but we show how to integrate geo with metadata from various sources together into a neat scrolly story. The data we'll be using is from statcan, in charge of the Canadian census, the city of montreal, and other places that we document in the pipeline."
+        },
+        {
+            "type": "markdown",
+            "value": "It is important to note that data orchestration is a crucial component of making this story maintainable and extensible. We talk about it more in the appendix."
+        },
+        {
+            "type": "markdown",
+            "value": "Without further ado, here's Montreal:"
+        }
+    ],
+    "steps": [
+        {
+            "type": "markdown",
+            "value": "Montreal city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones like Mont-Royal, Westmount, Dorval, and Cote-Saint-Luc, are independent municipalities that chose to 'defuse' and remain separate from the megacity."
+        },
+        {
+            "type": "markdown",
+            "value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+        }
+    ],
+    "conclusion": [
+        {
+            "type": "markdown",
+            "value": "In conclusion, we saw how to programmatically have a scrolly story with geo data coming from a backend."
+        }
+    ],
+    "appendix": [
+        {
+            "type": "markdown",
+            "value": "One key challenge with projects including geo data is that it can get messy very fast. You have different geo and/or metadata layers one might want to include or not."
+        },
+        {
+            "type": "markdown",
+            "value": "To keep the project neat and tidy, we show how to write simple dagster pipeline to do extraction-transformation-load (ETL) in a secondary [github repository](https://github.com/jstonge/rdag-montreal). The github repository culminates into a [metadata.csv](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/metadata.csv), together with Montreal's electoral [districts](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/boundary.geojson) and broader [boundary](https://github.com/jstonge/rdag-montreal/blob/main/pipelines/transform/input/boundary.geojson). The pipeline currently looks like:"
+        },
+        {
+            "type": "markdown",
+            "value": "<img src=\"/dagster.jpg\" style=\"width: 70vw; max-width: none; margin-left: calc(50% - 35vw); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); border-radius: 4px;\" />"
+        },
+        {
+            "type": "markdown",
+            "value": "Structuring the data flow as directed acyclic graph is neat because we can understand at a glance what is happening. When assets are green, it means they build successfully. In this case, the edges represent active dependencies, showing we're not currently using `boundary_file_census_2021` and `montreal_boundary`. To produce the plot above, we are using [dagster](https://dagster.io/) as data orchestration tool. But really any software that can take a series of steps, then construct the dependency graph, is fair game to implement PDP."
+        },
+        {
+            "type": "markdown",
+            "value": "For the rest of this appendix, we will be using [maestro](https://whipson.github.io/maestro/index.html) in `R` (it also can output simple DAG diagrams using `diagrammeR`, but they are less fancy)."
+        },
+        {
+            "type": "markdown",
+            "value": "Here's what a project implementing principled data processing in maestro might look like:"
+        },
+        {
+            "type": "markdown",
+            "value": "```\n.\n├── orchestrator.R \n├── pipelines\n│   ├── etl.R\n│   ├── ingest\n│   │   ├── input\n│   │   │   ├── geo\n│   │   │   └── metadata\n│   │   └── src\n│   └── transform\n└── renv/\n```"
+        },
+        {
+            "type": "markdown",
+            "value": "The key idea is that each script in `pipelines/` are implementing atomic tasks, which we can then examine."
+        },
+        {
+            "type": "code",
+            "language": "R",
+            "value": "library(here)\n\nsource(here('pipelines', 'ingest', 'src', 'ingest.R'))\nsource(here('pipelines', 'transform', 'src', 'geo_aggregation.R'))\nsource(here('pipelines', 'transform', 'src', 'metadata_aggregation.R'))\n\n# INGEST PIPELINES\ningest_districts <- function() {\n  districts_electoraux_2021()\n}\n\ningest_cma <- function() {\n  montreal_cma()\n}\n\ningest_population <- function() {\n  population_by_district()\n}\n\n# TRANSFORM PIPELINES\ntransform_geo <- function(.input) {\n  geo_aggregation()\n}\n\ntransform_metadata <- function(.input) {\n  metadata_aggregation()\n}"
+        },
+        {
+            "type": "markdown",
+            "value": "Then you should see:"
+        },
+        {
+            "type": "code",
+            "value": "── [2026-02-02 11:03:36]\nRunning pipelines  ▶ \n✔ ingest_districts [28ms]\n✔ transform_geo [759ms]\n✔ ingest_cma [19ms]\n✔ transform_geo [602ms]\n✔ ingest_population [50ms]\n✔ transform_metadata [31ms]\n\n── [2026-02-02 11:03:37]\nPipeline execution completed ■  | 1.538 sec elapsed \n✔ 6 successes | ! 0 warnings | ✖ 0 errors | ■ 6 total"
+        },
+        {
+            "type": "markdown",
+            "value": "Thinking in terms of DAGs lead to more _maintainable_ project because the code is documentation."
+        },
+        {
+            "type": "markdown",
+            "value": "There are numerous other software and documentation implementing different levels of features across languages."
+        },
+        {
+            "type": "markdown",
+            "value": "In my opinion, each have their pros and cons. What I like about `maestro` and `dagster` is that they don't enforce a project structure."
+        }
+    ]
+}

@@ -4,6 +4,7 @@ scrolly-story-1,Split Story,Left-right layout.,Jonathan St-Onge,2026-01-01,,"Mar
 scrolly-story-2,Fullscreen Story,Full-screen plot layout,Jonathan St-Onge,2026-01-02,,"Dark theme, Tooltip, Tweened axis",1
 thematic-story-1,Thematic Story,Not all story need scrolly-telling,Jonathan St-Onge,2026-01-03,,"Hero, IntersectObserver",1
 geo-story-1,Geo Story,Full-screen layout but with maps and a data pipeline,Jonathan St-Onge,2026-01-05,,"Geo, PDP",2
+geo-story-duckdb,Geo Story with Duckdb!,Full-screen layout but with maps and a data pipeline,Jonathan St-Onge,2026-01-05,,"Geo, PDP",3
 dashboard-1,Dashboard,Dashboardinggg,Jonathan St-Onge,2026-01-10,,"Dashboard, PDP",1
 dashboard-bits-ui,Bits-UI Dashboard,"Bits-UI is very nice, once you understand it",Jonathan St-Onge,2026-01-10,,"Dashboard, Bits-UI",2
-dashboard-duckdb,DuckBoard,A duckdb dashboard,Jonathan St-Onge,2026-02-21,,DuckDB add-on,2
+dashboard-duckdb,DuckBoard,A duckdb dashboard,Jonathan St-Onge,2026-02-21,,DuckDB add-on,3

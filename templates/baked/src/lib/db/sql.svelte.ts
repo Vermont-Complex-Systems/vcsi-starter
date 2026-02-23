@@ -42,7 +42,13 @@ export function duck<T = Record<string, unknown>>(
       await ensureParquet(sql);
       const conn = await getDB();
       const result = await conn.query(sql);
-      rows = result.toArray().map((r: any) => r.toJSON());
+      rows = result.toArray().map((r: any) => {
+        const json = r.toJSON();
+        for (const k of Object.keys(json)) {
+          if (typeof json[k] === 'bigint') json[k] = Number(json[k]);
+        }
+        return json;
+      });
       queryTime = Math.round((performance.now() - start) * 100) / 100;
     } catch (e) {
       error = String(e);
