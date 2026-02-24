@@ -57,84 +57,25 @@
     );
 
     const daQuery = db.sql(t =>
-        `SELECT geo_uid, population, households, dwellings, area_sqkm,
-                -- derived
+        `SELECT *,
                 population / NULLIF(area_sqkm, 0) as pop_density,
                 pop_immigrant * 100.0 / NULLIF(population, 0) as immigrant_pct,
-                -- age
-                avg_age_sex_total, pop_total,
-                pop_age_0to14, pop_age_15to64, pop_age_65plus,
-                -- income
-                median_income_household,
-                median_income_aftertax_household,
-                median_income_total,
-                median_income_male,
-                median_income_female,
-                median_income_aftertax_total,
-                median_income_aftertax_male,
-                median_income_aftertax_female,
-                avg_income_household,
-                avg_income_aftertax_household,
-                avg_total_income_total,
-                avg_total_income_male,
-                avg_total_income_female,
-                -- tenure
-                dwellings_total, tenure_owner, tenure_renter,
-                -- language
-                lang_mother_english, lang_mother_french,
-                -- immigration
-                pop_immigrant,
                 ST_AsGeoJSON(geom) as geojson
          FROM ${t.census_da}
          WHERE population > 0`
     );
 
-    const num = v => v != null ? Number(v) : null;
-
     let daFeatures = $derived(
         daQuery.rows
             .filter(r => r.geojson)
-            .map(r => rewind({
-                type: 'Feature',
-                properties: {
-                    geo_uid: r.geo_uid,
-                    population: Number(r.population),
-                    households: Number(r.households),
-                    area_sqkm: Number(r.area_sqkm),
-                    pop_density: num(r.pop_density),
-                    // age
-                    avg_age_sex_total: num(r.avg_age_sex_total),
-                    pop_total: num(r.pop_total),
-                    pop_age_0to14: num(r.pop_age_0to14),
-                    pop_age_15to64: num(r.pop_age_15to64),
-                    pop_age_65plus: num(r.pop_age_65plus),
-                    // income
-                    median_income_household: num(r.median_income_household),
-                    median_income_aftertax_household: num(r.median_income_aftertax_household),
-                    median_income_total: num(r.median_income_total),
-                    median_income_male: num(r.median_income_male),
-                    median_income_female: num(r.median_income_female),
-                    median_income_aftertax_total: num(r.median_income_aftertax_total),
-                    median_income_aftertax_male: num(r.median_income_aftertax_male),
-                    median_income_aftertax_female: num(r.median_income_aftertax_female),
-                    avg_income_household: num(r.avg_income_household),
-                    avg_income_aftertax_household: num(r.avg_income_aftertax_household),
-                    avg_total_income_total: num(r.avg_total_income_total),
-                    avg_total_income_male: num(r.avg_total_income_male),
-                    avg_total_income_female: num(r.avg_total_income_female),
-                    // tenure
-                    dwellings_total: num(r.dwellings_total),
-                    tenure_owner: num(r.tenure_owner),
-                    tenure_renter: num(r.tenure_renter),
-                    // language
-                    lang_mother_english: num(r.lang_mother_english),
-                    lang_mother_french: num(r.lang_mother_french),
-                    // immigration
-                    pop_immigrant: num(r.pop_immigrant),
-                    immigrant_pct: num(r.immigrant_pct),
-                },
-                geometry: JSON.parse(r.geojson)
-            }, { reverse: true }))
+            .map(r => {
+                const props = {};
+                for (const [k, v] of Object.entries(r)) {
+                    if (k === 'geojson' || k === 'geom') continue;
+                    props[k] = typeof v === 'bigint' ? Number(v) : v != null && typeof v !== 'string' ? Number(v) : v;
+                }
+                return rewind({ type: 'Feature', properties: props, geometry: JSON.parse(r.geojson) }, { reverse: true });
+            })
     );
 
     function isInVilleray(feature) {

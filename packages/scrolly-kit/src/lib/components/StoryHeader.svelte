@@ -7,6 +7,7 @@ Story header with title, subtitle, authors, and date.
 - `subtitle` - Optional subtitle
 - `authors` - Array of `{ name: string, url?: string }`
 - `date` - Publication date string
+- `warning` - Optional warning/disclaimer shown inline after author names
 - `class` - Additional CSS classes
 
 ## Usage
@@ -31,12 +32,14 @@ Story header with title, subtitle, authors, and date.
     subtitle,
     authors,
     date,
+    warning,
     class: className = ''
   }: {
     title: string;
     subtitle?: string;
     authors?: Author[];
     date?: string;
+    warning?: string;
     class?: string;
   } = $props();
   
@@ -71,6 +74,10 @@ Story header with title, subtitle, authors, and date.
     {#if date}
       <p class="date">{date}</p>
     {/if}
+
+    {#if warning}
+      <p class="warning-banner">&#9888; {warning}</p>
+    {/if}
   </div>
 </header>
 
@@ -102,6 +109,17 @@ Story header with title, subtitle, authors, and date.
 .article-meta .date {
   font-size: var(--font-size-small);
   opacity: 0.7;
+}
+
+.warning-banner {
+  display: inline-block;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  font-size: var(--font-size-small, 0.85rem);
+  color: #000000ff;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
 }
 
 /* Mobile adjustments */
