@@ -25,7 +25,7 @@
         {/each}
     </section>
 
-    <section id="scrolly" class="fullscreen-layout">
+    <section id="geo-duckdb-scrolly" class="fullscreen-layout">
         <div class="sticky-panel">
             <GeoScrollyPlot {scrollyIndex} />
         </div>
@@ -49,3 +49,6 @@
 
 <Footer theme="light" />
 
+<style>
+    #geo-duckdb-scrolly { --step-height: 70rem; }
+</style>

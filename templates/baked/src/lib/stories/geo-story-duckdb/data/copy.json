@@ -66,6 +66,14 @@
         },
         {
             "type": "markdown",
+            "value": "Try **clicking on individual DAs** to dig deeper. The panel on the right breaks down the median income into its gender components (total, male, female), and compares it with the average income (in red). When the average is noticeably higher than the median, it signals income inequality within that DA — a few high earners pulling the mean up."
+        },
+        {
+            "type": "markdown",
+            "value": "Now try **clicking on several DAs** — each click adds another set of dots to the chart. This lets you compare income distributions across neighboring areas: do adjacent DAs have similar gender gaps? Does the median-to-average spread vary block by block? In a diverse borough like Villeray–Parc-Ex, even a few streets can separate very different income realities."
+        },
+        {
+            "type": "markdown",
             "value": "Now let's fly south to **Outremont** — one of Montreal's wealthiest boroughs. Using the same city-wide scale, notice how Outremont's DAs land in much higher income bins compared to Villeray–Parc-Ex."
         },
         {

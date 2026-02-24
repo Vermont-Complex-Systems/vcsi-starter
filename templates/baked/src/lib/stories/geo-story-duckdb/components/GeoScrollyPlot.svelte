@@ -5,6 +5,7 @@
     import DAPolygons from './DAPolygons.svelte';
     import DistrictOutlines from './DistrictOutlines.svelte';
     import { computeColors, DA_METRICS } from './color-utils.js';
+    import DAInfoPanel from './DAInfoPanel.svelte';
     import { database } from '$lib/db/duck.svelte';
 
     import districtsGeo from '../data/districts.json';
@@ -18,7 +19,7 @@
 
     // Pre-compute Villeray-Saint-Michel-Parc-Extension zoom target
     const villerayDistricts = districts.filter(
-        d => d.properties.arrondissement === 'Villeray-Saint-Michel-Parc-Extension'
+        d => d.properties.nom === 'Villeray'
     );
     const villerayCollection = { type: 'FeatureCollection', features: villerayDistricts };
 
@@ -27,7 +28,7 @@
     );
     const outremontCollection = { type: 'FeatureCollection', features: outremontDistricts };
 
-    const isZoomStep = (step) => step >= 8 && step <= 10;
+    const isZoomStep = (step) => step >= 8 && step <= 12;
     const isHighlightStep = (step) => step === 7;
 
     // Chart dimensions
@@ -56,17 +57,39 @@
     );
 
     const daQuery = db.sql(t =>
-        `SELECT geo_uid, population, avg_age, median_income,
-                seniors_65plus, renters, households, english_only,
-                area_sqkm,
+        `SELECT geo_uid, population, households, dwellings, area_sqkm,
+                -- derived
                 population / NULLIF(area_sqkm, 0) as pop_density,
-                seniors_65plus * 100.0 / NULLIF(population, 0) as seniors_pct,
-                renters * 100.0 / NULLIF(households, 0) as renter_pct,
-                english_only * 100.0 / NULLIF(population, 0) as english_pct,
+                pop_immigrant * 100.0 / NULLIF(population, 0) as immigrant_pct,
+                -- age
+                avg_age_sex_total, pop_total,
+                pop_age_0to14, pop_age_15to64, pop_age_65plus,
+                -- income
+                median_income_household,
+                median_income_aftertax_household,
+                median_income_total,
+                median_income_male,
+                median_income_female,
+                median_income_aftertax_total,
+                median_income_aftertax_male,
+                median_income_aftertax_female,
+                avg_income_household,
+                avg_income_aftertax_household,
+                avg_total_income_total,
+                avg_total_income_male,
+                avg_total_income_female,
+                -- tenure
+                dwellings_total, tenure_owner, tenure_renter,
+                -- language
+                lang_mother_english, lang_mother_french,
+                -- immigration
+                pop_immigrant,
                 ST_AsGeoJSON(geom) as geojson
          FROM ${t.census_da}
          WHERE population > 0`
     );
+
+    const num = v => v != null ? Number(v) : null;
 
     let daFeatures = $derived(
         daQuery.rows
@@ -76,14 +99,39 @@
                 properties: {
                     geo_uid: r.geo_uid,
                     population: Number(r.population),
-                    avg_age: Number(r.avg_age),
-                    median_income: r.median_income != null ? Number(r.median_income) : null,
-                    seniors_65plus: Number(r.seniors_65plus),
+                    households: Number(r.households),
                     area_sqkm: Number(r.area_sqkm),
-                    pop_density: r.pop_density != null ? Number(r.pop_density) : null,
-                    seniors_pct: r.seniors_pct != null ? Number(r.seniors_pct) : null,
-                    renter_pct: r.renter_pct != null ? Number(r.renter_pct) : null,
-                    english_pct: r.english_pct != null ? Number(r.english_pct) : null,
+                    pop_density: num(r.pop_density),
+                    // age
+                    avg_age_sex_total: num(r.avg_age_sex_total),
+                    pop_total: num(r.pop_total),
+                    pop_age_0to14: num(r.pop_age_0to14),
+                    pop_age_15to64: num(r.pop_age_15to64),
+                    pop_age_65plus: num(r.pop_age_65plus),
+                    // income
+                    median_income_household: num(r.median_income_household),
+                    median_income_aftertax_household: num(r.median_income_aftertax_household),
+                    median_income_total: num(r.median_income_total),
+                    median_income_male: num(r.median_income_male),
+                    median_income_female: num(r.median_income_female),
+                    median_income_aftertax_total: num(r.median_income_aftertax_total),
+                    median_income_aftertax_male: num(r.median_income_aftertax_male),
+                    median_income_aftertax_female: num(r.median_income_aftertax_female),
+                    avg_income_household: num(r.avg_income_household),
+                    avg_income_aftertax_household: num(r.avg_income_aftertax_household),
+                    avg_total_income_total: num(r.avg_total_income_total),
+                    avg_total_income_male: num(r.avg_total_income_male),
+                    avg_total_income_female: num(r.avg_total_income_female),
+                    // tenure
+                    dwellings_total: num(r.dwellings_total),
+                    tenure_owner: num(r.tenure_owner),
+                    tenure_renter: num(r.tenure_renter),
+                    // language
+                    lang_mother_english: num(r.lang_mother_english),
+                    lang_mother_french: num(r.lang_mother_french),
+                    // immigration
+                    pop_immigrant: num(r.pop_immigrant),
+                    immigrant_pct: num(r.immigrant_pct),
                 },
                 geometry: JSON.parse(r.geojson)
             }, { reverse: true }))
@@ -95,7 +143,7 @@
     }
 
     // ── Explore mode (step 12+) ──
-    let isExploreMode = $derived(stepIndex >= 12);
+    let isExploreMode = $derived(stepIndex >= 14);
 
     let metric = $state('density');
     let binning = $state('equal-interval');
@@ -104,20 +152,15 @@
     let selectedDas = $state([]);
 
     let isZoomed = $derived(isExploreMode && selectedDistrict !== null);
-    let selectedIds = $derived(new Set(selectedDas.map(f => f.properties.geo_uid)));
 
-    let selectionSummary = $derived.by(() => {
-        if (selectedDas.length === 0) return null;
-        const totalPop = selectedDas.reduce((s, f) => s + (f.properties.population ?? 0), 0);
-        const totalArea = selectedDas.reduce((s, f) => s + (f.properties.area_sqkm ?? 0), 0);
-        const incomes = selectedDas
-            .map(f => f.properties.median_income)
-            .filter(v => v != null);
-        const avgIncome = incomes.length > 0
-            ? Math.round(incomes.reduce((s, v) => s + v, 0) / incomes.length)
-            : null;
-        return { totalPop, totalArea, avgIncome };
+    // The metric shown on the map: explore mode uses the dropdown, story steps are hardcoded
+    let activeMetric = $derived.by(() => {
+        if (isExploreMode) return metric;
+        if (stepIndex >= 6 && stepIndex <= 12) return 'income';
+        if (stepIndex === 4 || stepIndex === 5 || stepIndex === 13) return 'density';
+        return 'population';
     });
+    let selectedIds = $derived(new Set(selectedDas.map(f => f.properties.geo_uid)));
 
     function handleDistrictClick(feature) {
         selectedDistrict = feature;
@@ -169,8 +212,8 @@
     }
 
     function getStepZoomTarget(step) {
-        if (step >= 8 && step <= 9) return villerayCollection;
-        if (step === 10) return outremontCollection;
+        if (step >= 8 && step <= 11) return villerayCollection;
+        if (step === 12) return outremontCollection;
         return null;
     }
 
@@ -188,7 +231,6 @@
         // Detach interactive zoom for story steps
         svg.on('.zoom', null);
         selectedDistrict = null;
-        selectedDas = [];
 
         // Compute target zoom for this step
         const target = getStepZoomTarget(stepIndex);
@@ -198,6 +240,7 @@
                         : target === outremontCollection ? 'outremont'
                         : null;
         const changed = targetKey !== prevStepTarget;
+        if (changed) selectedDas = [];
         const wasZoomed = prevStepTarget !== null;
         prevStepTarget = targetKey;
 
@@ -255,8 +298,8 @@
 
     // Constrain hover to zoomed-in area DAs (null = all DAs hoverable)
     let hoverableIds = $derived.by(() => {
-        if (stepIndex >= 8 && stepIndex <= 9) return new Set(villerayDAs.map(f => f.properties.geo_uid));
-        if (stepIndex === 10) return new Set(outremontDAs.map(f => f.properties.geo_uid));
+        if (stepIndex >= 8 && stepIndex <= 11) return new Set(villerayDAs.map(f => f.properties.geo_uid));
+        if (stepIndex === 12) return new Set(outremontDAs.map(f => f.properties.geo_uid));
         return null;
     });
 
@@ -331,19 +374,26 @@
                 return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Local scale', daColors: colors, legend: colorScale };
             }
 
-            case 10: {
+            case 10:
+            case 11: {
+                if (villerayDAs.length === 0) return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Click to explore' };
+                const { colors, colorScale } = computeColors(villerayDAs, { metric: 'income', binning: 'equal-interval' });
+                return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Click to explore', daColors: colors, legend: colorScale };
+            }
+
+            case 12: {
                 if (outremontDAs.length === 0) return { ...baseView, title: 'Outremont \u2014 City-wide scale' };
                 const { colors, colorScale } = computeColors(outremontDAs, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99, domainFeatures: daFeatures });
                 return { ...baseView, title: 'Outremont \u2014 City-wide scale', daColors: colors, legend: colorScale };
             }
 
-            case 11: {
+            case 13: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Population Density (Census 2021)' };
                 const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'quantile' });
                 return { ...baseView, title: 'Population Density (Census 2021)', daColors: colors, legend: colorScale };
             }
 
-            case 12: default: {
+            case 14: default: {
                 const features = isZoomed ? districtDAs : daFeatures;
                 if (features.length === 0) return baseView;
                 const { colors, colorScale } = computeColors(features, {
@@ -361,8 +411,8 @@
     // Highlight districts
     let highlightDistricts = $derived.by(() => {
         if (isExploreMode && selectedDistrict) return [selectedDistrict];
-        if (stepIndex === 7 || (stepIndex >= 8 && stepIndex <= 9)) return villerayDistricts;
-        if (stepIndex === 10) return outremontDistricts;
+        if (stepIndex === 7 || (stepIndex >= 8 && stepIndex <= 11)) return villerayDistricts;
+        if (stepIndex === 12) return outremontDistricts;
         return [];
     });
     let hasHighlights = $derived(highlightDistricts.length > 0);
@@ -487,12 +537,12 @@
                     features={visibleDAs}
                     colors={mapConfig.daColors}
                     {pathGenerator}
-                    selectedIds={isExploreMode ? selectedIds : new Set()}
+                    selectedIds={(isZoomStep(stepIndex) || (isExploreMode && isZoomed)) ? selectedIds : new Set()}
                     {highlightDistricts}
                     enableHover={isZoomStep(stepIndex) || isExploreMode}
                     {hoverableIds}
                     zoomScale={zoomTransform.k}
-                    onclick={isExploreMode && isZoomed ? toggleDa : null}
+                    onclick={(isZoomStep(stepIndex) || (isExploreMode && isZoomed)) ? toggleDa : null}
                     bind:hovered={hoveredDa}
                     bind:mouse
                 />
@@ -513,7 +563,7 @@
     <Legend scale={mapConfig.legend} />
 
     {#if hoveredDa}
-        {@const m = DA_METRICS[metric]}
+        {@const m = DA_METRICS[activeMetric]}
         <div class="tooltip" style="left: {mouse.x + 12}px; top: {mouse.y - 12}px;">
             <strong>DA {hoveredDa.properties.geo_uid}</strong><br>
             Pop: {hoveredDa.properties.population?.toLocaleString()}<br>
@@ -529,16 +579,8 @@
         </div>
     {/if}
 
-    {#if selectionSummary}
-        <div class="da-info">
-            <strong>{selectedDas.length} DA{selectedDas.length > 1 ? 's' : ''} selected</strong>
-            &middot; Total pop: {selectionSummary.totalPop.toLocaleString()}
-            &middot; Area: {selectionSummary.totalArea.toFixed(1)} km&sup2;
-            {#if selectionSummary.avgIncome}
-                &middot; Avg income: ${selectionSummary.avgIncome.toLocaleString()}
-            {/if}
-            <button class="clear-btn" onclick={() => selectedDas = []}>Clear</button>
-        </div>
+    {#if selectedDas.length > 0}
+        <DAInfoPanel features={selectedDas} metric={activeMetric} onclear={() => selectedDas = []} />
     {/if}
 </div>
 
@@ -690,32 +732,4 @@
         font-size: 0.65rem;
     }
 
-    .da-info {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        font-size: 0.8rem;
-        color: #333;
-        padding: 0.4rem 0.75rem;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        z-index: 10;
-    }
-
-    .clear-btn {
-        margin-left: auto;
-        font-size: 0.7rem;
-        padding: 0.1rem 0.3rem;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        background: white;
-        cursor: pointer;
-        color: #666;
-    }
-    .clear-btn:hover { background: #eee; }
 </style>
