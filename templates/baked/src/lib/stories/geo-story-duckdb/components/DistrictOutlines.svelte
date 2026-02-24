@@ -23,7 +23,7 @@
         onmouseenter={() => { if (interactive) hovered = feature; }}
         onmouseleave={() => { if (interactive) hovered = null; }}
         onmousemove={(e) => { if (interactive) mouse = { x: e.offsetX, y: e.offsetY }; }}
-        onclick={() => { if (interactive) onclick?.(feature); }}
+        onclick={() => { if (interactive) { hovered = null; onclick?.(feature); } }}
         onkeydown={(e) => { if (interactive && e.key === 'Enter') onclick?.(feature); }}
     />
 {/each}

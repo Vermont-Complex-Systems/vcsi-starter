@@ -6,46 +6,13 @@
     import Legend from './Legend.svelte';
     import DAPolygons from './DAPolygons.svelte';
     import DistrictOutlines from './DistrictOutlines.svelte';
+    import { computeColors, DA_METRICS } from './color-utils.js';
     import { database } from '$lib/db/duck.svelte';
 
     import districtsGeo from '../data/districts.json';
     import boundaryGeo from '../data/boundary.json';
 
     let { scrollyIndex } = $props();
-
-    // ── Metric definitions & color helper ──
-    const DA_METRICS = {
-        density: { label: 'Pop. Density', prop: 'pop_density' },
-        income:  { label: 'Median Income', prop: 'median_income' },
-        population: { label: 'Population', prop: 'population' },
-    };
-
-    function computeColors(features, { metric, binning = 'equal-interval', numBins = 9, domainFeatures = null, percentileCap = null }) {
-        const prop = DA_METRICS[metric].prop;
-        const values = (domainFeatures ?? features)
-            .map(f => f.properties[prop])
-            .filter(d => d != null && isFinite(d))
-            .sort((a, b) => a - b);
-        if (values.length === 0) return { colors: new Map(), colorScale: null };
-
-        let colorScale;
-        if (binning === 'quantile') {
-            colorScale = d3.scaleQuantile().domain(values).range(d3.schemeYlGnBu[numBins]);
-        } else {
-            const max = percentileCap ? d3.quantile(values, percentileCap) : d3.max(values);
-            colorScale = d3.scaleQuantize().domain([values[0], max]).range(d3.schemeYlGnBu[numBins]);
-        }
-
-        const colors = new Map(
-            features.map(f => [
-                f.properties.geo_uid,
-                f.properties[prop] != null && isFinite(f.properties[prop])
-                    ? colorScale(f.properties[prop])
-                    : '#e0e0e0'
-            ])
-        );
-        return { colors, colorScale };
-    }
 
     // Static GeoJSON layers
     const districts = districtsGeo.features.map(f => rewind(f, { reverse: true }));
@@ -87,8 +54,13 @@
     );
 
     const daQuery = db.sql(t =>
-        `SELECT geo_uid, population, avg_age, median_income, seniors_65plus,
-                area_sqkm, population / NULLIF(area_sqkm, 0) as pop_density,
+        `SELECT geo_uid, population, avg_age, median_income,
+                seniors_65plus, renters, households, english_only,
+                area_sqkm,
+                population / NULLIF(area_sqkm, 0) as pop_density,
+                seniors_65plus * 100.0 / NULLIF(population, 0) as seniors_pct,
+                renters * 100.0 / NULLIF(households, 0) as renter_pct,
+                english_only * 100.0 / NULLIF(population, 0) as english_pct,
                 ST_AsGeoJSON(geom) as geojson
          FROM ${t.census_da}
          WHERE population > 0`
@@ -106,7 +78,10 @@
                     median_income: r.median_income != null ? Number(r.median_income) : null,
                     seniors_65plus: Number(r.seniors_65plus),
                     area_sqkm: Number(r.area_sqkm),
-                    pop_density: r.pop_density != null ? Number(r.pop_density) : null
+                    pop_density: r.pop_density != null ? Number(r.pop_density) : null,
+                    seniors_pct: r.seniors_pct != null ? Number(r.seniors_pct) : null,
+                    renter_pct: r.renter_pct != null ? Number(r.renter_pct) : null,
+                    english_pct: r.english_pct != null ? Number(r.english_pct) : null,
                 },
                 geometry: JSON.parse(r.geojson)
             }, { reverse: true }))
@@ -305,7 +280,9 @@
     const projScale = new Tween(targetParams.scale, tweenOpts);
     const projTranslate = new Tween(targetParams.translate, tweenOpts);
 
-    let prevZoomTarget = null;
+    // Animate on zoom transitions (in/out of Plateau or explore district),
+    // snap instantly for regular scroll steps.
+    let prevZoomTarget = null; // plain var, not $state — avoids re-triggering this effect
     $effect(() => {
         const nowZoomed = isZoomStep(stepIndex) || isZoomed;
         const currentTarget = isZoomed ? selectedDistrict : (isZoomStep(stepIndex) ? 'plateau' : null);
@@ -457,11 +434,11 @@
     <Legend scale={mapConfig.legend} />
 
     {#if hoveredDa}
+        {@const m = DA_METRICS[metric]}
         <div class="tooltip" style="left: {mouse.x + 12}px; top: {mouse.y - 12}px;">
             <strong>DA {hoveredDa.properties.geo_uid}</strong><br>
             Pop: {hoveredDa.properties.population?.toLocaleString()}<br>
-            Density: {hoveredDa.properties.pop_density?.toFixed(0)}/km&sup2;<br>
-            Income: ${hoveredDa.properties.median_income?.toLocaleString()}
+            {m.label}: {m.fmt(hoveredDa.properties[m.prop])}
         </div>
     {/if}
 
