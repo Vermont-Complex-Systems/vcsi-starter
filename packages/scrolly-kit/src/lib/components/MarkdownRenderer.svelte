@@ -34,6 +34,8 @@ and code blocks with syntax highlighting.
     import xml from 'highlight.js/lib/languages/xml';
     import R from 'highlight.js/lib/languages/r';
     import JS from 'highlight.js/lib/languages/javascript';
+    import TS from 'highlight.js/lib/languages/typescript';
+    import bash from 'highlight.js/lib/languages/bash';
 
     interface Props {
         text: string;
@@ -62,7 +64,11 @@ and code blocks with syntax highlighting.
                         xml,
                         r: R,
                         svelte: xml,
-                        js: JS
+                        js: JS,
+                        typescript: TS,
+                        ts: TS,
+                        bash,
+                        shell: bash
                     }
                 }
             ]

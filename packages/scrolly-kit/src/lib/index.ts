@@ -5,6 +5,7 @@ export { default as MarkdownRenderer } from './components/MarkdownRenderer.svelt
 export { default as CodeBlock } from './components/CodeBlock.svelte';
 export { default as SimpleToggle } from './components/bits-ui/SimpleToggle.svelte';
 export { default as SimpleSelect } from './components/bits-ui/SimpleSelect.svelte';
+export { default as RangeSlider } from './components/bits-ui/RangeSlider.svelte';
 export { default as DashboardShell } from './components/bits-ui/DashboardShell.svelte';
 export { default as ChartTooltip } from './components/bits-ui/ChartTooltip.svelte';
 export { default as ThemeToggle } from './components/ThemeToggle.svelte';
@@ -46,6 +47,7 @@ export type {
   TooltipProps,
   DashboardShellProps,
   ChartTooltipProps,
+  RangeSliderProps,
   ScrollIndicatorProps,
   SpinnerProps,
   MetaProps,

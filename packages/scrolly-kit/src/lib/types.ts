@@ -19,6 +19,7 @@ import type NavMenu from './components/NavMenu.svelte';
 import type Footer from './components/Footer.svelte';
 import type DashboardShell from './components/bits-ui/DashboardShell.svelte';
 import type ChartTooltip from './components/bits-ui/ChartTooltip.svelte';
+import type RangeSlider from './components/bits-ui/RangeSlider.svelte';
 
 // ============================================================================
 // Component Props - extracted using ComponentProps<typeof Component>
@@ -77,6 +78,9 @@ export type DashboardShellProps = ComponentProps<typeof DashboardShell>;
 
 /** Props for ChartTooltip component */
 export type ChartTooltipProps = ComponentProps<typeof ChartTooltip>;
+
+/** Props for RangeSlider component */
+export type RangeSliderProps = ComponentProps<typeof RangeSlider>;
 
 // ============================================================================
 // Sidebar state (re-exported for advanced usage)

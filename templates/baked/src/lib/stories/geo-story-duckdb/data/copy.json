@@ -1,0 +1,94 @@
+{
+    "title": "Geo Scrolly story using Duckdb",
+    "subtitle": "Mixing dashboard and scrollytelling using duckdb-wasm",
+    "authors": [
+        {
+            "name": "Jonathan St-Onge",
+            "url": "https://complexstories.uvm.edu/author/jonathan-st-onge"
+        }
+    ],
+    "date": "Feb 2, 2026",
+    "SectionTitle": "Hello world",
+    "introduction": [
+        {
+            "type": "markdown",
+            "value": "This code is a follow up from [this story](https://vcsi.cmplxsys.w3.uvm.edu/geo-story-1/), where we use [DuckDB-WASM](https://duckdb.org/docs/stable/clients/wasm/overview) to query census data directly in the browser. DuckDB lets us store the data as a compact Parquet file and use SQL as a convenient query layer — computing derived columns, joining tables, and converting geometries via the [spatial extension](https://duckdb.org/docs/stable/core_extensions/spatial/overview). The same architecture would scale to much larger datasets without changes. The data comes from StatCan (Canadian census), the city of Montreal, and other sources documented in the pipeline."
+        },
+        {
+            "type": "markdown",
+            "value": "It is important to note that data orchestration is a crucial component of making this story maintainable and extensible. See appendix from the previous story for more details."
+        },
+        {
+            "type": "markdown",
+            "value": "Without further ado, here's Montreal:"
+        }
+    ],
+    "steps": [
+        {
+            "type": "markdown",
+            "value": "Montreal city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones like Mont-Royal, Westmount, Dorval, and Cote-Saint-Luc, are independent municipalities that chose to 'defuse' and remain separate from the megacity."
+        },
+        {
+            "type": "markdown",
+            "value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+        },
+        {
+            "type": "markdown",
+            "value": "But arrondissements are coarse. The Canadian census publishes data at the **dissemination area** (DA) level — the smallest standard geographic unit, typically 400–700 people. Here we see all 2,831 DAs that make up Montreal, loaded via DuckDB's spatial extension right in your browser."
+        },
+        {
+            "type": "markdown",
+            "value": "Let's color these DAs by **population density** using **equal-interval** bins — the simplest approach, where the range is divided into 7 equal slices. Notice how the map is almost entirely one color? Density ranges from 3 to over 120,000 people/km², so a few tiny hyper-dense DAs stretch the scale and the vast majority of areas land in the first bin."
+        },
+        {
+            "type": "markdown",
+            "value": "Same data, now with **quantile** bins: each color band contains the same number of DAs. Patterns emerge — the dense urban core separates clearly from the suburban periphery. When data is heavily skewed, the choice of binning strategy determines whether your map reveals anything at all."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's map **median household income** using equal-interval bins. Income is still skewed — a handful of DAs top $200K+ — so we cap the scale at the 99th percentile to keep the bins meaningful for the other 99% of areas. Stark geographic inequality appears: the west island and central-south corridors show the highest incomes, while much of the north and east fall well below the metro average."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's focus on a single neighborhood. The red outline highlights **Villeray–Saint-Michel–Parc-Extension** — one of Montreal's most diverse and densely populated boroughs, home to Little Italy, Parc-Extension, and Saint-Michel."
+        },
+        {
+            "type": "markdown",
+            "value": "Zooming in with the **city-wide** income scale. Villeray–Saint-Michel–Parc-Extension looks fairly uniform — most of its DAs cluster in the same income range relative to the whole city, so there's little color variation at this scale."
+        },
+        {
+            "type": "markdown",
+            "value": "Now the same data, but with the color scale normalized to **just this district**. Suddenly we can see income variation *within* the borough: higher-income blocks in Villeray proper versus more modest areas in Parc-Extension and Saint-Michel. This is the **local vs. global normalization** trade-off: city-wide scales reveal between-area comparisons, local scales reveal within-area patterns."
+        },
+        {
+            "type": "markdown",
+            "value": "Try **clicking on individual DAs** to dig deeper. The panel on the right breaks down the median income into its gender components (total, male, female), and compares it with the average income (in red). When the average is noticeably higher than the median, it signals income inequality within that DA — a few high earners pulling the mean up."
+        },
+        {
+            "type": "markdown",
+            "value": "Now try **clicking on several DAs** — each click adds another set of dots to the chart. This lets you compare income distributions across neighboring areas: do adjacent DAs have similar gender gaps? Does the median-to-average spread vary block by block? In a diverse borough like Villeray–Parc-Ex, even a few streets can separate very different income realities."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's fly south to **Outremont** — one of Montreal's wealthiest boroughs. Using the same city-wide scale, notice how Outremont's DAs land in much higher income bins compared to Villeray–Parc-Ex."
+        },
+        {
+            "type": "markdown",
+            "value": "Back to the full picture. Now that you understand how binning and normalization shape what you see, keep scrolling to explore on your own."
+        },
+        {
+            "type": "markdown",
+            "value": "**Explore mode.** Use the controls above the map to change metric, binning, and normalization. Click any district to zoom in, then click individual DAs to see their stats. Press Escape or the Back button to zoom out."
+        }
+    ],
+    "conclusion": [
+        {
+            "type": "markdown",
+            "value": "In conclusion, we saw how to programmatically have a scrolly story with geo data coming from a backend."
+        }
+    ]
+}

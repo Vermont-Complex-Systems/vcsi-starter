@@ -33,6 +33,7 @@ A styled select dropdown built on bits-ui Select primitives.
     items,
     contentProps,
     placeholder,
+    type,
     ...restProps
   }: Props = $props();
 
@@ -46,7 +47,7 @@ TypeScript Discriminated Unions + destructing (required for "bindable") do not
 get along, so we shut typescript up by casting `value` to `never`, however,
 from the perspective of the consumer of this component, it will be typed appropriately.
 -->
-<Select.Root bind:value={value as never} {...restProps}>
+<Select.Root bind:value={value as never} {...restProps} type={"single"}>
   <Select.Trigger class="vcsi-select-trigger">
     <span class="vcsi-select-value" class:placeholder={!selectedLabel}>
       {selectedLabel ? selectedLabel : placeholder}

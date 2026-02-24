@@ -100,7 +100,7 @@ when successfully copied, reverting after 2 seconds.
         border-radius: var(--vcsi-radius-md);
         padding: 0.75rem 1rem;
         font-family: var(--vcsi-font-mono);
-        font-size: 0.85rem;
+        font-size: 0.875rem;
         max-width: 100%;
         overflow-x: auto;
         transition: background-color var(--vcsi-transition-base);

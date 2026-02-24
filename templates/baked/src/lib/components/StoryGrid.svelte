@@ -22,6 +22,8 @@
     <section class="level-section">
         {#if +level === 1}
             <h2 class="level-heading">Level {level}: building blocks</h2>
+        {:else if +level == 3}
+            <h2 class="level-heading">Level {level}: Duckdb superpower</h2>
         {:else}
             <h2 class="level-heading">Level {level}</h2>
         {/if}
