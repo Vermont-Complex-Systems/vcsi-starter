@@ -379,7 +379,7 @@ export type { DuckQuery };
  *
  * Usage:
  *   const db = database({
- *     flights: 'nycflights13_flights.parquet',
+ *     flights: '',
  *     airports: 'airports.parquet'
  *   });
  *

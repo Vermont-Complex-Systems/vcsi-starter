@@ -66,7 +66,11 @@
         },
         {
             "type": "markdown",
-            "value": "Back to the full picture. Now that you understand how binning and normalization shape what you see, try exploring districts on your own below."
+            "value": "Back to the full picture. Now that you understand how binning and normalization shape what you see, keep scrolling to explore on your own."
+        },
+        {
+            "type": "markdown",
+            "value": "**Explore mode.** Use the controls above the map to change metric, binning, and normalization. Click any district to zoom in, then click individual DAs to see their stats. Press Escape or the Back button to zoom out."
         }
     ],
     "conclusion": [

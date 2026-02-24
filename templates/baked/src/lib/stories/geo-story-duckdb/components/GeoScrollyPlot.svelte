@@ -4,15 +4,50 @@
     import { Tween } from 'svelte/motion';
     import { cubicInOut } from 'svelte/easing';
     import Legend from './Legend.svelte';
+    import DAPolygons from './DAPolygons.svelte';
+    import DistrictOutlines from './DistrictOutlines.svelte';
     import { database } from '$lib/db/duck.svelte';
 
-    // Electoral districts + CMA boundary stay as static GeoJSON
     import districtsGeo from '../data/districts.json';
     import boundaryGeo from '../data/boundary.json';
 
     let { scrollyIndex } = $props();
 
-    // Fix winding order for GeoJSON features
+    // ── Metric definitions & color helper ──
+    const DA_METRICS = {
+        density: { label: 'Pop. Density', prop: 'pop_density' },
+        income:  { label: 'Median Income', prop: 'median_income' },
+        population: { label: 'Population', prop: 'population' },
+    };
+
+    function computeColors(features, { metric, binning = 'equal-interval', numBins = 9, domainFeatures = null, percentileCap = null }) {
+        const prop = DA_METRICS[metric].prop;
+        const values = (domainFeatures ?? features)
+            .map(f => f.properties[prop])
+            .filter(d => d != null && isFinite(d))
+            .sort((a, b) => a - b);
+        if (values.length === 0) return { colors: new Map(), colorScale: null };
+
+        let colorScale;
+        if (binning === 'quantile') {
+            colorScale = d3.scaleQuantile().domain(values).range(d3.schemeYlGnBu[numBins]);
+        } else {
+            const max = percentileCap ? d3.quantile(values, percentileCap) : d3.max(values);
+            colorScale = d3.scaleQuantize().domain([values[0], max]).range(d3.schemeYlGnBu[numBins]);
+        }
+
+        const colors = new Map(
+            features.map(f => [
+                f.properties.geo_uid,
+                f.properties[prop] != null && isFinite(f.properties[prop])
+                    ? colorScale(f.properties[prop])
+                    : '#e0e0e0'
+            ])
+        );
+        return { colors, colorScale };
+    }
+
+    // Static GeoJSON layers
     const districts = districtsGeo.features.map(f => rewind(f, { reverse: true }));
     const boundary = boundaryGeo.features.map(f => rewind(f, { reverse: true }));
 
@@ -23,10 +58,6 @@
     const plateauCollection = { type: 'FeatureCollection', features: plateauDistricts };
     const isZoomStep = (step) => step >= 8 && step <= 9;
     const isHighlightStep = (step) => step === 7;
-
-    // Hover state
-    let hoveredDa = $state(null);
-    let mouse = $state({ x: 0, y: 0 });
 
     // Chart dimensions
     let width = $state(800);
@@ -40,15 +71,11 @@
     let stepIndex = $derived(scrollyIndex ?? 0);
 
     // ── DuckDB data layer ──
-    // metadata.parquet → arrondissement-level (steps 0-2)
-    // census_da.parquet → dissemination areas with geometry (steps 3-4)
     const db = database(
         { metadata: 'metadata.parquet', census_da: 'census_da.parquet' },
         { extensions: ['spatial'] }
     );
     const meta = db.from('metadata');
-
-    // Arrondissement queries (steps 1-2)
     const pop2011 = meta.eq('year', () => 2011).rows();
 
     const changeData = db.sql(t =>
@@ -59,7 +86,6 @@
          WHERE a.year = 2011 AND b.year = 2016`
     );
 
-    // DA-level query — spatial extension converts WKB geometry → GeoJSON string
     const daQuery = db.sql(t =>
         `SELECT geo_uid, population, avg_age, median_income, seniors_65plus,
                 area_sqkm, population / NULLIF(area_sqkm, 0) as pop_density,
@@ -68,7 +94,6 @@
          WHERE population > 0`
     );
 
-    // Convert DuckDB rows → GeoJSON features for D3 path rendering
     let daFeatures = $derived(
         daQuery.rows
             .filter(r => r.geojson)
@@ -87,280 +112,191 @@
             }, { reverse: true }))
     );
 
-    // Point-in-polygon test: checks if DA centroid falls inside Plateau districts
     function isInPlateau(feature) {
         const centroid = d3.geoCentroid(feature);
         return plateauDistricts.some(d => d3.geoContains(d, centroid));
     }
 
-    // Filter DAs to Plateau when zoomed
-    let visibleDAs = $derived.by(() => {
-        if (!isZoomStep(stepIndex) || daFeatures.length === 0) return daFeatures;
-        return daFeatures.filter(isInPlateau);
+    // ── Explore mode (step 11+) ──
+    let isExploreMode = $derived(stepIndex >= 11);
+
+    let metric = $state('density');
+    let binning = $state('equal-interval');
+    let normalizeGlobal = $state(false);
+    let selectedDistrict = $state(null);
+    let selectedDas = $state([]);
+
+    let isZoomed = $derived(isExploreMode && selectedDistrict !== null);
+    let selectedIds = $derived(new Set(selectedDas.map(f => f.properties.geo_uid)));
+
+    let selectionSummary = $derived.by(() => {
+        if (selectedDas.length === 0) return null;
+        const totalPop = selectedDas.reduce((s, f) => s + (f.properties.population ?? 0), 0);
+        const totalArea = selectedDas.reduce((s, f) => s + (f.properties.area_sqkm ?? 0), 0);
+        const incomes = selectedDas
+            .map(f => f.properties.median_income)
+            .filter(v => v != null);
+        const avgIncome = incomes.length > 0
+            ? Math.round(incomes.reduce((s, v) => s + v, 0) / incomes.length)
+            : null;
+        return { totalPop, totalArea, avgIncome };
     });
 
+    function handleDistrictClick(feature) {
+        selectedDistrict = feature;
+        selectedDas = [];
+    }
 
-    // Show DA layer for steps >= 3
+    function handleZoomOut() {
+        selectedDistrict = null;
+        selectedDas = [];
+    }
+
+    function toggleDa(feature) {
+        const uid = feature.properties.geo_uid;
+        if (selectedIds.has(uid)) {
+            selectedDas = selectedDas.filter(f => f.properties.geo_uid !== uid);
+        } else {
+            selectedDas = [...selectedDas, feature];
+        }
+    }
+
+    function handleKeydown(e) {
+        if (e.key === 'Escape' && isZoomed) handleZoomOut();
+    }
+
+    // ── Hover state (bound from layer components, used for tooltips) ──
+    let hoveredDa = $state(null);
+    let hoveredDistrict = $state(null);
+    let mouse = $state({ x: 0, y: 0 });
+
+    // ── Visible DAs (filtered by zoom target) ──
+    let visibleDAs = $derived.by(() => {
+        if (daFeatures.length === 0) return daFeatures;
+        if (isExploreMode && isZoomed) {
+            return daFeatures.filter(f => {
+                const centroid = d3.geoCentroid(f);
+                return d3.geoContains(selectedDistrict, centroid);
+            });
+        }
+        if (isZoomStep(stepIndex)) {
+            return daFeatures.filter(isInPlateau);
+        }
+        return daFeatures;
+    });
+
     let showDAs = $derived(stepIndex >= 3);
 
-    // ── Map config driven by scroll step + reactive query results ──
+    // ── Map config driven by scroll step ──
+    const baseView = { title: null, daColors: null, districtColors: null, labelsToShow: null, legend: null };
+
     let mapConfig = $derived.by(() => {
         switch (stepIndex) {
             case 0:
-                return {
-                    title: 'Montreal',
-                    colors: null,
-                    labelsToShow: null,
-                    legend: null
-                };
+                return { ...baseView, title: 'Montreal' };
 
             case 1: {
                 const rows = pop2011.rows;
-                if (rows.length === 0) return { title: 'Population 2011', colors: null, labelsToShow: null, legend: null };
-
+                if (rows.length === 0) return { ...baseView, title: 'Population 2011' };
                 const maxPopulation = d3.max(rows, d => d.population);
-                const colorScale = d3.scaleSequential(d3.interpolateSpectral)
-                    .domain([maxPopulation, 0]);
-
-                const colors = new Map(
-                    rows.map(d => [d.arrondissement, colorScale(d.population)])
-                );
-
+                const colorScale = d3.scaleSequential(d3.interpolateSpectral).domain([maxPopulation, 0]);
+                const districtColors = new Map(rows.map(d => [d.arrondissement, colorScale(d.population)]));
                 const labelsToShow = new Set(
-                    rows
-                        .toSorted((a, b) => b.population - a.population)
-                        .slice(0, 5)
-                        .map(d => d.arrondissement)
+                    rows.toSorted((a, b) => b.population - a.population).slice(0, 5).map(d => d.arrondissement)
                 );
-
-                return { title: 'Population 2011', colors, labelsToShow, legend: colorScale };
+                return { ...baseView, title: 'Population 2011', districtColors, labelsToShow, legend: colorScale };
             }
 
             case 2: {
                 const rows = changeData.rows;
-                if (rows.length === 0) return { title: 'Population Change 2011→2016', colors: null, labelsToShow: null, legend: null };
-
-                const maxChange = Math.max(
-                    Math.abs(d3.min(rows, d => d.change)),
-                    Math.abs(d3.max(rows, d => d.change))
-                );
-                const colorScale = d3.scaleDiverging(d3.interpolateRdBu)
-                    .domain([-maxChange, 0, maxChange]);
-
-                const colors = new Map(
-                    rows.map(d => [d.arrondissement, colorScale(d.change)])
-                );
+                if (rows.length === 0) return { ...baseView, title: 'Population Change 2011\u21922016' };
+                const maxChange = Math.max(Math.abs(d3.min(rows, d => d.change)), Math.abs(d3.max(rows, d => d.change)));
+                const colorScale = d3.scaleDiverging(d3.interpolateRdBu).domain([-maxChange, 0, maxChange]);
+                const districtColors = new Map(rows.map(d => [d.arrondissement, colorScale(d.change)]));
                 const labelsToShow = new Set(
-                    rows
-                        .toSorted((a, b) => b.change - a.change)
-                        .slice(0, 5)
-                        .map(d => d.arrondissement)
+                    rows.toSorted((a, b) => b.change - a.change).slice(0, 5).map(d => d.arrondissement)
                 );
-
-                return { title: 'Population Change 2011→2016', colors, labelsToShow, legend: colorScale };
+                return { ...baseView, title: 'Population Change 2011\u21922016', districtColors, labelsToShow, legend: colorScale };
             }
 
             case 3:
-                // Reveal DAs with no coloring — just the geometry
-                return {
-                    title: 'Dissemination Areas',
-                    colors: null,
-                    labelsToShow: null,
-                    legend: null
-                };
+                return { ...baseView, title: 'Dissemination Areas' };
 
             case 4: {
-                // Population density — equal-interval bins (fails: extreme skew
-                // from 3 to 122k people/km² puts nearly every DA in the first bin)
-                const features = daFeatures;
-                if (features.length === 0) return { title: 'Pop. Density — Equal Intervals', colors: null, labelsToShow: null, legend: null };
-
-                const densities = features
-                    .map(f => f.properties.pop_density)
-                    .filter(d => d != null && isFinite(d));
-                const colorScale = d3.scaleQuantize()
-                    .domain(d3.extent(densities))
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.pop_density != null && isFinite(f.properties.pop_density)
-                            ? colorScale(f.properties.pop_density)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Pop. Density — Equal Intervals', colors, labelsToShow: null, legend: colorScale };
+                if (daFeatures.length === 0) return { ...baseView, title: 'Pop. Density \u2014 Equal Intervals' };
+                const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'equal-interval' });
+                return { ...baseView, title: 'Pop. Density \u2014 Equal Intervals', daColors: colors, legend: colorScale };
             }
 
             case 5: {
-                // Population density — quantile bins (same data, much more revealing)
-                const features = daFeatures;
-                if (features.length === 0) return { title: 'Pop. Density — Quantile Bins', colors: null, labelsToShow: null, legend: null };
-
-                const densities = features
-                    .map(f => f.properties.pop_density)
-                    .filter(d => d != null && isFinite(d));
-                const colorScale = d3.scaleQuantile()
-                    .domain(densities)
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.pop_density != null && isFinite(f.properties.pop_density)
-                            ? colorScale(f.properties.pop_density)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Pop. Density — Quantile Bins', colors, labelsToShow: null, legend: colorScale };
+                if (daFeatures.length === 0) return { ...baseView, title: 'Pop. Density \u2014 Quantile Bins' };
+                const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'quantile' });
+                return { ...baseView, title: 'Pop. Density \u2014 Quantile Bins', daColors: colors, legend: colorScale };
             }
 
             case 6: {
-                // Median income — equal-interval bins, capped at 95th pctile
-                // to avoid outliers washing out the bulk of DAs
-                const features = daFeatures;
-                if (features.length === 0) return { title: 'Median Household Income ($)', colors: null, labelsToShow: null, legend: null };
-
-                const incomes = features
-                    .map(f => f.properties.median_income)
-                    .filter(d => d != null)
-                    .sort((a, b) => a - b);
-                const p95 = d3.quantile(incomes, 0.99);
-                const colorScale = d3.scaleQuantize()
-                    .domain([incomes[0], p95])
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.median_income != null
-                            ? colorScale(f.properties.median_income)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Median Household Income ($)', colors, labelsToShow: null, legend: colorScale };
+                if (daFeatures.length === 0) return { ...baseView, title: 'Median Household Income ($)' };
+                const { colors, colorScale } = computeColors(daFeatures, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99 });
+                return { ...baseView, title: 'Median Household Income ($)', daColors: colors, legend: colorScale };
             }
 
             case 7: {
-                // Highlight Le Plateau — same income fill as step 6,
-                // red outline draws the eye
-                const features = daFeatures;
-                if (features.length === 0) return { title: 'Le Plateau-Mont-Royal', colors: null, labelsToShow: null, legend: null };
-
-                const incomes = features
-                    .map(f => f.properties.median_income)
-                    .filter(d => d != null)
-                    .sort((a, b) => a - b);
-                const p95 = d3.quantile(incomes, 0.99);
-                const colorScale = d3.scaleQuantize()
-                    .domain([incomes[0], p95])
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.median_income != null
-                            ? colorScale(f.properties.median_income)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Le Plateau-Mont-Royal', colors, labelsToShow: null, legend: null };
+                if (daFeatures.length === 0) return { ...baseView, title: 'Le Plateau-Mont-Royal' };
+                const { colors } = computeColors(daFeatures, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99 });
+                return { ...baseView, title: 'Le Plateau-Mont-Royal', daColors: colors };
             }
 
             case 8: {
-                // Le Plateau — GLOBAL income scale (continuity with step 6-7 income view)
-                const features = visibleDAs;
-                if (features.length === 0) return { title: 'Le Plateau — City-wide scale', colors: null, labelsToShow: null, legend: null };
-
-                const allIncomes = daFeatures
-                    .map(f => f.properties.median_income)
-                    .filter(d => d != null)
-                    .sort((a, b) => a - b);
-                const p95 = d3.quantile(allIncomes, 0.99);
-                const colorScale = d3.scaleQuantize()
-                    .domain([allIncomes[0], p95])
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.median_income != null
-                            ? colorScale(f.properties.median_income)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Le Plateau — City-wide scale', colors, labelsToShow: null, legend: colorScale };
+                if (visibleDAs.length === 0) return { ...baseView, title: 'Le Plateau \u2014 City-wide scale' };
+                const { colors, colorScale } = computeColors(visibleDAs, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99, domainFeatures: daFeatures });
+                return { ...baseView, title: 'Le Plateau \u2014 City-wide scale', daColors: colors, legend: colorScale };
             }
 
             case 9: {
-                // Le Plateau — LOCAL income scale (only Plateau DAs define the extent)
-                const features = visibleDAs;
-                if (features.length === 0) return { title: 'Le Plateau — Local scale', colors: null, labelsToShow: null, legend: null };
-
-                // Compute local extent from bbox-filtered DAs directly
-                const plateauDAs = daFeatures.filter(isInPlateau);
-                const localIncomes = plateauDAs
-                    .map(f => f.properties.median_income)
-                    .filter(d => d != null);
-                const [localMin, localMax] = d3.extent(localIncomes);
-                const colorScale = d3.scaleQuantize()
-                    .domain([localMin, localMax])
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.median_income != null
-                            ? colorScale(f.properties.median_income)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Le Plateau — Local scale', colors, labelsToShow: null, legend: colorScale };
+                if (visibleDAs.length === 0) return { ...baseView, title: 'Le Plateau \u2014 Local scale' };
+                const { colors, colorScale } = computeColors(visibleDAs, { metric: 'income', binning: 'equal-interval' });
+                return { ...baseView, title: 'Le Plateau \u2014 Local scale', daColors: colors, legend: colorScale };
             }
 
             case 10: {
-                // Zoom back out — population density with quantile bins
-                const features = daFeatures;
-                if (features.length === 0) return { title: 'Population Density (Census 2021)', colors: null, labelsToShow: null, legend: null };
-
-                const densities = features
-                    .map(f => f.properties.pop_density)
-                    .filter(d => d != null && isFinite(d));
-                const colorScale = d3.scaleQuantile()
-                    .domain(densities)
-                    .range(d3.schemeYlGnBu[9]);
-
-                const colors = new Map(
-                    features.map(f => [
-                        f.properties.geo_uid,
-                        f.properties.pop_density != null && isFinite(f.properties.pop_density)
-                            ? colorScale(f.properties.pop_density)
-                            : '#e0e0e0'
-                    ])
-                );
-
-                return { title: 'Population Density (Census 2021)', colors, labelsToShow: null, legend: colorScale };
+                if (daFeatures.length === 0) return { ...baseView, title: 'Population Density (Census 2021)' };
+                const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'quantile' });
+                return { ...baseView, title: 'Population Density (Census 2021)', daColors: colors, legend: colorScale };
             }
 
-            default: {
-                return { title: null, colors: null, labelsToShow: null, legend: null };
+            case 11: default: {
+                const features = isZoomed ? visibleDAs : daFeatures;
+                if (features.length === 0) return baseView;
+                const { colors, colorScale } = computeColors(features, {
+                    metric,
+                    binning,
+                    numBins: 9,
+                    domainFeatures: isZoomed && normalizeGlobal ? daFeatures : null,
+                    percentileCap: metric === 'income' ? 0.99 : null,
+                });
+                return { ...baseView, daColors: colors, legend: colorScale };
             }
         }
     });
 
-    // Projection — animated zoom between full city and Plateau.
-    // Only tween on step change; dimension changes update instantly.
+    // Highlight districts
+    let highlightDistricts = $derived.by(() => {
+        if (isExploreMode && selectedDistrict) return [selectedDistrict];
+        if (isZoomStep(stepIndex) || isHighlightStep(stepIndex)) return plateauDistricts;
+        return [];
+    });
+    let hasHighlights = $derived(highlightDistricts.length > 0);
+
+    // ── Projection with Tween animation ──
     let targetParams = $derived.by(() => {
-        const target = isZoomStep(stepIndex)
-            ? plateauCollection
-            : { type: 'FeatureCollection', features: districts };
+        let target;
+        if (isExploreMode && isZoomed) {
+            target = selectedDistrict;
+        } else if (isZoomStep(stepIndex)) {
+            target = plateauCollection;
+        } else {
+            target = { type: 'FeatureCollection', features: districts };
+        }
         const p = d3.geoMercator().fitSize([innerWidth, innerHeight], target);
         return { scale: p.scale(), translate: p.translate() };
     });
@@ -369,21 +305,18 @@
     const projScale = new Tween(targetParams.scale, tweenOpts);
     const projTranslate = new Tween(targetParams.translate, tweenOpts);
 
-    let prevZoomed = isZoomStep(stepIndex);
+    let prevZoomTarget = null;
     $effect(() => {
-        const nowZoomed = isZoomStep(stepIndex);
-        const zoomChanged = nowZoomed !== prevZoomed;
-        prevZoomed = nowZoomed;
+        const nowZoomed = isZoomStep(stepIndex) || isZoomed;
+        const currentTarget = isZoomed ? selectedDistrict : (isZoomStep(stepIndex) ? 'plateau' : null);
+        const wasZoomed = prevZoomTarget !== null;
+        const targetChanged = currentTarget !== prevZoomTarget;
+        prevZoomTarget = currentTarget;
 
-        // Clear tooltip when leaving zoom steps
-        if (!nowZoomed) hoveredDa = null;
-
-        if (zoomChanged) {
-            // Step changed zoom target — animate
+        if (targetChanged && (nowZoomed || wasZoomed)) {
             projScale.set(targetParams.scale);
             projTranslate.set(targetParams.translate);
         } else {
-            // Dimension change or non-zoom step change — snap instantly
             projScale.set(targetParams.scale, { duration: 0 });
             projTranslate.set(targetParams.translate, { duration: 0 });
         }
@@ -395,28 +328,60 @@
 
     let pathGenerator = $derived(d3.geoPath().projection(projection));
 
-    function getCentroid(feature) {
-        return pathGenerator.centroid(feature);
-    }
-
     let isLoading = $derived(
         pop2011.loading || changeData.loading || (showDAs && daQuery.loading)
     );
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
     {#if isLoading && stepIndex > 0}
         <div class="loading-overlay">Loading DuckDB{showDAs ? ' + Spatial' : ''}...</div>
     {/if}
 
-    <div class="year-indicator">{mapConfig.title}</div>
+    {#if isExploreMode}
+        <div class="controls">
+            <label>
+                Metric
+                <select bind:value={metric}>
+                    {#each Object.entries(DA_METRICS) as [key, m] (key)}
+                        <option value={key}>{m.label}</option>
+                    {/each}
+                </select>
+            </label>
+            <label>
+                Binning
+                <select bind:value={binning}>
+                    <option value="equal-interval">Equal Interval</option>
+                    <option value="quantile">Quantile</option>
+                </select>
+            </label>
+            {#if isZoomed}
+                <label>
+                    Scale
+                    <button
+                        class="norm-toggle"
+                        class:active={normalizeGlobal}
+                        onclick={() => normalizeGlobal = !normalizeGlobal}
+                    >
+                        {normalizeGlobal ? 'City-wide' : 'Local'}
+                    </button>
+                </label>
+                <button class="back-btn" onclick={handleZoomOut}>&larr; Back to city</button>
+            {/if}
+        </div>
+    {/if}
+
+    {#if mapConfig.title}
+        <div class="title-indicator">{mapConfig.title}</div>
+    {/if}
 
     <svg viewBox={`0 0 ${width} ${height}`} style="background: #a6cee3;">
         <g transform={`translate(${margin.left},${margin.top})`}>
             <!-- Boundary (CMA land outside districts) -->
             {#each boundary as feature (feature.properties.id)}
                 <path
-                    class="boundary"
                     d={pathGenerator(feature)}
                     fill="#f4efea"
                     stroke="#999"
@@ -425,13 +390,11 @@
                 />
             {/each}
 
-            <!-- Districts (arrondissement level) — fades out when DAs appear -->
+            <!-- District fills (fade out when DAs appear) -->
             <g style="transition: opacity 0.8s ease;" opacity={showDAs ? 0 : 1}>
                 {#each districts as feature (feature.properties.id)}
-                    {@const arrondissement = feature.properties.arrondissement}
-                    {@const fill = mapConfig.colors?.get(arrondissement) ?? '#e0e0e0'}
+                    {@const fill = mapConfig.districtColors?.get(feature.properties.arrondissement) ?? '#e0e0e0'}
                     <path
-                        class="district"
                         d={pathGenerator(feature)}
                         {fill}
                         stroke="#333"
@@ -441,12 +404,10 @@
                     />
                 {/each}
 
-                <!-- District labels -->
                 {#each districts as feature (feature.properties.id)}
-                    {@const centroid = getCentroid(feature)}
-                    {@const arrondissement = feature.properties.arrondissement}
+                    {@const centroid = pathGenerator.centroid(feature)}
                     {@const showLabel = mapConfig.labelsToShow
-                        ? mapConfig.labelsToShow.has(arrondissement)
+                        ? mapConfig.labelsToShow.has(feature.properties.arrondissement)
                         : !isMobile}
                     {#if centroid && !isNaN(centroid[0]) && showLabel}
                         <text
@@ -467,70 +428,60 @@
                 {/each}
             </g>
 
-            <!-- DA polygons — fades in on step 3 -->
+            <!-- DA + district layers (fade in when showDAs) -->
             <g style="transition: opacity 0.8s ease;" opacity={showDAs ? 1 : 0}>
-                {#each visibleDAs as feature (feature.properties.geo_uid)}
-                    {@const baseFill = mapConfig.colors?.get(feature.properties.geo_uid) ?? '#e0e0e0'}
-                    {@const isHovered = hoveredDa?.properties.geo_uid === feature.properties.geo_uid}
-                    <path
-                        d={pathGenerator(feature)}
-                        fill={isHovered ? '#ffd700' : baseFill}
-                        stroke={isHovered ? '#333' : '#666'}
-                        stroke-width={isHovered ? 1.5 : isZoomStep(stepIndex) ? 0.3 : 0.15}
-                        style="transition: fill 0.3s ease;"
-                        onmouseenter={() => { if (isZoomStep(stepIndex)) hoveredDa = feature; }}
-                        onmouseleave={() => { if (isZoomStep(stepIndex)) hoveredDa = null; }}
-                        onmousemove={(e) => { if (isZoomStep(stepIndex)) mouse = { x: e.offsetX, y: e.offsetY }; }}
-                    />
-                {/each}
-
-                {#if isZoomStep(stepIndex) || isHighlightStep(stepIndex)}
-                    <!-- Plateau district outlines (highlighted) -->
-                    {#each plateauDistricts as feature (feature.properties.id)}
-                        <path
-                            d={pathGenerator(feature)}
-                            fill="none"
-                            stroke="#d62728"
-                            stroke-width={isZoomStep(stepIndex) ? 2 : 2.5}
-                            pointer-events="none"
-                        />
-                    {/each}
-                    {#if isHighlightStep(stepIndex)}
-                        <!-- All other district outlines (dimmed context) -->
-                        {#each districts as feature (feature.properties.id)}
-                            <path
-                                d={pathGenerator(feature)}
-                                fill="none"
-                                stroke="#333"
-                                stroke-width="0.5"
-                                pointer-events="none"
-                            />
-                        {/each}
-                    {/if}
-                {:else}
-                    <!-- District outlines on top for context -->
-                    {#each districts as feature (feature.properties.id)}
-                        <path
-                            d={pathGenerator(feature)}
-                            fill="none"
-                            stroke="#333"
-                            stroke-width="1"
-                            pointer-events="none"
-                        />
-                    {/each}
-                {/if}
+                <DAPolygons
+                    features={visibleDAs}
+                    colors={mapConfig.daColors}
+                    {pathGenerator}
+                    selectedIds={isExploreMode ? selectedIds : new Set()}
+                    {highlightDistricts}
+                    enableHover={isZoomStep(stepIndex) || isExploreMode}
+                    onclick={isExploreMode && isZoomed ? toggleDa : null}
+                    bind:hovered={hoveredDa}
+                    bind:mouse
+                />
+                <DistrictOutlines
+                    {districts}
+                    {pathGenerator}
+                    interactive={isExploreMode && !isZoomed}
+                    {hasHighlights}
+                    onclick={handleDistrictClick}
+                    bind:hovered={hoveredDistrict}
+                    bind:mouse
+                />
             </g>
         </g>
     </svg>
 
     <Legend scale={mapConfig.legend} />
 
-    {#if hoveredDa && isZoomStep(stepIndex)}
+    {#if hoveredDa}
         <div class="tooltip" style="left: {mouse.x + 12}px; top: {mouse.y - 12}px;">
             <strong>DA {hoveredDa.properties.geo_uid}</strong><br>
             Pop: {hoveredDa.properties.population?.toLocaleString()}<br>
-            Density: {hoveredDa.properties.pop_density?.toFixed(0)}/km²<br>
+            Density: {hoveredDa.properties.pop_density?.toFixed(0)}/km&sup2;<br>
             Income: ${hoveredDa.properties.median_income?.toLocaleString()}
+        </div>
+    {/if}
+
+    {#if hoveredDistrict}
+        <div class="tooltip" style="left: {mouse.x + 12}px; top: {mouse.y - 12}px;">
+            <strong>{hoveredDistrict.properties.nom}</strong><br>
+            {hoveredDistrict.properties.arrondissement}<br>
+            <span class="hint">Click to zoom</span>
+        </div>
+    {/if}
+
+    {#if selectionSummary}
+        <div class="da-info">
+            <strong>{selectedDas.length} DA{selectedDas.length > 1 ? 's' : ''} selected</strong>
+            &middot; Total pop: {selectionSummary.totalPop.toLocaleString()}
+            &middot; Area: {selectionSummary.totalArea.toFixed(1)} km&sup2;
+            {#if selectionSummary.avgIncome}
+                &middot; Avg income: ${selectionSummary.avgIncome.toLocaleString()}
+            {/if}
+            <button class="clear-btn" onclick={() => selectedDas = []}>Clear</button>
         </div>
     {/if}
 </div>
@@ -564,7 +515,7 @@
         height: 100%;
     }
 
-    .year-indicator {
+    .title-indicator {
         position: absolute;
         top: 10px;
         left: 10px;
@@ -574,6 +525,7 @@
         background: rgba(255, 255, 255, 0.8);
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
+        z-index: 5;
     }
 
     .loading-overlay {
@@ -589,6 +541,59 @@
         z-index: 10;
     }
 
+    .controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        z-index: 10;
+    }
+
+    .controls label {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.75rem;
+        color: #555;
+    }
+
+    .controls select {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.3rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+    }
+
+    .norm-toggle {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        color: #555;
+    }
+    .norm-toggle:hover { background: #f0f0f0; }
+    .norm-toggle.active { background: #e8f4fd; border-color: #90caf9; }
+
+    .back-btn {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+    }
+    .back-btn:hover { background: #f0f0f0; }
+
     .tooltip {
         position: absolute;
         background: rgba(0, 0, 0, 0.85);
@@ -601,4 +606,38 @@
         z-index: 20;
         white-space: nowrap;
     }
+
+    .hint {
+        color: #aaa;
+        font-size: 0.65rem;
+    }
+
+    .da-info {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        font-size: 0.8rem;
+        color: #333;
+        padding: 0.4rem 0.75rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        z-index: 10;
+    }
+
+    .clear-btn {
+        margin-left: auto;
+        font-size: 0.7rem;
+        padding: 0.1rem 0.3rem;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        background: white;
+        cursor: pointer;
+        color: #666;
+    }
+    .clear-btn:hover { background: #eee; }
 </style>

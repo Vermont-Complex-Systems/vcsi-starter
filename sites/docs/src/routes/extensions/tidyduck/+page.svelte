@@ -102,7 +102,7 @@
 
       <p>
         Place your data files in <code>static/data/</code>.
-        For this guide, we use <code>nycflights13_flights.parquet</code>.
+        For this guide, we use <code>flights.parquet</code>.
         Then import <code>database()</code> and register your tables — similar to Observable's <code>DuckDBClient.of()</code>:
       </p>
 
@@ -478,7 +478,7 @@
       <CodeBlock filename="svelte" language="typescript" code={`
       // DuckDB COLUMNS regex — like select(contains("delay"))
       const delays = flights.sql((where) =>
-        \`SELECT COLUMNS('.*delay.*') FROM 'nycflights13_flights.parquet' \${where}\`
+        \`SELECT COLUMNS('.*delay.*') FROM 'flights.parquet' \${where}\`
       );
       `} />
 
@@ -551,7 +551,7 @@
       const fastest = duck(() => \`
         SELECT year, month, day, dep_time, carrier, flight,
           ROUND(distance / air_time * 60, 1) AS speed
-        FROM 'nycflights13_flights.parquet'
+        FROM 'flights.parquet'
         WHERE dest = 'IAH'
         ORDER BY speed DESC
         LIMIT 10
@@ -703,7 +703,7 @@
         SELECT dest,
           ROUND(AVG(arr_delay), 1) AS avg_delay,
           COUNT(*) AS n
-        FROM 'nycflights13_flights.parquet'
+        FROM 'flights.parquet'
         \${where}
         GROUP BY dest
         HAVING COUNT(*) > 100

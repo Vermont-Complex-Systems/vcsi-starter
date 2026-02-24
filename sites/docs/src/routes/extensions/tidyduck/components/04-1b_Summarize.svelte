@@ -16,7 +16,7 @@
         dest,
         ROUND(AVG(arr_delay), 1) AS avg_delay,
         COUNT(*) AS n
-      FROM 'nycflights13_flights.parquet'
+      FROM 'flights.parquet'
       ${where}
       GROUP BY dest
       HAVING COUNT(*) > 100
