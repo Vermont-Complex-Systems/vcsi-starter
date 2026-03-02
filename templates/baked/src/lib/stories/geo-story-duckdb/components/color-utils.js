@@ -47,38 +47,7 @@ export const DA_METRICS = {
         label: 'Average Age',
         prop: 'avg_age_sex_total',
         fmt: v => v?.toFixed(1),
-    },
-    tenure: {
-        label: 'Housing Tenure',
-        prop: 'tenure_renter',
-        fmt: fmtNum,
-        breakdown: {
-            label: 'Owner vs. renter',
-            fmt: fmtNum,
-            bars: [
-                { prop: 'tenure_owner', label: 'Owner' },
-                { prop: 'tenure_renter', label: 'Renter' },
-            ],
-        },
-    },
-    language: {
-        label: 'Mother Tongue',
-        prop: 'lang_mother_english',
-        fmt: fmtNum,
-        breakdown: {
-            label: 'Mother tongue',
-            fmt: fmtNum,
-            bars: [
-                { prop: 'lang_mother_english', label: 'English' },
-                { prop: 'lang_mother_french', label: 'French' },
-            ],
-        },
-    },
-    immigrant_pct: {
-        label: '% Immigrant',
-        prop: 'immigrant_pct',
-        fmt: fmtPct,
-    },
+    }
 };
 
 export function computeColors(features, { metric, binning = 'equal-interval', numBins = 9, domainFeatures = null, percentileCap = null }) {

@@ -1,4 +1,5 @@
 // src/lib/db/sql.svelte.ts
+import { asset } from '$app/paths';
 import { getDB, registerParquet } from './duckdb.svelte';
 import { untrack } from 'svelte';
 
@@ -17,7 +18,7 @@ async function ensureParquet(sql: string) {
   const matches = sql.matchAll(/'([^']+\.parquet)'/g);
   for (const [, filename] of matches) {
     if (!registering.has(filename)) {
-      registering.set(filename, registerParquet(filename, `/data/${filename}`));
+      registering.set(filename, registerParquet(filename, asset(`/data/${filename}`)));
     }
     await registering.get(filename);
   }

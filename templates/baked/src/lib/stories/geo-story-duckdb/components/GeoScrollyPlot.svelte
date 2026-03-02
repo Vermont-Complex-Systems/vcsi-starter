@@ -62,7 +62,6 @@
     const daQuery = db.sql(t =>
         `SELECT *,
                 population / NULLIF(area_sqkm, 0) as pop_density,
-                pop_immigrant * 100.0 / NULLIF(population, 0) as immigrant_pct,
                 ST_AsGeoJSON(geom) as geojson
          FROM ${t.census_da}
          WHERE population > 0`
@@ -98,7 +97,7 @@
     // ── Explore mode (step 12+) ──
     let isExploreMode = $derived(stepIndex >= 14);
 
-    let metric = $state('density');
+    let metric = $state('population');
     let binning = $state('equal-interval');
     let normalizeGlobal = $state(false);
     let selectedDistrict = $state(null);
@@ -146,13 +145,40 @@
     let mouse = $state({ x: 0, y: 0 });
 
     // ── d3.zoom (unified: story steps + explore mode) ──
+    // d3.zoom computes the transform; we render via viewBox so the browser
+    // always rasterizes paths at display resolution (no blurry GPU-cached bitmap).
     let svgEl;
     let zoomTransform = $state(d3.zoomIdentity);
 
     const zoom = d3.zoom()
         .scaleExtent([1, 20])
         .filter(event => !event.type.startsWith('wheel'))
-        .on('zoom', ({ transform }) => { zoomTransform = transform; });
+        .on('zoom', ({ transform }) => {
+            zoomTransform = transform;
+        });
+
+    // During animation: <g transform> for smooth GPU-accelerated rendering.
+    // After settling: viewBox zoom so paths rasterize crisply at final resolution.
+    let animating = $state(false);
+
+    let activeViewBox = $derived.by(() => {
+        const { x, y, k } = zoomTransform;
+        if (animating) return `0 0 ${width} ${height}`;
+        return `${-x / k} ${-y / k} ${width / k} ${height / k}`;
+    });
+
+    let activeGTransform = $derived(animating ? zoomTransform.toString() : '');
+
+    // Use standard d3 zoom transitions (smooth GPU-accelerated via <g transform>
+    // while animating=true), then switch to viewBox mode for crisp rendering.
+    function smoothZoomTo(target, duration = 1500) {
+        const svg = d3.select(svgEl);
+        svg.interrupt();
+        animating = true;
+        svg.transition().duration(duration)
+            .call(zoom.transform, target)
+            .on('end', () => { animating = false; });
+    }
 
     function computeZoomTransform(featureOrCollection) {
         const [[x0, y0], [x1, y1]] = pathGenerator.bounds(featureOrCollection);
@@ -173,20 +199,26 @@
     // Unified zoom effect: drives story-step zooms and manages explore-mode attachment
     let prevStepTarget = null; // plain var, not $state
     $effect(() => {
+        // Read reactive deps early so they're tracked even if svgEl isn't ready yet
+        const step = stepIndex;
+        const explore = isExploreMode;
+
         if (!svgEl) return;
         const svg = d3.select(svgEl);
 
-        if (isExploreMode) {
-            svg.call(zoom);
-            return;
-        }
+        // Always attach the zoom behavior (needed for zoom.transform to work)
+        svg.call(zoom);
 
-        // Detach interactive zoom for story steps
+        if (explore) return;
+
+        // Detach interactive zoom for story steps (keep behavior initialized)
         svg.on('.zoom', null);
         selectedDistrict = null;
+        hoveredDa = null;
+        hoveredDistrict = null;
 
         // Compute target zoom for this step
-        const target = getStepZoomTarget(stepIndex);
+        const target = getStepZoomTarget(step);
         const targetTransform = target ? computeZoomTransform(target) : d3.zoomIdentity;
 
         const targetKey = target === villerayCollection ? 'villeray'
@@ -198,28 +230,27 @@
         prevStepTarget = targetKey;
 
         if (changed && (target || wasZoomed)) {
-            svg.transition().duration(1500).call(zoom.transform, targetTransform);
+            smoothZoomTo(targetTransform, 1500);
         } else {
             svg.call(zoom.transform, targetTransform);
         }
     });
 
     function zoomToFeature(feature) {
-        d3.select(svgEl).transition().duration(750).call(
-            zoom.transform,
-            computeZoomTransform(feature)
-        );
+        smoothZoomTo(computeZoomTransform(feature), 750);
     }
 
     function zoomReset() {
-        d3.select(svgEl).transition().duration(750).call(
-            zoom.transform,
-            d3.zoomIdentity
-        );
+        smoothZoomTo(d3.zoomIdentity, 750);
     }
 
     function zoomBy(factor) {
-        d3.select(svgEl).transition().duration(300).call(zoom.scaleBy, factor);
+        const svg = d3.select(svgEl);
+        svg.interrupt();
+        animating = true;
+        svg.transition().duration(300)
+            .call(zoom.scaleBy, factor)
+            .on('end', () => { animating = false; });
     }
 
     // ── All DAs always rendered (d3.zoom handles visual zoom) ──
@@ -409,10 +440,6 @@
                     <option value="quantile">Quantile</option>
                 </select>
             </label>
-            <div class="zoom-btns">
-                <button class="zoom-btn" onclick={() => zoomBy(2)}>+</button>
-                <button class="zoom-btn" onclick={() => zoomBy(0.5)}>&minus;</button>
-            </div>
             {#if isZoomed}
                 <label>
                     Scale
@@ -427,14 +454,19 @@
                 <button class="back-btn" onclick={handleZoomOut}>&larr; Back to city</button>
             {/if}
         </div>
+
+        <div class="zoom-btns">
+            <button class="zoom-btn" onclick={() => zoomBy(2)}>+</button>
+            <button class="zoom-btn" onclick={() => zoomBy(0.5)}>&minus;</button>
+        </div>
     {/if}
 
     {#if mapConfig.title}
         <div class="title-indicator">{mapConfig.title}</div>
     {/if}
 
-    <svg bind:this={svgEl} viewBox={`0 0 ${width} ${height}`} style="background: #a6cee3;">
-        <g transform={zoomTransform.toString()}>
+    <svg bind:this={svgEl} viewBox={activeViewBox} style="background: #a6cee3;">
+        <g transform={activeGTransform}>
             <!-- Boundary (CMA land outside districts) -->
             {#each boundary as feature (feature.properties.id)}
                 <path
@@ -636,23 +668,30 @@
     .norm-toggle.active { background: #e8f4fd; border-color: #90caf9; }
 
     .zoom-btns {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
         display: flex;
-        gap: 2px;
+        flex-direction: column;
+        gap: 1px;
+        z-index: 10;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
     }
 
     .zoom-btn {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.85rem;
+        font-size: 1rem;
         font-weight: 600;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        border: none;
         background: white;
         cursor: pointer;
-        color: #555;
+        color: #333;
         line-height: 1;
     }
     .zoom-btn:hover { background: #f0f0f0; }

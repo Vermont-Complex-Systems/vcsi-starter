@@ -13,17 +13,16 @@ export async function getDB() {
   if (!initPromise) {
     initPromise = (async () => {
       const duckdb = await import('@duckdb/duckdb-wasm');
-      const { default: DuckDBWorker } = await import(
-        '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?worker'
-      );
-      const duckdb_wasm = (await import(
-        '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url'
-      )).default;
 
-      const worker = new DuckDBWorker();
+      // Use jsDelivr CDN bundles to avoid MIME type issues on servers
+      // that don't serve .wasm files with application/wasm
+      const bundles = duckdb.getJsDelivrBundles();
+      const bundle = await duckdb.selectBundle(bundles);
+
+      const worker = await duckdb.createWorker(bundle.mainWorker!);
       const logger = new duckdb.ConsoleLogger();
       dbInstance = new duckdb.AsyncDuckDB(logger, worker);
-      await dbInstance.instantiate(duckdb_wasm);
+      await dbInstance.instantiate(bundle.mainModule);
       connInstance = await dbInstance.connect();
 
       return connInstance;
@@ -58,9 +57,11 @@ export async function loadExtension(name: string) {
 export async function registerParquet(name: string, url: string) {
   const duckdb = await import('@duckdb/duckdb-wasm');
   const conn = await getDB();
+  // Resolve to absolute URL so the CDN-hosted worker can fetch from our origin
+  const absoluteUrl = new URL(url, window.location.origin).href;
   await dbInstance.registerFileURL(
     name,
-    url,
+    absoluteUrl,
     duckdb.DuckDBDataProtocol.HTTP,
     false
   );

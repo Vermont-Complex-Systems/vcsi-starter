@@ -51,6 +51,7 @@
 		.where(() => or(
 			ilike('title', searchQuery),
 			ilike('ego_display_name', searchQuery),
+			ilike('coauthor_names', searchQuery),
 			ilike('abstract', searchQuery)
 		));
 
@@ -214,7 +215,7 @@
 	>
 		{#if hoveredData}
 			<h1 class="tooltip-title">{hoveredData.title}</h1>
-			<p class="tooltip-meta">{hoveredData.ego_display_name} · {hoveredData.college}</p>
+			<p class="tooltip-meta">{hoveredData.ego_display_name}; {hoveredData.coauthor_names} · {hoveredData.college}</p>
 			<p class="tooltip-detail">{hoveredData.publication_year} · Cited by {hoveredData.cited_by_count}</p>
 		{/if}
 	</ChartTooltip>
