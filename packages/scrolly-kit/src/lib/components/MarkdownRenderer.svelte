@@ -3,7 +3,7 @@
 Markdown renderer with KaTeX math and syntax highlighting.
 
 Supports GitHub Flavored Markdown, LaTeX math ($...$, $$...$$),
-and code blocks with syntax highlighting.
+raw HTML in markdown, and code blocks with syntax highlighting.
 
 ## Props
 - `text` - Markdown string to render
@@ -13,22 +13,19 @@ and code blocks with syntax highlighting.
 <MarkdownRenderer text="## Hello\n\nThis is **bold** and $E = mc^2$" />
 ```
 
-## Supported Features
+## Supported features
 - GFM (tables, strikethrough, autolinks)
 - KaTeX math (inline and block)
-- Code highlighting (JS, CSS, R, HTML)
+- Code highlighting (js, ts, css, html/xml, svelte, r, bash)
+- Raw HTML inside markdown (via rehype-raw)
 -->
-<script lang="ts">
-    import Markdown from 'svelte-exmarkdown';
+<script module lang="ts">
     import { gfmPlugin } from 'svelte-exmarkdown/gfm';
-    import 'katex/dist/katex.min.css';
     import rehypeKatex from 'rehype-katex';
     import remarkMath from 'remark-math';
     import rehypeRaw from 'rehype-raw';
     import rehypeHighlight from 'rehype-highlight';
     import rehypeHighlightCodeLines from 'rehype-highlight-code-lines';
-    import 'highlight.js/styles/github.css';
-    import { base } from '$app/paths';
 
     import css from 'highlight.js/lib/languages/css';
     import xml from 'highlight.js/lib/languages/xml';
@@ -37,22 +34,13 @@ and code blocks with syntax highlighting.
     import TS from 'highlight.js/lib/languages/typescript';
     import bash from 'highlight.js/lib/languages/bash';
 
-    interface Props {
-        text: string;
-    }
-
-    let { text }: Props = $props();
-
-    // Using 'as any' due to complex plugin typing in svelte-exmarkdown
-    const plugins = [
+    // Built once per module load and shared by every MarkdownRenderer instance.
+    // `any[]` because svelte-exmarkdown's plugin type is a complex intersection.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const plugins: any[] = [
         gfmPlugin(),
-        {
-            remarkPlugin: [remarkMath],
-            rehypePlugin: [rehypeKatex]
-        },
-        {
-            rehypePlugin: [rehypeRaw]
-        },
+        { remarkPlugin: [remarkMath], rehypePlugin: [rehypeKatex] },
+        { rehypePlugin: [rehypeRaw] },
         {
             rehypePlugin: [
                 rehypeHighlight,
@@ -73,30 +61,35 @@ and code blocks with syntax highlighting.
                 }
             ]
         },
-        {
-            rehypePlugin: [
-                rehypeHighlightCodeLines,
-                {
-                    showLineNumbers: true
-                }
-            ]
-        }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any[];
+        { rehypePlugin: [rehypeHighlightCodeLines, { showLineNumbers: true }] }
+    ];
+</script>
+
+<script lang="ts">
+    import Markdown from 'svelte-exmarkdown';
+    import 'katex/dist/katex.min.css';
+    import 'highlight.js/styles/github.css';
+    import { base } from '$app/paths';
+
+    interface Props {
+        text: string;
+    }
+
+    let { text }: Props = $props();
 
     function processContent(content: string): string {
-        if (!content) return "";
+        if (!content) return '';
 
-        // Remove footnote markers
+        // Strip footnote markers like [^1]
         content = content.replace(/\[\^(\d+)\]/g, '');
 
-        // Preserve code blocks (markdown fences and <pre> tags), remove leading whitespace from non-code
+        // Trim leading whitespace on non-code lines, leave code blocks alone.
         const parts = content.split(/(```[\s\S]*?```|<pre[\s\S]*?<\/pre>)/);
-        content = parts.map((part: string, i: number) =>
-            i % 2 === 0 ? part.replace(/^[ \t]+/gm, '') : part
-        ).join('');
+        content = parts
+            .map((part, i) => (i % 2 === 0 ? part.replace(/^[ \t]+/gm, '') : part))
+            .join('');
 
-        // Fix base path for links/images
+        // Rewrite absolute /foo links and images to respect SvelteKit's base path.
         content = content.replace(/(src|href)="\/([^"]*?)"/g, `$1="${base}/$2"`);
 
         return content;

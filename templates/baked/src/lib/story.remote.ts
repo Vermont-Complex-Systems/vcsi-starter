@@ -52,7 +52,7 @@ export const getStory = prerender(v.string(), async (slug) => {
   const story = stories.find(d => d.slug === slug);
 
   if (!story) error(404, 'Story not found');
-  
+
   if (story.externalUrl) redirect(302, story.externalUrl);
 
   // Load copy data using glob

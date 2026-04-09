@@ -1,19 +1,15 @@
 <!--
 @component
-Renders a single content item based on its type.
+Renders a single `ContentItem` from a story's `copy.json`.
 
-Takes a `ContentItem` object and renders it as HTML, Markdown, math, or code
-with syntax highlighting. Used internally by ScrollyContent but can be used
-standalone for rendering structured content.
+Supports four content types:
+- `markdown` — Markdown text (via MarkdownRenderer)
+- `html` — Raw HTML (escape hatch for anything markdown can't express)
+- `math` — Markdown text with math, rendered centered (KaTeX)
+- `code` — Code block with optional `language` and `highlightLines`
 
 ## Props
-- `item` - A `ContentItem` object with `type` and `value` fields
-
-## Supported Types
-- `html` - Raw HTML (rendered with {@html})
-- `markdown` - Markdown text (rendered via MarkdownRenderer)
-- `math` - Math expressions in markdown (centered, uses KaTeX)
-- `code` - Code blocks with syntax highlighting and optional line numbers
+- `item` — A `ContentItem` object
 
 ## Usage
 ```svelte
@@ -29,42 +25,26 @@ standalone for rendering structured content.
 -->
 <script lang="ts">
     import Md from './MarkdownRenderer.svelte';
-    import type { ContentItem } from './ScrollySnippets.svelte';
+    import { renderCodeHtml, type ContentItem } from './ScrollySnippets.svelte';
 
     let { item }: { item: ContentItem } = $props();
-
-    const VALID_TYPES = ['html', 'markdown', 'math', 'code'] as const;
-
-    /** Escape HTML entities so code displays as text, not rendered HTML */
-    function escapeHtml(str: string): string {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
 </script>
 
-{#if item.type === "html"}
-    <span>{@html item.value}</span>
-{:else if item.type === "markdown"}
-    <Md text={item.value as string}/>
-{:else if item.type === "math"}
+{#if item.type === 'markdown'}
+    <Md text={item.value} />
+{:else if item.type === 'html'}
+    {@html item.value}
+{:else if item.type === 'math'}
     <div class="math-container">
-        <Md text={item.value as string}/>
+        <Md text={item.value} />
     </div>
-{:else if item.type === "code"}
-    {@const rawCode = Array.isArray(item.value) ? item.value.join('\n') : item.value}
-    {@const codeValue = escapeHtml(rawCode)}
-    {@const langClass = item.language ? `language-${item.language}` : ''}
-    {@const highlightAttr = item.highlightLines ? `data-highlight-lines="${item.highlightLines}"` : ''}
+{:else if item.type === 'code'}
     <div class="code-block">
         {#if item.language}
             <div class="code-language">{item.language}</div>
         {/if}
-        <Md text={`<pre><code class="${langClass} show-line-numbers" ${highlightAttr}>${codeValue}</code></pre>`}/>
+        <Md text={renderCodeHtml(item.value, item.language, item.highlightLines)} />
     </div>
-{:else}
-    {@const _ = console.warn(`[RenderTextContent] Unknown type: "${(item as any).type}". Valid: ${VALID_TYPES.join(', ')}`)}
 {/if}
 
 <style>
@@ -82,7 +62,7 @@ standalone for rendering structured content.
         overflow-x: auto;
     }
 
-    /* Reset pre margin inside code-block so language badge aligns with the box */
+    /* Reset pre margin inside code-block so the language badge aligns with the box */
     .code-block :global(pre) {
         margin: 0;
     }

@@ -341,6 +341,42 @@ Add `.reversed` to `.split-layout` to flip panel/content sides.
 - CSS custom properties and scrolly layouts defined in package, customized in template
 - Remote functions use `prerender()` with `{ dynamic: true }` for parameterized routes
 
+### Browser-only code in stories
+
+The `baked/` template uses `adapter-static`, which means every story is
+prerendered at build time. If a story imports a module that touches
+`window`/`document`/`canvas`/WebGL at module-load time (e.g. DuckDB-wasm, some
+d3 measurement code, certain observablehq libs), `npm run build` will crash
+with an SSR error like `ReferenceError: document is not defined`.
+
+**The escape hatch:** guard browser-only components with `browser` from
+`$app/environment`:
+
+```svelte
+<script lang="ts">
+  import { browser } from '$app/environment';
+  import MyWebGLChart from './MyWebGLChart.svelte';
+</script>
+
+{#if browser}
+  <MyWebGLChart {data} />
+{/if}
+```
+
+For code (not components) that must only run in the browser, use `$effect` or
+dynamic `import()` inside `onMount` — those only execute client-side.
+
+**Do not disable SSR globally.** Setting `export const ssr = false` in
+`[slug]/+page.ts` *will* silence build errors, but in `adapter-static` it also
+means remote functions like `getStory()` won't be crawled at build time and
+their static JSON endpoints won't be generated, producing 404s at runtime. If
+you truly need SSR off on a route, you must also add an `inputs: () => [...]`
+option to every `prerender()` remote function the page calls so SvelteKit
+knows which static endpoints to bake.
+
+The `fresh/` template (adapter-node) does not have this constraint — `ssr =
+false` is safe there because the server is live at runtime.
+
 ## sv Add-ons
 
 Optional integrations installed via Svelte CLI.

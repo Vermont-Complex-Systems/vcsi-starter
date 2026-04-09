@@ -154,6 +154,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   gap: var(--vcsi-space-2xl);
   width: 100%;
   max-width: var(--vcsi-page-max-width);
+  min-width: 0;
 }
 
 .hero-text {
@@ -161,6 +162,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   flex-direction: column;
   gap: var(--vcsi-space-md);
   max-width: 55%;
+  min-width: 0;
 }
 
 .hero-text h1 {
@@ -207,9 +209,9 @@ Uses padding-bottom: 0 to make the centering symmetric
 }
 
 /* Make DotsToImage grow to fill space */
-.hero-inner > :global(DotsToImage) {
+.hero-inner > :global(#dot-container) {
   flex: 1;
-  height: 50%;
+  min-width: 0;
 }
 
 /* ---------------- Stories Section ---------------- */
@@ -364,7 +366,12 @@ Uses padding-bottom: 0 to make the centering symmetric
     text-align: center;
   }
   .hero-text {
-    max-width: 90%;
+    max-width: 100%;
+    width: 100%;
+  }
+  .hero-inner > :global(#dot-container) {
+    width: 100%;
+    flex: none;
   }
   .hero-text h1 {
     font-size: 2.5rem;
