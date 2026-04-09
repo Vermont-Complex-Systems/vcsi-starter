@@ -1,23 +1,22 @@
 <!--
   Story page — renders any story from $lib/stories/{slug}/.
 
-  This file stays the same across all phases:
-    Phase 1 (static):  getStory uses prerender()  → built at compile time
-    Phase 2 (dynamic): getStory uses query()      → runs on the server
-    Phase 3 (mutations): add form()/command() alongside, this file unchanged
-
-  The load function (+page.ts) provides the component and slug.
-  The remote function (story.remote.ts) provides the data.
+  Component discovery and data fetching both live in story.remote.ts:
+    - loadStoryComponent(slug) → Svelte component (plain helper)
+    - getStory(slug)            → { story, copyData } (remote function)
 -->
-<script>
+<script lang="ts">
+  import { page } from '$app/state';
   import { getStory } from '$lib/story.remote.js';
+  import { loadStoryComponent } from '$lib/story-loader.js';
 
-  // Component and slug come from the load function in +page.ts
-  let { data } = $props();
-  const StoryComponent = data.component;
+  const slug = page.params.slug;
 
-  // Data comes from the remote function — the bit that swaps between phases
-  const { story, copyData } = await getStory(data.slug);
+  // Fetch component + data in parallel.
+  const [StoryComponent, { story, copyData }] = await Promise.all([
+    loadStoryComponent(slug),
+    getStory(slug)
+  ]);
 </script>
 
 <StoryComponent {story} data={copyData} />

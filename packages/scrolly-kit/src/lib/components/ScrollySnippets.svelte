@@ -4,14 +4,15 @@
      * @example { "type": "markdown", "value": "Some **bold** text" }
      */
     export interface ContentItem {
-        type: 'html' | 'markdown' | 'math' | 'code';
-        value: string | string[];
+        type: 'markdown' | 'html' | 'math' | 'code';
+        value: string;
+        /** Language hint for code blocks, e.g. "js", "python" */
         language?: string;
-        /** Lines to highlight, e.g. "1-3,5" or "2,4-6" */
+        /** Lines to highlight in a code block, e.g. "1-3,5" or "2,4-6" */
         highlightLines?: string;
     }
 
-    /** Escape HTML entities so code displays as text, not rendered HTML */
+    /** Escape HTML entities so code displays as text, not rendered HTML. */
     function escapeHtml(str: string): string {
         return str
             .replace(/&/g, '&amp;')
@@ -20,8 +21,8 @@
     }
 
     /**
-     * Generate HTML string for a code block with syntax highlighting.
-     * Use with <Md text={renderCodeHtml(...)} /> for dynamic highlighting.
+     * Build the HTML string for a code block with syntax-highlighting hints.
+     * Pass the result to <MarkdownRenderer> to render a styled code block.
      * @example <Md text={renderCodeHtml(code, 'js', '1-3,5')} />
      */
     export function renderCodeHtml(code: string, language?: string, highlightLines?: string): string {
