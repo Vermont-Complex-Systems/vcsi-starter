@@ -26,12 +26,15 @@
 
 
 /* =============================================================================
-   LIGHT STORY THEME (default)
-   Stories default to light mode, independent of global dark mode toggle.
-   Customize with: style="--vcsi-story-bg: #fff; --vcsi-story-fg: #333;"
+   STORY ROOT ISOLATION (Light default)
+   Any root story container is isolated from the global dark mode toggle so
+   authors keep full control over their story's theme. Add this list whenever
+   introducing a new top-level story layout.
+   Opt into dark via data-theme="dark" on the same element.
    ============================================================================= */
 
-.story {
+.story,
+.dashboard-layout {
   color-scheme: light;
   /* Isolate from global dark mode - force light semantic tokens */
   --vcsi-bg: var(--vcsi-bg-light);
@@ -46,7 +49,15 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
   --vcsi-blockquote: var(--vcsi-blockquote-light);
   --vcsi-code-highlight: var(--vcsi-code-highlight-light);
+}
 
+/* =============================================================================
+   LIGHT STORY THEME (default)
+   Story-specific tokens consumed by .story layout + ScrollyContent.
+   Customize with: style="--vcsi-story-bg: #fff; --vcsi-story-fg: #333;"
+   ============================================================================= */
+
+.story {
   /* Story-specific tokens */
   --vcsi-story-bg: var(--vcsi-color-beige, #f4efea);
   --vcsi-story-fg: rgb(55, 55, 55);
@@ -118,10 +129,15 @@
    Customize with: style="--vcsi-story-bg: #353839; --vcsi-story-fg: white;"
    ============================================================================= */
 
-.story[data-theme="dark"] {
+.story[data-theme="dark"],
+.dashboard-layout[data-theme="dark"] {
   color-scheme: dark;
-  --vcsi-story-bg: #353839;
-  --vcsi-story-fg: white;
+
+  /* Dark semantic tokens */
+  --vcsi-bg: var(--vcsi-bg-dark);
+  --vcsi-fg: var(--vcsi-fg-dark);
+  --vcsi-hover: var(--vcsi-hover-dark);
+  --vcsi-border: var(--vcsi-border-dark);
 
   /* Code tokens for dark theme */
   --vcsi-code-bg: var(--vcsi-code-bg-dark);
@@ -130,6 +146,11 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
   --vcsi-blockquote: var(--vcsi-blockquote-dark);
   --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
+}
+
+.story[data-theme="dark"] {
+  --vcsi-story-bg: #353839;
+  --vcsi-story-fg: white;
 
   /* ScrollyContent step colors for dark theme */
   --story-step-bg: #2a2a2a;
@@ -428,6 +449,11 @@
   grid-template-columns: var(--vcsi-sidebar-width) 1fr;
   height: 100vh;
   width: 100%;
+  /* Opaque so global dark mode can't bleed through from <body>. Resolves
+     to --vcsi-bg-light by default (see isolation block above) and swaps
+     to --vcsi-bg-dark when [data-theme="dark"] is set on this element. */
+  background: var(--vcsi-bg);
+  color: var(--vcsi-fg);
   transition: grid-template-columns var(--vcsi-sidebar-transition);
 }
 
