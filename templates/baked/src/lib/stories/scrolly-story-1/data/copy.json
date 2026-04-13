@@ -37,6 +37,38 @@
 			"value": "We can change mark, here transitioning from barchart to lollipop. Note that here we always show the **same data**, but differently."
 		}
 	],
+	"interlude": [
+		{
+			"type": "markdown",
+			"value": "The bar chart shows which names are most popular, but **how** is popularity distributed? Are there many names with similar counts, or does a handful dominate?"
+		},
+		{
+			"type": "component",
+			"value": "SlopeChart"
+		},
+		{
+			"type": "markdown",
+			"value": "The slope chart above re-ranks the top 10 names by character length. Notice how the ranking reshuffles — SEBASTIEN (9 chars) drops from #3 by count to near the bottom by length. A rank-frequency plot lets us see the full distribution."
+		},
+		{
+			"type": "markdown",
+			"value": "Notre that here we embed **static components** inline within your text flow by placing a `{ \"type\": \"component\", \"value\": \"SlopeChart\" }` marker in copy.json."
+		}
+	],
+	"rankSteps": [
+		{
+			"type": "markdown",
+			"value": "Here every name is a point. The **x-axis** shows rank (log scale), the **y-axis** shows count. The steep drop-off is immediately visible."
+		},
+		{
+			"type": "markdown",
+			"value": "The top 5 names — **ERIC**, **JONATHAN**, **SEBASTIEN**, **MARTIN**, **MATHIEU** — tower above the rest."
+		},
+		{
+			"type": "markdown",
+			"value": "But the real story is the **long tail**: hundreds of names with very few occurrences. This is a classic power-law distribution."
+		}
+	],
 	"markdownRenderer": [
 		{
 			"type": "markdown",
@@ -67,7 +99,7 @@
 	"conclusion": [
 		{
 			"type": "markdown",
-			"value": "In conclusion, we saw how to programmatically have a scrolly story with content on the left and a shifting plot on the right."
+			"value": "In conclusion, we saw how multiple scrolly sections can tell a richer story — the bar chart showed *which* names are popular, and the rank-frequency plot revealed *how* that popularity is distributed. Text interludes with inline components connect the sections into a cohesive narrative."
 		}
 	]
 }
