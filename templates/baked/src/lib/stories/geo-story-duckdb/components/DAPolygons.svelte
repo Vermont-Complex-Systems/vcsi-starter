@@ -24,11 +24,11 @@
     {@const canHover = enableHover && (!hoverableIds || hoverableIds.has(feature.properties.geo_uid))}
     <path
         d={pathGenerator(feature)}
-        fill={isSelected ? '#d62728' : isHovered ? '#ffd700' : baseFill}
+        fill={isSelected ? '#d62728' : isHovered ? '#ff6361' : baseFill}
         fill-opacity={isSelected ? 0.8 : 1}
         stroke={isSelected ? '#d62728' : isHovered ? '#333' : '#666'}
         stroke-width={(isSelected ? 2 : isHovered ? 1.5 : hasHighlights ? 0.3 : 0.15) * s}
-        style="transition: fill 0.3s ease; {canHover || onclick ? 'cursor: pointer;' : ''}"
+        style="{canHover ? '' : 'transition: fill 0.3s ease;'} cursor: {canHover || onclick ? 'pointer' : 'default'};"
         onmouseenter={() => { if (canHover) hovered = feature; }}
         onmouseleave={() => { if (canHover) hovered = null; }}
         onmousemove={(e) => { if (canHover) mouse = { x: e.offsetX, y: e.offsetY }; }}

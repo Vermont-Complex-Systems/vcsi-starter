@@ -1,5 +1,5 @@
 <script>
-    let { scale } = $props();
+    let { scale, format = null } = $props();
 
     // Derive legend properties from the scale
     let domain = $derived(scale?.domain() ?? []);
@@ -63,6 +63,7 @@
         const d = domain;
         if (isDiverging) return `${d[0]?.toFixed(0)}%`;
         const min = d[0];
+        if (format === '%') return `${min?.toFixed(1)}%`;
         return min?.toLocaleString(undefined, { maximumFractionDigits: 0 });
     });
 
@@ -71,6 +72,7 @@
         const d = domain;
         if (isDiverging) return `+${d[2]?.toFixed(0)}%`;
         const max = d[d.length - 1];
+        if (format === '%') return `${max?.toFixed(1)}%`;
         return max?.toLocaleString(undefined, { maximumFractionDigits: 0 });
     });
 </script>
