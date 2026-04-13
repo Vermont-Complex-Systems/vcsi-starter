@@ -5,7 +5,7 @@
 	import SlopeChart from './SlopeChart.svelte';
 	import {
 		ScrollIndicator,
-		RenderTextContent,
+		RenderContent,
 		ScrollyContent,
 		StoryHeader,
 		Footer
@@ -16,20 +16,9 @@
 	let barIndex = $state(undefined);
 	let rankIndex = $state(0);
 
-	/** Components that can be placed inline via copy.json markers */
+	/** Components that copy.json can reference via { "type": "component", "value": "Name" } */
 	const components = { SlopeChart };
 </script>
-
-{#snippet renderContent(items)}
-	{#each items as item}
-		{#if item.type === "component" && components[item.value]}
-			{@const Comp = components[item.value]}
-			<Comp />
-		{:else}
-			<RenderTextContent {item} />
-		{/if}
-	{/each}
-{/snippet}
 
 <BackToHome colored />
 <ScrollIndicator />
@@ -44,7 +33,7 @@
 
 	<!-- Section 1: Introduction -->
 	<section id="intro">
-		{@render renderContent(data.introduction)}
+		<RenderContent items={data.introduction}/>
 	</section>
 
 	<!-- Section 2: Bar chart scrolly -->
@@ -59,7 +48,7 @@
 
 	<!-- Section 3: Interlude with inline SlopeChart -->
 	<section id="interlude">
-		{@render renderContent(data.interlude)}
+		<RenderContent items={data.interlude} {components} />
 	</section>
 
 	<!-- Section 4: Rank-frequency scrolly (reversed layout, tighter gap) -->
@@ -75,13 +64,13 @@
 	<!-- Section 5: Markdown renderer showcase -->
 	<h2>Markdown Renderer</h2>
 	<section id="markdown">
-		{@render renderContent(data.markdownRenderer)}
+		<RenderContent items={data.markdownRenderer} />
 	</section>
 
 	<!-- Section 6: Conclusion -->
 	<h2>Conclusion</h2>
 	<section id="conclusion">
-		{@render renderContent(data.conclusion)}
+		<RenderContent items={data.conclusion} />
 	</section>
 </article>
 

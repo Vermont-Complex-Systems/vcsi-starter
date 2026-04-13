@@ -21,7 +21,7 @@ export { default as NavMenu } from './components/NavMenu.svelte';
 export { default as Footer } from './components/Footer.svelte';
 
 // Content rendering
-export { default as RenderTextContent } from './components/RenderTextContent.svelte';
+export { default as RenderContent } from './components/RenderContent.svelte';
 export { renderCodeHtml } from './components/ScrollySnippets.svelte';
 
 // Actions
@@ -51,7 +51,7 @@ export type {
   ScrollIndicatorProps,
   SpinnerProps,
   MetaProps,
-  RenderTextContentProps,
+  RenderContentProps,
   CodeStep,
   CodeExplainerData,
   CodeExplainerProps,

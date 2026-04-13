@@ -42,6 +42,9 @@
     { id: 'fullscreen-layout', label: 'Fullscreen Layout' },
     { id: 'dashboard-layout', label: 'Dashboard Layout' },
     { id: 'step-styling', label: 'Step Styling' },
+    { id: 'variable-scoping', label: 'Variable Scoping' },
+    { id: 'multi-section', label: 'Multi-Section Stories' },
+    { id: 'gotchas', label: 'Gotchas' },
     { id: 'css-variables', label: 'CSS Variables' }
   ];
 </script>
@@ -322,6 +325,209 @@
   --vcsi-story-step-bg-inactive: transparent;
   --vcsi-step-box-shadow: none;
 }`} />
+    </section>
+
+    <!-- VARIABLE SCOPING -->
+    <section id="variable-scoping">
+      <LinkableHeader id="variable-scoping">CSS Variable Scoping</LinkableHeader>
+      <p>Two rules to keep in mind when overriding <code>--vcsi-*</code> variables in your story's <code>&lt;style&gt;</code> block.</p>
+
+      <h3>Rule 1: Set variables on the element that reads them</h3>
+      <p>CSS custom properties cascade <strong>downward</strong> to children. A variable must be set on the element that consumes it, or on an ancestor — not on a descendant.</p>
+
+      <CopyCodeBlock label="Correct" language="css" command={`/* Layout vars → set on .split-layout (the element that reads them) */
+.split-layout {
+  --vcsi-panel-width: 65%;
+  --vcsi-layout-gap: 0.5rem;
+}
+
+/* Step vars → set on .scrolly-content (ancestor of .step-box that reads them) */
+.scrolly-content {
+  --vcsi-step-height: 40vh;
+  --vcsi-step-box-shadow: none;
+}`} />
+
+      <CopyCodeBlock label="Wrong — child can't set a variable its parent reads" language="css" command={`/* This does NOT work — .scrolly-content is inside .split-layout */
+.scrolly-content {
+  --vcsi-panel-width: 65%;  /* .split-layout reads this, not .scrolly-content */
+}`} />
+
+      <h4>Quick reference</h4>
+      <table class="docs-table">
+        <thead>
+          <tr><th>Variable</th><th>Set on</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--vcsi-panel-width</code>, <code>--vcsi-layout-gap</code>, <code>--vcsi-content-padding-inline</code></td><td><code>.split-layout</code></td><td>Read by the layout grid itself</td></tr>
+          <tr><td><code>--vcsi-step-height</code>, <code>--vcsi-step-box-shadow</code>, <code>--vcsi-step-max-width</code></td><td><code>.scrolly-content</code> or higher</td><td>Read by <code>.step</code> / <code>.step-box</code> inside ScrollyContent</td></tr>
+          <tr><td><code>--vcsi-story-step-bg</code>, <code>--vcsi-story-step-fg</code></td><td><code>.scrolly-content</code> or higher</td><td>Read by <code>.step-box</code> for active/inactive colors</td></tr>
+          <tr><td><code>--vcsi-story-bg</code>, <code>--vcsi-story-fg</code></td><td><code>.story</code></td><td>Read by the story container itself</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Rule 2: Scoped styles vs global classes</h3>
+      <p>Svelte scopes <code>&lt;style&gt;</code> rules to elements in your component's template. Classes like <code>.split-layout</code> and <code>.scrolly-content</code> that appear directly in your markup work fine with scoped styles — Svelte adds its hash to both the element and the rule.</p>
+
+      <CopyCodeBlock label="Works — these classes are on elements in your template" language="css" command={`/* Your Index.svelte has <section class="split-layout"> in its markup */
+.split-layout {
+  --vcsi-panel-width: 65%;
+}
+
+/* Your Index.svelte has <div class="scrolly-content"> in its markup */
+.scrolly-content {
+  --vcsi-step-height: 40vh;
+}`} />
+
+      <p>Use <code>:global()</code> only when targeting classes on elements <strong>inside imported components</strong> — elements you don't control in your own template:</p>
+
+      <CopyCodeBlock label="Needs :global() — .step-box is inside ScrollyContent.svelte" language="css" command={`/* .step-box is rendered by ScrollyContent, not your template */
+:global(.step-box) {
+  font-size: 0.9rem;
+}`} />
+    </section>
+
+    <!-- MULTI-SECTION STORIES -->
+    <section id="multi-section">
+      <LinkableHeader id="multi-section">Multi-Section Stories</LinkableHeader>
+      <p>Stories can combine multiple scrolly sections with text interludes. The recommended pattern uses two approaches side by side:</p>
+
+      <table class="docs-table">
+        <thead>
+          <tr><th>Pattern</th><th>Controlled by</th><th>Best for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>JSON-driven</strong></td><td><code>copy.json</code> via <code>renderContent</code></td><td>Text sections, inline components — author-friendly</td></tr>
+          <tr><td><strong>Svelte-explicit</strong></td><td>Markup in <code>Index.svelte</code></td><td>Scrolly layouts, component props, theming — developer-controlled</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The renderContent snippet</h3>
+      <p>Define a snippet that handles both text items and component markers from <code>copy.json</code>:</p>
+
+      <CopyCodeBlock language="svelte" command={`<script>
+  import { RenderContent, ScrollyContent, Footer } from '@the-vcsi/scrolly-kit';
+  import MyChart from './MyChart.svelte';
+  import MyPlot from './MyPlot.svelte';
+
+  let { story, data } = $props();
+  let scrollyIndex = $state(0);
+
+  // Register components that copy.json can reference
+  const components = { MyChart };
+<\/script>
+
+{#snippet renderContent(items)}
+  {#each items as item}
+    {#if item.type === "component" && components[item.value]}
+      {${'@'}const Comp = components[item.value]}
+      <Comp />
+    {:else}
+      <RenderContent {item} />
+    {/if}
+  {/each}
+{/snippet}
+
+<article class="story">
+  <!-- Text section (JSON-driven) -->
+  <section id="intro">
+    {${'@'}render renderContent(data.introduction)}
+  </section>
+
+  <!-- Scrolly section (Svelte-explicit) -->
+  <section class="split-layout">
+    <div class="sticky-panel">
+      <MyPlot {scrollyIndex} />
+    </div>
+    <div class="scrolly-content">
+      <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
+    </div>
+  </section>
+
+  <!-- Text section with inline component (JSON-driven) -->
+  <section id="interlude">
+    {${'@'}render renderContent(data.interlude)}
+  </section>
+</article>`} />
+
+      <h3>Component markers in copy.json</h3>
+      <p>Place a component marker anywhere in a content array. The <code>renderContent</code> snippet looks up the component by <code>value</code> and renders it inline:</p>
+
+      <CopyCodeBlock language="json" command={`{
+  "interlude": [
+    { "type": "markdown", "value": "Text before the chart..." },
+    { "type": "component", "value": "MyChart" },
+    { "type": "markdown", "value": "Text after the chart..." }
+  ]
+}`} />
+
+      <p>This pairs with the <code>@the-vcsi/msgraph</code> add-on for teams where non-technical contributors author content in a shared Excel spreadsheet (section | key | value format).</p>
+
+      <h3>Multiple scroll indices</h3>
+      <p>Each scrolly section needs its own state variable. Don't share a single <code>scrollyIndex</code> across sections:</p>
+
+      <CopyCodeBlock language="js" command={`let barIndex = $state(0);
+let scatterIndex = $state(0);`} />
+
+      <p>See <code>scrolly-story-1</code> in the baked template for a complete example with two scrolly sections, text interludes, and inline components.</p>
+    </section>
+
+    <!-- GOTCHAS -->
+    <section id="gotchas">
+      <LinkableHeader id="gotchas">Gotchas</LinkableHeader>
+      <p>Common pitfalls when building stories.</p>
+
+      <h3>Shared scrollyIndex across sections</h3>
+      <p>Each scrolly section must have its <strong>own state variable</strong>. If two <code>ScrollyContent</code> components bind to the same <code>scrollyIndex</code>, scrolling in one section overwrites the other's value — causing both visualizations to react to the wrong section.</p>
+
+      <CopyCodeBlock label="Wrong — shared state" language="svelte" command={`<script>
+  let scrollyIndex = $state(0);  // one index for both sections
+<\/script>
+
+<!-- Section 1 -->
+<ScrollyContent steps={data.steps1} bind:value={scrollyIndex} />
+
+<!-- Section 2 — overwrites scrollyIndex when you scroll here -->
+<ScrollyContent steps={data.steps2} bind:value={scrollyIndex} />`} />
+
+      <CopyCodeBlock label="Correct — independent state" language="svelte" command={`<script>
+  let barIndex = $state(0);
+  let scatterIndex = $state(0);
+<\/script>
+
+<!-- Section 1 -->
+<ScrollyContent steps={data.steps1} bind:value={barIndex} />
+
+<!-- Section 2 — independent -->
+<ScrollyContent steps={data.steps2} bind:value={scatterIndex} />`} />
+
+      <p>This also means you can reuse the same visualization component in multiple sections — just pass it a different index prop.</p>
+
+      <h3>CSS variables set on the wrong element</h3>
+      <p>CSS custom properties cascade <strong>downward</strong>. Setting a variable on a child has no effect on a parent that reads it. See <a href="#variable-scoping">Variable Scoping</a> for the full rule.</p>
+
+      <CopyCodeBlock label="Wrong — child can't set parent's variable" language="css" command={`.scrolly-content {
+  --vcsi-panel-width: 65%;  /* .split-layout reads this, not .scrolly-content */
+}`} />
+
+      <CopyCodeBlock label="Correct — set on the element that reads it" language="css" command={`.split-layout {
+  --vcsi-panel-width: 65%;
+}`} />
+
+      <h3>Global DOM selectors in plot components</h3>
+      <p>Avoid <code>document.querySelector('.chart')</code> in visualization components. In a multi-section story, it may grab the wrong element from a different section. Instead, use Svelte's <code>bind:this</code> to reference your own DOM:</p>
+
+      <CopyCodeBlock label="Wrong" language="svelte" command={`<script>
+  // Could grab the chart from a different section!
+  const el = document.querySelector('.chart');
+<\/script>`} />
+
+      <CopyCodeBlock label="Correct" language="svelte" command={`<script>
+  let chartEl = $state();
+<\/script>
+
+<div class="chart" bind:this={chartEl}>
+  <!-- chartEl always refers to THIS component's div -->
+</div>`} />
     </section>
 
     <!-- CSS VARIABLES -->

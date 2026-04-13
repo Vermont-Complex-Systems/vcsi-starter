@@ -13,7 +13,7 @@ import type CodeExplainer from './components/CodeExplainer.svelte';
 import type Spinner from './components/Spinner.svelte';
 import type Meta from './components/Meta.svelte';
 import type StoryHeader from './components/StoryHeader.svelte';
-import type RenderTextContent from './components/RenderTextContent.svelte';
+import type RenderContent from './components/RenderContent.svelte';
 import type Nav from './components/Nav.svelte';
 import type NavMenu from './components/NavMenu.svelte';
 import type Footer from './components/Footer.svelte';
@@ -61,8 +61,8 @@ export type MetaProps = ComponentProps<typeof Meta>;
 /** Props for StoryHeader component */
 export type StoryHeaderProps = ComponentProps<typeof StoryHeader>;
 
-/** Props for RenderTextContent component */
-export type RenderTextContentProps = ComponentProps<typeof RenderTextContent>;
+/** Props for RenderContent component */
+export type RenderContentProps = ComponentProps<typeof RenderContent>;
 
 /** Props for Nav component */
 export type NavProps = ComponentProps<typeof Nav>;

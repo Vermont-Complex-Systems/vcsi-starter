@@ -176,8 +176,8 @@ export const components: Record<string, ComponentDoc> = {
 <MarkdownRenderer text="The equation $E = mc^2$ shows..." />`
   },
 
-  RenderTextContent: {
-    name: 'RenderTextContent',
+  RenderContent: {
+    name: 'RenderContent',
     description: 'Renders a single content item based on its type. Supports html, markdown, math, and code types.',
     category: 'Content',
     props: [
@@ -185,12 +185,12 @@ export const components: Record<string, ComponentDoc> = {
     ],
     types: ['html - Raw HTML', 'markdown - Markdown text', 'math - Math expressions (centered, KaTeX)', 'code - Code blocks with syntax highlighting'],
     usage: `<script>
-  import { RenderTextContent } from '@the-vcsi/scrolly-kit';
+  import { RenderContent } from '@the-vcsi/scrolly-kit';
 <\/script>
 
-<RenderTextContent item={{ type: 'markdown', value: '## Hello' }} />
+<RenderContent item={{ type: 'markdown', value: '## Hello' }} />
 
-<RenderTextContent item={{
+<RenderContent item={{
   type: 'code',
   value: 'const x = 1;',
   language: 'javascript'

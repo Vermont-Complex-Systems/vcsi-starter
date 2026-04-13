@@ -1,6 +1,6 @@
 <script>
 import BackgroundPlot from './BackgroundPlot.svelte';
-import { ScrollIndicator, RenderTextContent, ScrollyContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
+import { ScrollIndicator, RenderContent, ScrollyContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
 import BackToHome from '$lib/components/helpers/BackToHome.svelte';
 
 let { story, data } = $props();
@@ -20,9 +20,7 @@ let scrollyIndex = $state(undefined);
     />
 
     <section id="intro">
-        {#each data.introduction as item}
-            <RenderTextContent {item} />
-        {/each}
+        <RenderContent items={data.introduction} />
     </section>
 
     <section id="scrolly" class="fullscreen-layout">
@@ -36,9 +34,7 @@ let scrollyIndex = $state(undefined);
 
     <h2>Conclusion</h2>
     <section id="conclusion">
-        {#each data.conclusion as item}
-            <RenderTextContent {item} />
-        {/each}
+        <RenderContent items={data.conclusion} />
     </section>
 </article>
 
