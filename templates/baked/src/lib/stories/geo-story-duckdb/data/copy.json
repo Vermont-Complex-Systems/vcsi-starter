@@ -16,7 +16,7 @@
         },
         {
             "type": "markdown",
-            "value": "It is important to note that data orchestration is a crucial component of making this story maintainable and extensible. See appendix from the previous story for more details."
+            "value": "It is important to note that data orchestration is a crucial component of making this story maintainable and extensible."
         },
         {
             "type": "markdown",
@@ -26,15 +26,27 @@
     "steps": [
         {
             "type": "markdown",
-            "value": "Montreal city has 19 boroughs (arrondissements), but not all areas merged during the 2002 municipal reorganization. The light gray zones like Mont-Royal, Westmount, Dorval, and Cote-Saint-Luc, are independent municipalities that chose to 'defuse' and remain separate from the megacity."
+            "value": "This is the island of Montreal, surrounded by the St. Lawrence River."
         },
         {
             "type": "markdown",
-            "value": "Here we see population data from 2011. The color scale shows population density across the merged boroughs."
+            "value": "Here is the street network. The contour lines near the center reveal Mount Royal, the mountain that gives the city its name. Montreal's grid is tilted about 30 degrees from true north, aligned with the river."
         },
         {
             "type": "markdown",
-            "value": "Now let's look at population change between 2011 and 2016. Blue areas grew while red areas declined."
+            "value": "Key arteries like **Boulevard Saint-Laurent**, **Rue Sherbrooke**, and **Avenue du Mont-Royal** help orient the city. Saint-Laurent historically divides the east and west sides."
+        },
+        {
+            "type": "markdown",
+            "value": "Montreal has 19 boroughs (arrondissements). Not all areas merged during the 2002 municipal reorganization — the light gray zones like Mont-Royal, Westmount, and Dorval are independent municipalities that chose to 'defuse.' You can toggle the street overlay anytime using the **Streets** button in the bottom left."
+        },
+        {
+            "type": "markdown",
+            "value": "Here we see population data from 2011. The color scale shows population across the merged boroughs. Throughout the story, we'll use the viridis color palette. Dark purple means fewer, Yellow areas means more."
+        },
+        {
+            "type": "markdown",
+            "value": "Now let's look at population change between 2011 and 2016.  In this case, Yellow areas grew the most."
         },
         {
             "type": "markdown",

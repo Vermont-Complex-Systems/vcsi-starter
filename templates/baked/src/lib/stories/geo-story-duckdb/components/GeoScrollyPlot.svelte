@@ -10,12 +10,18 @@
 
     import districtsGeo from '../data/districts.json';
     import boundaryGeo from '../data/boundary.json';
+    import streetsGeo from '../data/streets.json';
+    import contoursGeo from '../data/contours.json';
 
     let { scrollyIndex } = $props();
 
     // Static GeoJSON layers
     const districts = districtsGeo.features.map(f => rewind(f, { reverse: true }));
     const boundary = boundaryGeo.features.map(f => rewind(f, { reverse: true }));
+    const streets = streetsGeo.features;
+    const contours = contoursGeo.features;
+
+    let showStreets = $state(false);
 
     // Pre-compute Villeray-Saint-Michel-Parc-Extension zoom target
     const villerayDistricts = districts.filter(
@@ -28,8 +34,8 @@
     );
     const outremontCollection = { type: 'FeatureCollection', features: outremontDistricts };
 
-    const isZoomStep = (step) => step >= 8 && step <= 12;
-    const isHighlightStep = (step) => step === 7;
+    const isZoomStep = (step) => step >= 11 && step <= 15;
+    const isHighlightStep = (step) => step === 10;
 
     // Chart dimensions
     let width = $state(800);
@@ -51,9 +57,9 @@
     const changeData = db.sql(t =>
         `SELECT a.arrondissement,
                 ((b.population - a.population) * 100.0 / a.population) as change
-         FROM ${t.metadata} a
-         JOIN ${t.metadata} b ON a.arrondissement = b.arrondissement
-         WHERE a.year = 2011 AND b.year = 2016`
+         FROM (SELECT arrondissement, SUM(population) as population FROM ${t.metadata} WHERE year = 2011 GROUP BY arrondissement) a
+         JOIN (SELECT arrondissement, SUM(population) as population FROM ${t.metadata} WHERE year = 2016 GROUP BY arrondissement) b
+         ON a.arrondissement = b.arrondissement`
     );
 
     // We use ST_AsGeoJSON (DuckDB spatial
@@ -95,7 +101,7 @@
     }
 
     // ── Explore mode (step 12+) ──
-    let isExploreMode = $derived(stepIndex >= 14);
+    let isExploreMode = $derived(stepIndex >= 17);
 
     let metric = $state('population');
     let binning = $state('equal-interval');
@@ -108,8 +114,8 @@
     // The metric shown on the map: explore mode uses the dropdown, story steps are hardcoded
     let activeMetric = $derived.by(() => {
         if (isExploreMode) return metric;
-        if (stepIndex >= 6 && stepIndex <= 12) return 'income';
-        if (stepIndex === 4 || stepIndex === 5 || stepIndex === 13) return 'density';
+        if (stepIndex >= 6 && stepIndex <= 15) return 'income';
+        if (stepIndex === 4 || stepIndex === 5) return 'density';
         return 'population';
     });
     let selectedIds = $derived(new Set(selectedDas.map(f => f.properties.geo_uid)));
@@ -191,8 +197,8 @@
     }
 
     function getStepZoomTarget(step) {
-        if (step >= 8 && step <= 11) return villerayCollection;
-        if (step === 12) return outremontCollection;
+        if (step >= 11 && step <= 14) return villerayCollection;
+        if (step === 15) return outremontCollection;
         return null;
     }
 
@@ -234,6 +240,7 @@
         } else {
             svg.call(zoom.transform, targetTransform);
         }
+
     });
 
     function zoomToFeature(feature) {
@@ -278,7 +285,7 @@
         });
     });
 
-    let showDAs = $derived(stepIndex >= 3);
+    let showDAs = $derived(stepIndex >= 6);
 
     // Constrain hover to zoomed-in area DAs (null = all DAs hoverable)
     let hoverableIds = $derived.by(() => {
@@ -288,18 +295,63 @@
     });
 
     // ── Map config driven by scroll step ──
-    const baseView = { title: null, daColors: null, districtColors: null, labelsToShow: null, legend: null };
+    const baseView = { title: null, daColors: null, districtColors: null, labelsToShow: null, legend: null, legendFormat: null, showStreets: false, highlightedStreets: null, labeledStreets: null };
+
+    // Streets to highlight (both Est/Ouest get red lines)
+    const KEY_STREETS_HIGHLIGHT = new Set([
+        'Boulevard Saint-Laurent', 'Rue Sherbrooke Est', 'Rue Sherbrooke Ouest',
+        'Rue Saint-Denis', 'Avenue du Mont-Royal Est', 'Avenue du Mont-Royal Ouest',
+        'Boulevard Pie-IX', 'Rue Jean-Talon Est', 'Rue Jean-Talon Ouest',
+    ]);
+    // Only label the Est variant (one label per street)
+    const KEY_STREETS_LABEL = new Set([
+        'Boulevard Saint-Laurent', 'Rue Sherbrooke Est',
+        'Rue Saint-Denis', 'Avenue du Mont-Royal Est',
+        'Boulevard Pie-IX', 'Rue Jean-Talon Est',
+    ]);
+    const STREET_LABELS = {
+        'Rue Sherbrooke Est': 'Rue Sherbrooke',
+        'Avenue du Mont-Royal Est': 'Av. du Mont-Royal',
+        'Rue Jean-Talon Est': 'Rue Jean-Talon',
+    };
+    // Where along the street to place the label (0 = start, 1 = end)
+    // Montreal's grid is tilted ~30° from true N-S / E-W
+    const STREET_LABEL_POS = {
+        'Boulevard Saint-Laurent': 0.9,
+        'Rue Saint-Denis': 0.2,
+        'Boulevard Pie-IX': 0.3,
+        'Rue Sherbrooke Est': 0.35,
+        'Avenue du Mont-Royal Est': 0,
+        'Rue Jean-Talon Est': 0.15,
+    };
+    const STREET_LABEL_ANGLE = {
+        'Boulevard Saint-Laurent': 22,
+        'Rue Saint-Denis': 33,
+        'Boulevard Pie-IX': 24,
+        'Rue Sherbrooke Est': -68,
+        'Avenue du Mont-Royal Est': -56,
+        'Rue Jean-Talon Est': -57,
+    };
 
     let mapConfig = $derived.by(() => {
         switch (stepIndex) {
             case 0:
                 return { ...baseView, title: 'Montreal' };
 
-            case 1: {
+            case 1:
+                return { ...baseView, title: 'Montreal', showStreets: true };
+
+            case 2:
+                return { ...baseView, title: 'Montreal', showStreets: true, highlightedStreets: KEY_STREETS_HIGHLIGHT, labeledStreets: KEY_STREETS_LABEL };
+
+            case 3:
+                return { ...baseView, title: 'Arrondissements' };
+
+            case 4: {
                 const rows = pop2011.rows;
                 if (rows.length === 0) return { ...baseView, title: 'Population 2011' };
                 const maxPopulation = d3.max(rows, d => d.population);
-                const colorScale = d3.scaleSequential(d3.interpolateSpectral).domain([maxPopulation, 0]);
+                const colorScale = d3.scaleSequential(t => d3.interpolateViridis(0.15 + t * 0.85)).domain([0, maxPopulation]);
                 const districtColors = new Map(rows.map(d => [d.arrondissement, colorScale(d.population)]));
                 const labelsToShow = new Set(
                     rows.toSorted((a, b) => b.population - a.population).slice(0, 5).map(d => d.arrondissement)
@@ -307,77 +359,74 @@
                 return { ...baseView, title: 'Population 2011', districtColors, labelsToShow, legend: colorScale };
             }
 
-            case 2: {
+            case 5: {
                 const rows = changeData.rows;
                 if (rows.length === 0) return { ...baseView, title: 'Population Change 2011\u21922016' };
-                const maxChange = Math.max(Math.abs(d3.min(rows, d => d.change)), Math.abs(d3.max(rows, d => d.change)));
-                const colorScale = d3.scaleDiverging(d3.interpolateRdBu).domain([-maxChange, 0, maxChange]);
-                const districtColors = new Map(rows.map(d => [d.arrondissement, colorScale(d.change)]));
+                const geoNames = new Set(districts.map(f => f.properties.arrondissement));
+                const visibleRows = rows.filter(d => geoNames.has(d.arrondissement));
+                const [minChange, maxChange] = d3.extent(visibleRows, d => d.change);
+                const colorScale = d3.scaleSequential(t => d3.interpolateViridis(0.15 + t * 0.85)).domain([minChange, maxChange]);
+                const districtColors = new Map(visibleRows.map(d => [d.arrondissement, colorScale(d.change)]));
                 const labelsToShow = new Set(
-                    rows.toSorted((a, b) => b.change - a.change).slice(0, 5).map(d => d.arrondissement)
+                    visibleRows.toSorted((a, b) => b.change - a.change).slice(0, 5).map(d => d.arrondissement)
                 );
-                return { ...baseView, title: 'Population Change 2011\u21922016', districtColors, labelsToShow, legend: colorScale };
+                return { ...baseView, title: 'Population Change 2011\u21922016', districtColors, labelsToShow, legend: colorScale, legendFormat: '%' };
             }
 
-            case 3:
+            case 6:
                 return { ...baseView, title: 'Dissemination Areas' };
 
-            case 4: {
+            case 7: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Pop. Density \u2014 Equal Intervals' };
                 const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'equal-interval' });
                 return { ...baseView, title: 'Pop. Density \u2014 Equal Intervals', daColors: colors, legend: colorScale };
             }
 
-            case 5: {
+            case 8: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Pop. Density \u2014 Quantile Bins' };
                 const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'quantile' });
                 return { ...baseView, title: 'Pop. Density \u2014 Quantile Bins', daColors: colors, legend: colorScale };
             }
 
-            case 6: {
+            case 9: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Median Household Income ($)' };
                 const { colors, colorScale } = computeColors(daFeatures, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99 });
                 return { ...baseView, title: 'Median Household Income ($)', daColors: colors, legend: colorScale };
             }
 
-            case 7: {
+            case 10: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Villeray\u2013Saint-Michel\u2013Parc-Extension' };
                 const { colors } = computeColors(daFeatures, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99 });
                 return { ...baseView, title: 'Villeray\u2013Saint-Michel\u2013Parc-Extension', daColors: colors };
             }
 
-            case 8: {
+            case 11: {
                 if (villerayDAs.length === 0) return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 City-wide scale' };
                 const { colors, colorScale } = computeColors(villerayDAs, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99, domainFeatures: daFeatures });
                 return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 City-wide scale', daColors: colors, legend: colorScale };
             }
 
-            case 9: {
-                if (villerayDAs.length === 0) return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Local scale' };
+            case 12:
+            case 13:
+            case 14: {
+                if (villerayDAs.length === 0) return { ...baseView, title: 'Villeray\u2013Parc-Ex' };
                 const { colors, colorScale } = computeColors(villerayDAs, { metric: 'income', binning: 'equal-interval' });
-                return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Local scale', daColors: colors, legend: colorScale };
+                return { ...baseView, title: 'Villeray\u2013Parc-Ex', daColors: colors, legend: colorScale };
             }
 
-            case 10:
-            case 11: {
-                if (villerayDAs.length === 0) return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Click to explore' };
-                const { colors, colorScale } = computeColors(villerayDAs, { metric: 'income', binning: 'equal-interval' });
-                return { ...baseView, title: 'Villeray\u2013Parc-Ex \u2014 Click to explore', daColors: colors, legend: colorScale };
-            }
-
-            case 12: {
+            case 15: {
                 if (outremontDAs.length === 0) return { ...baseView, title: 'Outremont \u2014 City-wide scale' };
                 const { colors, colorScale } = computeColors(outremontDAs, { metric: 'income', binning: 'equal-interval', percentileCap: 0.99, domainFeatures: daFeatures });
                 return { ...baseView, title: 'Outremont \u2014 City-wide scale', daColors: colors, legend: colorScale };
             }
 
-            case 13: {
+            case 16: {
                 if (daFeatures.length === 0) return { ...baseView, title: 'Population Density (Census 2021)' };
                 const { colors, colorScale } = computeColors(daFeatures, { metric: 'density', binning: 'quantile' });
                 return { ...baseView, title: 'Population Density (Census 2021)', daColors: colors, legend: colorScale };
             }
 
-            case 14: default: {
+            case 17: default: {
                 const features = isZoomed ? districtDAs : daFeatures;
                 if (features.length === 0) return baseView;
                 const { colors, colorScale } = computeColors(features, {
@@ -395,8 +444,8 @@
     // Highlight districts
     let highlightDistricts = $derived.by(() => {
         if (isExploreMode && selectedDistrict) return [selectedDistrict];
-        if (stepIndex === 7 || (stepIndex >= 8 && stepIndex <= 11)) return villerayDistricts;
-        if (stepIndex === 12) return outremontDistricts;
+        if (stepIndex >= 10 && stepIndex <= 14) return villerayDistricts;
+        if (stepIndex === 15) return outremontDistricts;
         return [];
     });
     let hasHighlights = $derived(highlightDistricts.length > 0);
@@ -461,6 +510,12 @@
         </div>
     {/if}
 
+    <button
+        class="streets-toggle"
+        class:active={showStreets || mapConfig.showStreets}
+        onclick={() => showStreets = !showStreets}
+    >Streets</button>
+
     {#if mapConfig.title}
         <div class="title-indicator">{mapConfig.title}</div>
     {/if}
@@ -479,7 +534,7 @@
             {/each}
 
             <!-- District fills (fade out when DAs appear) -->
-            <g style="transition: opacity 0.8s ease;" opacity={showDAs ? 0 : 1}>
+            <g style="transition: opacity 0.8s ease;" opacity={showDAs || mapConfig.showStreets || stepIndex <= 2 ? 0 : 1}>
                 {#each districts as feature (feature.properties.id)}
                     {@const fill = mapConfig.districtColors?.get(feature.properties.arrondissement) ?? '#e0e0e0'}
                     <path
@@ -492,28 +547,6 @@
                     />
                 {/each}
 
-                {#each districts as feature (feature.properties.id)}
-                    {@const centroid = pathGenerator.centroid(feature)}
-                    {@const showLabel = mapConfig.labelsToShow
-                        ? mapConfig.labelsToShow.has(feature.properties.arrondissement)
-                        : !isMobile}
-                    {#if centroid && !isNaN(centroid[0]) && showLabel}
-                        <text
-                            x={centroid[0]}
-                            y={centroid[1]}
-                            text-anchor="middle"
-                            font-size="10"
-                            font-weight="500"
-                            fill="#333"
-                            stroke="white"
-                            stroke-width="3"
-                            stroke-linejoin="round"
-                            paint-order="stroke"
-                        >
-                            {feature.properties.nom}
-                        </text>
-                    {/if}
-                {/each}
             </g>
 
             <!-- DA + district layers (fade in when showDAs) -->
@@ -542,10 +575,108 @@
                     bind:mouse
                 />
             </g>
+
+            <!-- Mount Royal contour lines (shown with streets) -->
+            {#if showStreets || mapConfig.showStreets}
+            <g opacity="0.35" pointer-events="none">
+                {#each contours as feature, i (i)}
+                    {@const elev = feature.properties.elevation}
+                    <path
+                        d={pathGenerator(feature)}
+                        fill="none"
+                        stroke={elev >= 200 ? '#5a3d1a' : elev >= 100 ? '#7a5c3a' : '#9a8060'}
+                        stroke-width={(elev % 50 === 0 ? 1.2 : 0.5) / zoomTransform.k}
+                        pointer-events="none"
+                    />
+                {/each}
+            </g>
+            {/if}
+
+            <!-- Streets overlay (on top of everything) -->
+            {#if showStreets || mapConfig.showStreets}
+                {@const highlighted = mapConfig.highlightedStreets ?? KEY_STREETS_HIGHLIGHT}
+                <g opacity="0.7" pointer-events="none">
+                    {#each streets as feature, i (i)}
+                        {@const isKey = highlighted?.has(feature.properties.name)}
+                        <path
+                            d={pathGenerator(feature)}
+                            fill="none"
+                            stroke={isKey ? '#d62728' : '#000'}
+                            stroke-width={(isKey ? 3.5 : feature.properties.highway === 'motorway' || feature.properties.highway === 'trunk' ? 2.5 : 1.2) / zoomTransform.k}
+                            opacity={isKey ? 1 : undefined}
+                            pointer-events="none"
+                        />
+                    {/each}
+                </g>
+                {#if mapConfig.labeledStreets || showStreets}
+                    {@const labelSet = mapConfig.labeledStreets ?? KEY_STREETS_LABEL}
+                    {@const labelData = (() => {
+                        const byName = new Map();
+                        for (const f of streets) {
+                            if (!labelSet.has(f.properties.name)) continue;
+                            if (!byName.has(f.properties.name)) byName.set(f.properties.name, []);
+                            byName.get(f.properties.name).push(...f.geometry.coordinates);
+                        }
+                        return [...byName.entries()].map(([name, allCoords]) => {
+                            const pos = STREET_LABEL_POS[name] ?? 0.5;
+                            const isVertical = ['Boulevard Saint-Laurent', 'Rue Saint-Denis', 'Boulevard Pie-IX'].includes(name);
+                            const sorted = [...allCoords].sort((a, b) => isVertical ? a[1] - b[1] : a[0] - b[0]);
+                            const idx = Math.floor(sorted.length * pos);
+                            const coord = sorted[Math.min(idx, sorted.length - 1)];
+                            return { name, coord };
+                        });
+                    })()}
+                    {#each labelData as { name, coord } (name)}
+                        {@const pt = projection(coord)}
+                        {@const displayAngle = STREET_LABEL_ANGLE[name] ?? 0}
+                        {#if pt}
+                            <text
+                                x={pt[0]} y={pt[1]}
+                                transform="rotate({displayAngle}, {pt[0]}, {pt[1]})"
+                                dy={-4 / zoomTransform.k}
+                                font-size={10 / zoomTransform.k}
+                                fill="#d62728"
+                                font-weight="600"
+                                stroke="white"
+                                stroke-width={2.5 / zoomTransform.k}
+                                stroke-linejoin="round"
+                                paint-order="stroke"
+                                pointer-events="none"
+                            >{STREET_LABELS[name] ?? name}</text>
+                        {/if}
+                    {/each}
+                {/if}
+            {/if}
+
+            <!-- District labels (on top of everything) -->
+            <g style="transition: opacity 0.8s ease;" opacity={showDAs || mapConfig.showStreets || stepIndex <= 2 ? 0 : 1} pointer-events="none">
+                {#each districts as feature (feature.properties.id)}
+                    {@const centroid = pathGenerator.centroid(feature)}
+                    {@const showLabel = mapConfig.labelsToShow
+                        ? mapConfig.labelsToShow.has(feature.properties.arrondissement)
+                        : !isMobile}
+                    {#if centroid && !isNaN(centroid[0]) && showLabel}
+                        <text
+                            x={centroid[0]}
+                            y={centroid[1]}
+                            text-anchor="middle"
+                            font-size="10"
+                            font-weight="500"
+                            fill="#333"
+                            stroke="white"
+                            stroke-width="3"
+                            stroke-linejoin="round"
+                            paint-order="stroke"
+                        >
+                            {feature.properties.nom}
+                        </text>
+                    {/if}
+                {/each}
+            </g>
         </g>
     </svg>
 
-    <Legend scale={mapConfig.legend} />
+    <Legend scale={mapConfig.legend} format={mapConfig.legendFormat} />
 
     {#if hoveredDa}
         {@const m = DA_METRICS[activeMetric]}
@@ -681,8 +812,9 @@
     }
 
     .zoom-btn {
-        width: 2rem;
+        min-width: 2rem;
         height: 2rem;
+        padding: 0 0.4rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -695,6 +827,23 @@
         line-height: 1;
     }
     .zoom-btn:hover { background: #f0f0f0; }
+    .zoom-btn.active { background: #e0e0e0; }
+
+    .streets-toggle {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        color: #333;
+        z-index: 10;
+    }
+    .streets-toggle:hover { background: #f0f0f0; }
+    .streets-toggle.active { background: #e0e0e0; border-color: #999; }
 
     .back-btn {
         font-size: 0.75rem;

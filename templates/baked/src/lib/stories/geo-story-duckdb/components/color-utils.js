@@ -59,11 +59,14 @@ export function computeColors(features, { metric, binning = 'equal-interval', nu
     if (values.length === 0) return { colors: new Map(), colorScale: null };
 
     let colorScale;
+    const viridisColors = Array.from({ length: numBins }, (_, i) =>
+        d3.interpolateViridis(0.15 + (i / (numBins - 1)) * 0.85)
+    );
     if (binning === 'quantile') {
-        colorScale = d3.scaleQuantile().domain(values).range(d3.schemeYlGnBu[numBins]);
+        colorScale = d3.scaleQuantile().domain(values).range(viridisColors);
     } else {
         const max = percentileCap ? d3.quantile(values, percentileCap) : d3.max(values);
-        colorScale = d3.scaleQuantize().domain([values[0], max]).range(d3.schemeYlGnBu[numBins]);
+        colorScale = d3.scaleQuantize().domain([values[0], max]).range(viridisColors);
     }
 
     const colors = new Map(
