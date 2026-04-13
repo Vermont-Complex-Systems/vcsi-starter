@@ -101,6 +101,6 @@ import type { ContentItem, Author, ScrollyContentProps } from '@the-vcsi/scrolly
 
 ## Deeper Reference
 
-- **Component props, CSS vars, usage examples** → Read COMPONENTS.md in this directory
-- **Layout CSS classes, variables, responsive behavior, containment rules** → Read LAYOUTS.md in this directory
-- **Story structure, copy.json schema, multi-section, theming, SSR gotchas** → Read PATTERNS.md in this directory
+- **Component props, CSS vars, usage examples**: See [COMPONENTS.md](COMPONENTS.md)
+- **Layout CSS classes, variables, responsive behavior, containment rules**: See [LAYOUTS.md](LAYOUTS.md)
+- **Story structure, copy.json schema, multi-section, theming, SSR gotchas**: See [PATTERNS.md](PATTERNS.md)
