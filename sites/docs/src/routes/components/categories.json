@@ -24,7 +24,7 @@
     "description": "Components for rendering text, markdown, and code",
     "components": [
       { "id": "MarkdownRenderer", "desc": "Renders markdown with KaTeX math support" },
-      { "id": "RenderTextContent", "desc": "Renders content items by type" },
+      { "id": "RenderContent", "desc": "Renders content items by type" },
       { "id": "CopyCodeBlock", "desc": "Copyable code block with clipboard support" },
       { "id": "CodeBlock", "desc": "Syntax-highlighted code display" }
     ]

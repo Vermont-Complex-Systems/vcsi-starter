@@ -6,8 +6,7 @@ A styled select dropdown built on bits-ui Select primitives.
 - `value` - Selected value (bindable)
 - `items` - Array of `{ value, label, disabled? }` objects
 - `placeholder` - Placeholder text when no value selected
-- `contentProps` - Additional props passed to Select.Content
-- Plus all Select.RootProps (without children)
+- `disabled` - Disable the select
 
 ## Usage
 ```svelte
@@ -19,23 +18,20 @@ A styled select dropdown built on bits-ui Select primitives.
 ```
 -->
 <script lang="ts">
-  import { Select, type WithoutChildren } from "bits-ui";
+  import { Select } from "bits-ui";
   import { ChevronDown, ChevronUp, Check } from "@lucide/svelte";
-
-  type Props = WithoutChildren<Select.RootProps> & {
-    placeholder?: string;
-    items: { value: string; label: string; disabled?: boolean }[];
-    contentProps?: WithoutChildren<Select.ContentProps>;
-  };
 
   let {
     value = $bindable(),
     items,
-    contentProps,
     placeholder,
-    type,
-    ...restProps
-  }: Props = $props();
+    disabled = false,
+  }: {
+    value?: string;
+    items: { value: string; label: string; disabled?: boolean }[];
+    placeholder?: string;
+    disabled?: boolean;
+  } = $props();
 
   const selectedLabel = $derived(
     items.find((item) => item.value === value)?.label
@@ -47,7 +43,7 @@ TypeScript Discriminated Unions + destructing (required for "bindable") do not
 get along, so we shut typescript up by casting `value` to `never`, however,
 from the perspective of the consumer of this component, it will be typed appropriately.
 -->
-<Select.Root bind:value={value as never} {...restProps} type={"single"}>
+<Select.Root bind:value={value as never} type={"single"} {disabled}>
   <Select.Trigger class="vcsi-select-trigger">
     <span class="vcsi-select-value" class:placeholder={!selectedLabel}>
       {selectedLabel ? selectedLabel : placeholder}
@@ -55,7 +51,7 @@ from the perspective of the consumer of this component, it will be typed appropr
     <ChevronDown size={16} aria-hidden="true" class="vcsi-select-chevron" />
   </Select.Trigger>
   <Select.Portal>
-    <Select.Content class="vcsi-select-content" {...contentProps}>
+    <Select.Content class="vcsi-select-content">
       <Select.ScrollUpButton class="vcsi-select-scroll-btn">
         <ChevronUp size={14} aria-hidden="true" />
       </Select.ScrollUpButton>

@@ -40,12 +40,7 @@ Groups related controls within Sidebar.Content with consistent spacing.
     .sidebar-group {
         padding-bottom: var(--vcsi-space-lg, 1.5rem);
     }
-
-    .sidebar-group + .sidebar-group {
-        padding-top: var(--vcsi-space-lg, 1.5rem);
-        border-top: 1px solid var(--vcsi-border, #ddd);
-    }
-
+    
     .sidebar-group-label {
         font-family: var(--vcsi-font-sans, system-ui, sans-serif);
         font-size: var(--vcsi-font-size-small, 14px);

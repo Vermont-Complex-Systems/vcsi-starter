@@ -165,8 +165,8 @@ const indexSvelteDetailed = `<!--
 
 <style>
 	/* .scrolly-content {
-		--step-height: 20vh;
-		--story-step-bg-inactive: red;
+		--vcsi-step-height: 20vh;
+		--vcsi-story-step-bg-inactive: red;
 	} */
 </style>
 `;

@@ -1,7 +1,7 @@
 <script>
     import BackToHome from '$lib/components/helpers/BackToHome.svelte';
     import GeoScrollyPlot from './GeoScrollyPlot.svelte';
-    import { ScrollIndicator, RenderTextContent, ScrollyContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
+    import { ScrollIndicator, RenderContent, ScrollyContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
 
     let { story, data } = $props();
 
@@ -21,9 +21,7 @@
     />
 
     <section id="intro">
-        {#each data.introduction as item}
-            <RenderTextContent {item} />
-        {/each}
+        <RenderContent items={data.introduction} />
     </section>
 
     <section id="geo-duckdb-scrolly" class="fullscreen-layout">
@@ -35,21 +33,17 @@
 
     <h2>Conclusion</h2>
     <section id="conclusion">
-        {#each data.conclusion as item}
-            <RenderTextContent {item} />
-        {/each}
+        <RenderContent items={data.conclusion} />
     </section>
 
     <h2>Appendix</h2>
     <section id="appendix">
-        {#each data.appendix as item}
-            <RenderTextContent {item} />
-        {/each}
+        <RenderContent items={data.appendix} />
     </section>
 </article>
 
 <Footer theme="light" />
 
 <style>
-    #geo-duckdb-scrolly { --step-height: 70rem; }
+    #geo-duckdb-scrolly { --vcsi-step-height: 70rem; }
 </style>

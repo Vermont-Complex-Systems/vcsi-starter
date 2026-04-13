@@ -615,32 +615,62 @@
   },
 
   // =============================================================================
-  // COMPONENT VARIABLES - Step/Scrolly (set in components, not tokens.css)
+  // SCROLLYCONTENT STEP TOKENS (defined in tokens.css)
   // =============================================================================
-  "--step-height": {
-    "prefix": "--step-height",
-    "body": "--step-height: ${1:90vh};",
+  "--vcsi-spacer-height": {
+    "prefix": "--vcsi-spacer-height",
+    "body": "--vcsi-spacer-height: ${1:65vh};",
+    "description": "Top/bottom spacer height in ScrollyContent"
+  },
+  "--vcsi-step-height": {
+    "prefix": "--vcsi-step-height",
+    "body": "--vcsi-step-height: ${1:90vh};",
     "description": "Height of each scroll step"
   },
-  "--step-max-width": {
-    "prefix": "--step-max-width",
-    "body": "--step-max-width: ${1:400px};",
+  "--vcsi-step-max-width": {
+    "prefix": "--vcsi-step-max-width",
+    "body": "--vcsi-step-max-width: ${1:400px};",
     "description": "Max width of step text boxes"
   },
-  "--step-padding": {
-    "prefix": "--step-padding",
-    "body": "--step-padding: ${1:1.5rem};",
+  "--vcsi-step-padding": {
+    "prefix": "--vcsi-step-padding",
+    "body": "--vcsi-step-padding: ${1:1.5rem};",
     "description": "Padding inside step boxes"
   },
-  "--step-border-radius": {
-    "prefix": "--step-border-radius",
-    "body": "--step-border-radius: ${1:8px};",
+  "--vcsi-step-border-radius": {
+    "prefix": "--vcsi-step-border-radius",
+    "body": "--vcsi-step-border-radius: ${1:8px};",
     "description": "Border radius of step boxes"
   },
-  "--step-box-shadow": {
-    "prefix": "--step-box-shadow",
-    "body": "--step-box-shadow: ${1:1px 1px 10px rgba(0, 0, 0, 0.2)};",
+  "--vcsi-step-box-shadow": {
+    "prefix": "--vcsi-step-box-shadow",
+    "body": "--vcsi-step-box-shadow: ${1:1px 1px 10px rgba(0, 0, 0, 0.2)};",
     "description": "Shadow for step boxes"
+  },
+  "--vcsi-step-text-align": {
+    "prefix": "--vcsi-step-text-align",
+    "body": "--vcsi-step-text-align: ${1|center,left,right|};",
+    "description": "Text alignment inside step boxes"
+  },
+  "--vcsi-story-step-bg": {
+    "prefix": "--vcsi-story-step-bg",
+    "body": "--vcsi-story-step-bg: ${1:#fff};",
+    "description": "Active step background color"
+  },
+  "--vcsi-story-step-fg": {
+    "prefix": "--vcsi-story-step-fg",
+    "body": "--vcsi-story-step-fg: ${1:#333};",
+    "description": "Active step text color"
+  },
+  "--vcsi-story-step-bg-inactive": {
+    "prefix": "--vcsi-story-step-bg-inactive",
+    "body": "--vcsi-story-step-bg-inactive: ${1:#f5f5f5};",
+    "description": "Inactive step background color"
+  },
+  "--vcsi-story-step-fg-inactive": {
+    "prefix": "--vcsi-story-step-fg-inactive",
+    "body": "--vcsi-story-step-fg-inactive: ${1:#ccc};",
+    "description": "Inactive step text color"
   },
   "--scrolly-max-width": {
     "prefix": "--scrolly-max-width",

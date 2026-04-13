@@ -48,9 +48,9 @@
     }
 
     .stepContainer {
-        --step-height: 50vh;
-        --step-max-width: 400px;
-        --step-text-align: left;
+        --vcsi-step-height: 50vh;
+        --vcsi-step-max-width: 400px;
+        --vcsi-step-text-align: left;
     }
 
     .code-explainer-chart {

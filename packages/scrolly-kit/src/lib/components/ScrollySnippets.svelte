@@ -35,5 +35,5 @@
 
 <!--
   This file exports types and utilities for scrolly content.
-  Use RenderTextContent component for rendering content items.
+  Use RenderContent component for rendering content items.
 -->
