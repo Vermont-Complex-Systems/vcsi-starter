@@ -14,7 +14,8 @@
     "./styles/*": "./dist/styles/*"
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "scripts": {
     "dev": "vite dev",
