@@ -416,21 +416,10 @@
   const components = { MyChart };
 <\/script>
 
-{#snippet renderContent(items)}
-  {#each items as item}
-    {#if item.type === "component" && components[item.value]}
-      {${'@'}const Comp = components[item.value]}
-      <Comp />
-    {:else}
-      <RenderContent {item} />
-    {/if}
-  {/each}
-{/snippet}
-
 <article class="story">
   <!-- Text section (JSON-driven) -->
   <section id="intro">
-    {${'@'}render renderContent(data.introduction)}
+    <RenderContent items={data.introduction} />
   </section>
 
   <!-- Scrolly section (Svelte-explicit) -->
@@ -445,7 +434,7 @@
 
   <!-- Text section with inline component (JSON-driven) -->
   <section id="interlude">
-    {${'@'}render renderContent(data.interlude)}
+    <RenderContent items={data.interlude} {components} />
   </section>
 </article>`} />
 
