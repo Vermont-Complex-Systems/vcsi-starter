@@ -48,7 +48,7 @@ let scrollyIndex = $state(undefined);
 <style>
     @media (max-width: 769px) {
 		.scrolly-content {
-			--step-height: 50rem;
+			--vcsi-step-height: 50rem;
 		}
 	}
 </style>

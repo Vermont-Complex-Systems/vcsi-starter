@@ -62,12 +62,6 @@
   --vcsi-story-bg: var(--vcsi-color-beige, #f4efea);
   --vcsi-story-fg: rgb(55, 55, 55);
   --vcsi-story-max-width: 600px;
-
-  /* ScrollyContent step colors (component reads these with fallbacks) */
-  --story-step-bg: #fff;
-  --story-step-fg: #333;
-  --story-step-bg-inactive: #f5f5f5;
-  --story-step-fg-inactive: #ccc;
 }
 
 /* =============================================================================
@@ -153,10 +147,10 @@
   --vcsi-story-fg: white;
 
   /* ScrollyContent step colors for dark theme */
-  --story-step-bg: #2a2a2a;
-  --story-step-fg: #e8e8e8;
-  --story-step-bg-inactive: #222;
-  --story-step-fg-inactive: #666;
+  --vcsi-story-step-bg: #2a2a2a;
+  --vcsi-story-step-fg: #e8e8e8;
+  --vcsi-story-step-bg-inactive: #222;
+  --vcsi-story-step-fg-inactive: #666;
 }
 
 /* Ensure all text in dark stories uses the story foreground color */

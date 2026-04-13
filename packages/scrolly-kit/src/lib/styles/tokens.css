@@ -12,8 +12,8 @@
 
    Naming convention: --vcsi-[category]-[property]
 
-   Component-specific variables (like --step-height, --panel-width) are NOT defined here.
-   They are documented in each component's <style> block and can be overridden on parent elements.
+   All customizable variables are defined here with --vcsi-* prefix.
+   Override them on any parent element in your story or template.
    ============================================================================= */
 
 :root {
@@ -181,6 +181,26 @@
   --vcsi-nav-bg: var(--vcsi-bg);
   --vcsi-nav-fg: var(--vcsi-fg);
   --vcsi-bottom-padding: 7.5rem;
+
+  /* =============================================================================
+     SCROLLYCONTENT STEP TOKENS
+     Customize step appearance in any story by overriding on a parent element.
+     e.g. .my-section { --vcsi-step-height: 40vh; --vcsi-step-text-align: left; }
+     ============================================================================= */
+
+  --vcsi-spacer-height: 65vh;
+  --vcsi-step-height: 90vh;
+  --vcsi-step-max-width: 600px;
+  --vcsi-step-padding: 1rem;
+  --vcsi-step-border-radius: 5px;
+  --vcsi-step-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+  --vcsi-step-text-align: center;
+
+  /* Step colors (light theme) — dark overrides in layouts.css */
+  --vcsi-story-step-bg: #fff;
+  --vcsi-story-step-fg: #333;
+  --vcsi-story-step-bg-inactive: #f5f5f5;
+  --vcsi-story-step-fg-inactive: #ccc;
 }
 
 /* =============================================================================

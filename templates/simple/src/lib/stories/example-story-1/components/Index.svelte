@@ -91,16 +91,16 @@
 
 <style>
 	.story {
-		--step-height: 40vh;
-		--step-box-shadow: transparent;;
-		
+		--vcsi-step-height: 40vh;
+		--vcsi-step-box-shadow: transparent;
+
 		--vcsi-story-bg: rgb(44, 44, 44);
 		--vcsi-story-fg: whitesmoke;
-		
-		--story-step-bg: transparent;
-		--story-step-bg-inactive: transparent;
-		--story-step-fg-inactive: #666;
-		--story-step-fg: whitesmoke;
+
+		--vcsi-story-step-bg: transparent;
+		--vcsi-story-step-bg-inactive: transparent;
+		--vcsi-story-step-fg-inactive: #666;
+		--vcsi-story-step-fg: whitesmoke;
 	}
 	
 	.split-layout {

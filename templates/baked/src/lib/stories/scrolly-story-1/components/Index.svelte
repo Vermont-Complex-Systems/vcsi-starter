@@ -62,11 +62,11 @@
 	/* desktop only */
 	@media (min-width: 769px) {
 		.scrolly-content {
-			--story-step-bg: transparent;
-			--story-step-bg-inactive: transparent;
-			--step-box-shadow: none;
-			--step-height: 90vh;
-			--step-max-width: 400px;
+			--vcsi-story-step-bg: transparent;
+			--vcsi-story-step-bg-inactive: transparent;
+			--vcsi-step-box-shadow: none;
+			--vcsi-step-height: 90vh;
+			--vcsi-step-max-width: 400px;
 		}
 	}
 </style>

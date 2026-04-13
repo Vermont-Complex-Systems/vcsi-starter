@@ -132,7 +132,7 @@
         <p>Here’s how the CSS layers work together:</p>
 <pre class="architecture-diagram"><code>┌─────────────────────────────────────────────────────────────┐
 │  app.css (Global Layouts)                                   │
-│  Defines: grid structures, --panel-height, --step-max-width │
+│  Defines: grid structures, --vcsi-panel-height, etc.        │
 │  ┌──────────────┐  ┌────────────────┐  ┌─────────────────┐  │
 │  │ split-layout │  │ fullscreen-    │  │ triple-layout   │  │
 │  │  2-col grid  │  │  layout        │  │   3-col grid    │  │
@@ -146,8 +146,8 @@
 │  Reads CSS variables, fills available space                 │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │ .scrolly-content                                       │ │
-│  │   .step &#123; min-height: var(--step-height) &#125;             │ │
-│  │     .step-box &#123; max-width: var(--step-max-width) &#125;     │ │
+│  │   .step &#123; min-height: var(--vcsi-step-height) &#125;        │ │
+│  │     .step-box &#123; max-width: var(--vcsi-step-max-width) &#125;│ │
 │  └────────────────────────────────────────────────────────┘ │
 └─────────────────────────────┬───────────────────────────────┘
                    overrides  │ (story-specific customization)
@@ -156,8 +156,8 @@
 │  Index.svelte &lt;style&gt;                                       │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │ .live-demo &#123;                                           │ │
-│  │   --step-height: 40vh;      /* override defaults */    │ │
-│  │   --step-max-width: 350px;                             │ │
+│  │   --vcsi-step-height: 40vh;  /* override defaults */    │ │
+│  │   --vcsi-step-max-width: 350px;                        │ │
 │  │ &#125;                                                      │ │
 │  └────────────────────────────────────────────────────────┘ │
 │  Composes layouts + overrides CSS variables per section     │
@@ -183,9 +183,9 @@
     }
 
     .live-demo {
-        --step-height: 40vh;
-        --step-max-width: 350px;
-        --step-text-align: left;
+        --vcsi-step-height: 40vh;
+        --vcsi-step-max-width: 350px;
+        --vcsi-step-text-align: left;
     }
 
     .split-overlay {
@@ -209,7 +209,7 @@
 
     @media (max-width: 768px) {
         .live-demo {
-            --step-max-width: 100%;
+            --vcsi-step-max-width: 100%;
         }
 
         .split-overlay {

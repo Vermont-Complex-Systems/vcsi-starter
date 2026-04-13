@@ -51,5 +51,5 @@
 <Footer theme="light" />
 
 <style>
-    #geo-duckdb-scrolly { --step-height: 70rem; }
+    #geo-duckdb-scrolly { --vcsi-step-height: 70rem; }
 </style>

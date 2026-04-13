@@ -172,8 +172,8 @@
           <tr><td><code>--vcsi-panel-top-offset</code></td><td>auto-centered</td><td>Vertical position of sticky panel</td></tr>
           <tr><td><code>--vcsi-layout-gap</code></td><td>2rem</td><td>Gap between columns</td></tr>
           <tr><td><code>--vcsi-content-padding-inline</code></td><td>2rem</td><td>Horizontal padding for the layout</td></tr>
-          <tr><td><code>--step-height</code></td><td>90vh</td><td>Vertical space between steps</td></tr>
-          <tr><td><code>--spacer-height</code></td><td>65vh</td><td>Height of top/bottom spacers</td></tr>
+          <tr><td><code>--vcsi-step-height</code></td><td>90vh</td><td>Vertical space between steps</td></tr>
+          <tr><td><code>--vcsi-spacer-height</code></td><td>65vh</td><td>Height of top/bottom spacers</td></tr>
         </tbody>
       </table>
 
@@ -297,30 +297,30 @@
           <tr><th>Variable</th><th>Light</th><th>Dark</th><th>Description</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>--story-step-bg</code></td><td>#fff</td><td>#2a2a2a</td><td>Active step background</td></tr>
-          <tr><td><code>--story-step-fg</code></td><td>#333</td><td>#e8e8e8</td><td>Active step text color</td></tr>
-          <tr><td><code>--story-step-bg-inactive</code></td><td>#f5f5f5</td><td>#222</td><td>Inactive step background</td></tr>
-          <tr><td><code>--story-step-fg-inactive</code></td><td>#ccc</td><td>#666</td><td>Inactive step text color</td></tr>
-          <tr><td><code>--step-box-shadow</code></td><td colspan="2">1px 1px 10px rgba(0,0,0,0.2)</td><td>Step box shadow</td></tr>
-          <tr><td><code>--step-max-width</code></td><td colspan="2">600px</td><td>Maximum width of step box</td></tr>
-          <tr><td><code>--step-padding</code></td><td colspan="2">1rem</td><td>Padding inside step box</td></tr>
-          <tr><td><code>--step-border-radius</code></td><td colspan="2">5px</td><td>Step box corner radius</td></tr>
-          <tr><td><code>--step-text-align</code></td><td colspan="2">center</td><td>Text alignment in steps</td></tr>
+          <tr><td><code>--vcsi-story-step-bg</code></td><td>#fff</td><td>#2a2a2a</td><td>Active step background</td></tr>
+          <tr><td><code>--vcsi-story-step-fg</code></td><td>#333</td><td>#e8e8e8</td><td>Active step text color</td></tr>
+          <tr><td><code>--vcsi-story-step-bg-inactive</code></td><td>#f5f5f5</td><td>#222</td><td>Inactive step background</td></tr>
+          <tr><td><code>--vcsi-story-step-fg-inactive</code></td><td>#ccc</td><td>#666</td><td>Inactive step text color</td></tr>
+          <tr><td><code>--vcsi-step-box-shadow</code></td><td colspan="2">1px 1px 10px rgba(0,0,0,0.2)</td><td>Step box shadow</td></tr>
+          <tr><td><code>--vcsi-step-max-width</code></td><td colspan="2">600px</td><td>Maximum width of step box</td></tr>
+          <tr><td><code>--vcsi-step-padding</code></td><td colspan="2">1rem</td><td>Padding inside step box</td></tr>
+          <tr><td><code>--vcsi-step-border-radius</code></td><td colspan="2">5px</td><td>Step box corner radius</td></tr>
+          <tr><td><code>--vcsi-step-text-align</code></td><td colspan="2">center</td><td>Text alignment in steps</td></tr>
         </tbody>
       </table>
-      <p><strong><code>--story-step-*</code></strong> variables control colors and are typically set globally in <code>app.css</code> for consistent theming across your story. <strong><code>--step-*</code></strong> variables control layout and can be set per-section for local customization.</p>
+      <p>All step variables use the <code>--vcsi-</code> prefix and are defined in <code>tokens.css</code>. Override them on any parent element to customize per-section.</p>
 
       <h3>Example Override</h3>
       <CopyCodeBlock label="Custom step colors" command={`.split-layout {
-  --story-step-bg: #154734;
-  --story-step-fg: #fff;
+  --vcsi-story-step-bg: #154734;
+  --vcsi-story-step-fg: #fff;
 }`} />
 
       <p>For a minimal look where only text floats over the visualization:</p>
       <CopyCodeBlock label="Minimal floating text" command={`.split-layout {
-  --story-step-bg: transparent;
-  --story-step-bg-inactive: transparent;
-  --step-box-shadow: none;
+  --vcsi-story-step-bg: transparent;
+  --vcsi-story-step-bg-inactive: transparent;
+  --vcsi-step-box-shadow: none;
 }`} />
     </section>
 

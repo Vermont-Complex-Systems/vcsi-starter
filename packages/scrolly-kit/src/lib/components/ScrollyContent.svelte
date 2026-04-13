@@ -102,17 +102,9 @@ const steps = [
     /*
      * ScrollyContent - Opinionated scrollytelling component
      *
-     * CSS variables (set on parent like .scrolly-with-chart):
-     *   --spacer-height: 65vh      Top/bottom spacer height
-     *   --step-height: 90vh        Vertical space per step
-     *   --step-max-width: 600px    Max width of step box
-     *   --step-padding: 1rem       Padding inside step box
-     *   --step-border-radius: 5px  Corner rounding
-     *   --step-text-align: center  Text alignment (left, center, right)
-     *
-     * Colors (set globally in app.css):
-     *   --story-step-bg / --story-step-fg           Active step
-     *   --story-step-bg-inactive / --story-step-fg-inactive  Inactive step
+     * All step CSS variables are defined in tokens.css with --vcsi-* prefix.
+     * Override on a parent element:
+     *   .my-section { --vcsi-step-height: 40vh; --vcsi-step-text-align: left; }
      */
 
     .scrolly-content {
@@ -122,11 +114,11 @@ const steps = [
     }
 
     .spacer {
-        height: var(--spacer-height, 65vh);
+        height: var(--vcsi-spacer-height);
     }
 
     .step {
-        min-height: var(--step-height, 90vh);
+        min-height: var(--vcsi-step-height);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -135,20 +127,20 @@ const steps = [
 
     .step-box {
         width: 100%;
-        max-width: var(--step-max-width, 600px);
-        padding: var(--step-padding, 1rem);
-        background-color: var(--story-step-bg-inactive, #f5f5f5);
-        color: var(--story-step-fg-inactive, #ccc);
-        border-radius: var(--step-border-radius, 5px);
-        box-shadow: var(--step-box-shadow, 1px 1px 10px rgba(0, 0, 0, 0.2));
+        max-width: var(--vcsi-step-max-width);
+        padding: var(--vcsi-step-padding);
+        background-color: var(--vcsi-story-step-bg-inactive);
+        color: var(--vcsi-story-step-fg-inactive);
+        border-radius: var(--vcsi-step-border-radius);
+        box-shadow: var(--vcsi-step-box-shadow);
         transition: background-color 400ms ease, color 400ms ease;
-        text-align: var(--step-text-align, center);
+        text-align: var(--vcsi-step-text-align);
         pointer-events: auto;
     }
 
     .step.active .step-box {
-        background-color: var(--story-step-bg, #fff);
-        color: var(--story-step-fg, #333);
+        background-color: var(--vcsi-story-step-bg);
+        color: var(--vcsi-story-step-fg);
     }
 
     /* Links and nested elements inherit step text color */
