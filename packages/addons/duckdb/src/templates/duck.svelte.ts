@@ -1,5 +1,30 @@
-// src/lib/db/sql.svelte.ts
-import { getDB, registerParquet } from './duckdb.svelte';
+// src/lib/db/duck.svelte.ts
+//
+// Reactive query helpers for DuckDB-WASM + Svelte 5.
+//
+// Usage:
+//   import { duck, duck_val, duck_col } from '$lib/db/duck.svelte';
+//
+//   // Reactive rows — re-runs when reactive deps in the SQL function change
+//   const fastest = duck(() => `
+//     SELECT carrier, flight, ROUND(distance / air_time * 60, 1) AS speed
+//     FROM 'flights.parquet'
+//     ORDER BY speed DESC
+//     LIMIT 10
+//   `);
+//
+//   // In your template: {#each fastest.rows as row}...{/each}
+//   // Also available: fastest.loading, fastest.error, fastest.queryTime
+//
+//   // Scalar value
+//   const total = duck_val(() => `SELECT COUNT(*) FROM 'flights.parquet'`);
+//   // Use: total.value
+//
+//   // Single column (e.g. for dropdowns)
+//   const carriers = duck_col(() => `SELECT DISTINCT carrier FROM 'flights.parquet' ORDER BY carrier`);
+//   // Use: carriers.items
+
+import { getDB, registerParquet, loadExtension } from './duckdb.svelte';
 import { untrack } from 'svelte';
 
 interface QueryResult<T = Record<string, unknown>> {
@@ -10,7 +35,30 @@ interface QueryResult<T = Record<string, unknown>> {
   refresh: () => Promise<void>;
 }
 
-// Deduplicate concurrent parquet registrations (5 duck() queries fire on mount)
+// Extensions to load before any query executes (deferred until first browser query)
+const pendingExtensions: string[] = [];
+let extensionBarrier: Promise<void> | null = null;
+
+/** Require a DuckDB extension (INSTALL + LOAD). Queries will wait for it. */
+export function requireExtension(name: string) {
+  if (!pendingExtensions.includes(name)) {
+    pendingExtensions.push(name);
+    extensionBarrier = null; // reset so next query re-resolves
+  }
+}
+
+/** Lazily load all required extensions (only runs in browser, on first query). */
+async function ensureExtensions() {
+  if (pendingExtensions.length === 0) return;
+  if (!extensionBarrier) {
+    extensionBarrier = Promise.all(
+      pendingExtensions.map(name => loadExtension(name))
+    ).then(() => {});
+  }
+  await extensionBarrier;
+}
+
+// Deduplicate concurrent parquet registrations
 const registering = new Map<string, Promise<void>>();
 
 async function ensureParquet(sql: string) {
@@ -23,7 +71,11 @@ async function ensureParquet(sql: string) {
   }
 }
 
-
+/**
+ * Reactive query — returns rows as plain JS objects.
+ * Re-executes automatically when reactive dependencies in `buildSQL` change.
+ * Parquet files referenced as 'name.parquet' are auto-registered from /data/.
+ */
 export function duck<T = Record<string, unknown>>(
   buildSQL: () => string
 ): QueryResult<T> {
@@ -39,6 +91,7 @@ export function duck<T = Record<string, unknown>>(
     const start = performance.now();
 
     try {
+      await ensureExtensions();
       await ensureParquet(sql);
       const conn = await getDB();
       const result = await conn.query(sql);
@@ -59,8 +112,7 @@ export function duck<T = Record<string, unknown>>(
   }
 
   $effect(() => {
-    // buildSQL() accesses reactive state, so this auto-tracks
-    buildSQL();
+    buildSQL(); // track reactive deps
     untrack(() => { execute(); });
   });
 
@@ -75,8 +127,10 @@ export function duck<T = Record<string, unknown>>(
 
 /**
  * Scalar query — returns a single value (COUNT, MIN, MAX, SUM, etc.)
- * Usage: `const total = duck_val(() => \`SELECT COUNT(*) FROM ...\`)`
- *        then use `total.value`
+ *
+ * @example
+ * const total = duck_val(() => `SELECT COUNT(*) FROM 'flights.parquet'`);
+ * // total.value, total.loading, total.error
  */
 export function duck_val<T = number>(
   buildSQL: () => string,
@@ -96,9 +150,11 @@ export function duck_val<T = number>(
 }
 
 /**
- * Single-column query — returns an array of values.
- * Usage: `const colleges = duck_col(() => \`SELECT DISTINCT college FROM ...\`)`
- *        then use `colleges.items`
+ * Single-column query — returns an array of values. Great for dropdowns.
+ *
+ * @example
+ * const carriers = duck_col(() => `SELECT DISTINCT carrier FROM 'flights.parquet' ORDER BY carrier`);
+ * // carriers.items, carriers.loading, carriers.error
  */
 export function duck_col<T = string>(
   buildSQL: () => string

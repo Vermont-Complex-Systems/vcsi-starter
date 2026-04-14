@@ -7,13 +7,13 @@ description: Use when building scrollytelling stories, working with split/fullsc
 
 ## Quick start
 
-See [SKILL.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit/SKILL.md) for the full guide.
+See [SKILL.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit-core/SKILL.md) for the full guide.
 
 ## Reference
 
-- **Component API**: See [COMPONENTS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit/COMPONENTS.md)
-- **Layout system**: See [LAYOUTS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit/LAYOUTS.md)
-- **Story patterns**: See [PATTERNS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit/PATTERNS.md)
+- **Component API**: See [COMPONENTS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit-core/COMPONENTS.md)
+- **Layout system**: See [LAYOUTS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit-core/LAYOUTS.md)
+- **Story patterns**: See [PATTERNS.md](node_modules/@the-vcsi/scrolly-kit/skills/scrolly-kit-core/PATTERNS.md)
 `;
 
 const SVELTE_CODE_WRITER_SKILL = `---
@@ -37,7 +37,7 @@ Reference files: See [references/](node_modules/@the-vcsi/scrolly-kit/skills/sve
 const options = defineAddonOptions().build();
 
 export default defineAddon({
-  id: '@the-vcsi/skills',
+  id: '@the-vcsi/scrollykit-skills',
   shortDescription: 'Claude Code skills for scrolly-kit and Svelte 5',
   options,
 
@@ -56,6 +56,7 @@ export default defineAddon({
       if (content) return content;
       return SVELTE_BESTPRACTICES_SKILL;
     });
+
   },
 
   nextSteps: () => [

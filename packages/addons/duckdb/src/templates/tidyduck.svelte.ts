@@ -1,13 +1,13 @@
-// src/lib/db/duck.svelte.ts
+// src/lib/db/tidyduck.svelte.ts
 //
-// Reactive query builder for DuckDB-WASM + Svelte 5.
+// Tidyverse-inspired reactive query builder for DuckDB-WASM + Svelte 5.
 //
 // Two layers:
 //   1. Composable SQL fragment helpers (ilike, between, inList, eq, or, and)
 //   2. DuckQuery builder that chains filters and materializes reactive queries
 //
 // Usage:
-//   import { database, ilike, or } from '$lib/db/duck.svelte';
+//   import { database, ilike, or } from '$lib/db/tidyduck.svelte';
 //
 //   const db = database({
 //     papers: 'my-file.parquet',
@@ -27,7 +27,7 @@
 //   const filtered = q.rows();
 //   const stats    = q.summarize({ n: 'COUNT(*)' });
 
-import { duck, duck_val, duck_col } from './sql.svelte';
+import { duck, duck_val, duck_col, requireExtension } from './duck.svelte';
 
 // ── SQL fragment helpers (pure functions, composable) ──
 
@@ -112,7 +112,6 @@ class DuckQuery {
   }
 
   // ── Filter verbs (immutable — each returns a new DuckQuery) ──
-  // These are sugar for .where(() => helper(col, valueFn()))
 
   /** col BETWEEN lo AND hi. Skips when value is empty or matches fullRangeFn. */
   between(col: string, valueFn: () => number[], fullRangeFn?: () => number[]) {
@@ -177,11 +176,7 @@ class DuckQuery {
     return duck<T>(() => `SELECT ${this._buildSelect()} FROM ${this._table} ${this._where()} ${this._order()} LIMIT ${n}`);
   }
 
-  /**
-   * Column statistics via SUMMARIZE (like R's summary() or Observable's table summary).
-   * Returns { rows, loading, error } where each row is a column's stats:
-   * column_name, column_type, min, max, approx_unique, avg, std, q25, q50, q75, count, null_percentage.
-   */
+  /** Column statistics via SUMMARIZE. */
   describe() {
     return duck<{
       column_name: string; column_type: string;
@@ -192,10 +187,7 @@ class DuckQuery {
     }>(() => `SUMMARIZE SELECT * FROM ${this._table} ${this._where()}`);
   }
 
-  /**
-   * Column metadata + sample values (like R's glimpse()).
-   * Returns { columns, nRows, nCols, loading, error }.
-   */
+  /** Column metadata + sample values (like R's glimpse()). */
   glimpse(sampleSize: number = 5) {
     const describe = duck<{ column_name: string; column_type: string }>(() =>
       `DESCRIBE SELECT * FROM ${this._table}`
@@ -235,7 +227,7 @@ class DuckQuery {
     );
   }
 
-  /** distinct('col') → { items } for dropdowns. distinct('a','b') → { rows } for unique combos. distinct() → all unique rows. */
+  /** distinct('col') → { items } for dropdowns. distinct('a','b') → { rows } for unique combos. */
   distinct<T = string>(col: string): { readonly items: T[]; readonly loading: boolean; readonly error: string | null };
   distinct(...cols: string[]): { readonly rows: Record<string, unknown>[]; readonly loading: boolean; readonly error: string | null; readonly queryTime: number; refresh: () => Promise<void> };
   distinct(...cols: string[]) {
@@ -350,7 +342,6 @@ class DuckQuery {
 
   _buildSelect(): string {
     if (this._selectCols) {
-      // When select is active, inline mutation expressions for matching aliases
       const mutMap = new Map(this._mutations);
       const cols = this._selectCols.map(col => {
         const expr = mutMap.get(col);
@@ -386,7 +377,14 @@ export type { DuckQuery };
  *   const q = db.from('flights');           // same builder API
  *   const joined = db.sql<T>(sql => ...);   // raw SQL with all tables available
  */
-export function database(tables: Record<string, string>) {
+export function database(
+  tables: Record<string, string>,
+  opts?: { extensions?: string[] }
+) {
+  if (opts?.extensions) {
+    for (const ext of opts.extensions) requireExtension(ext);
+  }
+
   const registry = new Map(
     Object.entries(tables).map(([name, path]) => [
       name,
@@ -402,7 +400,7 @@ export function database(tables: Record<string, string>) {
       return new DuckQuery(path);
     },
 
-    /** Raw SQL with access to all registered tables. Use table names directly in your query. */
+    /** Raw SQL with access to all registered tables. */
     sql<T = Record<string, unknown>>(buildSQL: (tables: Record<string, string>) => string) {
       const tableMap = Object.fromEntries(registry);
       return duck<T>(() => buildSQL(tableMap));

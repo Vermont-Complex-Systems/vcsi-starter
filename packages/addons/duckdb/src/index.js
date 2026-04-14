@@ -5,37 +5,46 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Read templates from files (testable, lintable)
 const DUCKDB_SINGLETON = readFileSync(join(__dirname, 'templates/duckdb.svelte.ts'), 'utf8');
-const SQL_REACTIVE     = readFileSync(join(__dirname, 'templates/sql.svelte.ts'), 'utf8');
-const DUCK_BUILDER     = readFileSync(join(__dirname, 'templates/duck.svelte.ts'), 'utf8');
+const DUCK_REACTIVE    = readFileSync(join(__dirname, 'templates/duck.svelte.ts'), 'utf8');
+const TIDYDUCK_BUILDER = readFileSync(join(__dirname, 'templates/tidyduck.svelte.ts'), 'utf8');
 
-const options = defineAddonOptions().build();
+const options = defineAddonOptions()
+  .add('tidyduck', {
+    question: 'Include tidyduck query builder? (experimental dplyr-style API)',
+    type: 'boolean',
+    default: false
+  })
+  .build();
 
 export default defineAddon({
-  id: '@the-vcsi/tidyduck',
-  shortDescription: 'Tidyverse-inspired reactive DuckDB-WASM query builder',
+  id: '@the-vcsi/duckdb',
+  shortDescription: 'DuckDB-WASM with reactive query helpers for SvelteKit',
   options,
 
-  run: ({ sv }) => {
-    // ── 1. Drop the three db/ files ──
+  run: ({ sv, options: opts }) => {
+    // ── 1. Core files (always) ──
 
     sv.file('src/lib/db/duckdb.svelte.ts', (content) => {
-      if (content) return content; // Don't overwrite existing
-      return DUCKDB_SINGLETON;
-    });
-
-    sv.file('src/lib/db/sql.svelte.ts', (content) => {
       if (content) return content;
-      return SQL_REACTIVE;
+      return DUCKDB_SINGLETON;
     });
 
     sv.file('src/lib/db/duck.svelte.ts', (content) => {
       if (content) return content;
-      return DUCK_BUILDER;
+      return DUCK_REACTIVE;
     });
 
-    // ── 2. Add @duckdb/duckdb-wasm dependency ──
+    // ── 2. Tidyduck builder (optional) ──
+
+    if (opts.tidyduck) {
+      sv.file('src/lib/db/tidyduck.svelte.ts', (content) => {
+        if (content) return content;
+        return TIDYDUCK_BUILDER;
+      });
+    }
+
+    // ── 3. Add @duckdb/duckdb-wasm dependency ──
 
     sv.file('package.json', (content) => {
       const pkg = JSON.parse(content);
@@ -46,7 +55,7 @@ export default defineAddon({
       return JSON.stringify(pkg, null, 2);
     });
 
-    // ── 3. Modify vite.config.ts to exclude @duckdb/duckdb-wasm from optimizeDeps ──
+    // ── 4. Exclude @duckdb/duckdb-wasm from Vite optimizeDeps ──
 
     sv.file('vite.config.ts', (content) => {
       if (!content) {
@@ -56,10 +65,8 @@ export default defineAddon({
         return content;
       }
 
-      // Already present — nothing to do
       if (content.includes('@duckdb/duckdb-wasm')) return content;
 
-      // Case 1: Has an exclude array — append to it
       const excludePattern = /(exclude\s*:\s*\[)([\s\S]*?)(\])/;
       const excludeMatch = content.match(excludePattern);
       if (excludeMatch) {
@@ -72,7 +79,6 @@ export default defineAddon({
         );
       }
 
-      // Case 2: Has optimizeDeps but no exclude
       const optimizeDepsPattern = /(optimizeDeps\s*:\s*\{)/;
       if (optimizeDepsPattern.test(content)) {
         return content.replace(
@@ -81,7 +87,6 @@ export default defineAddon({
         );
       }
 
-      // Case 3: Has defineConfig({ — add optimizeDeps at the top
       const defineConfigPattern = /(defineConfig\s*\(\s*\{)/;
       if (defineConfigPattern.test(content)) {
         return content.replace(
@@ -90,29 +95,36 @@ export default defineAddon({
         );
       }
 
-      // Fallback — could not locate a safe insertion point
       console.log('\n  Warning: Could not auto-modify vite.config.ts.');
       console.log('  Add inside defineConfig():');
       console.log("    optimizeDeps: { exclude: ['@duckdb/duckdb-wasm'] }");
       return content;
     });
 
-    // ── 4. Create static/data/.gitkeep for parquet file placement ──
+    // ── 5. Create static/data/.gitkeep ──
 
     sv.file('static/data/.gitkeep', (content) => {
       if (content != null) return content;
       return '';
     });
-
-    // ── 5. Post-install instructions ──
-
   },
 
-  nextSteps: () => [
-    'Run npm install',
-    'Place .parquet files in static/data/',
-    "Import: import { database } from '$lib/db/duck.svelte'",
-    "Register tables: const db = database({ mydata: 'my-file.parquet' })",
-    "Query: const rows = db.from('mydata').rows()"
-  ]
+  nextSteps: ({ options: opts }) => {
+    const steps = [
+      'Run npm install',
+      'Place .parquet files in static/data/',
+      "Import: import { duck } from '$lib/db/duck.svelte'",
+      "Query:  const rows = duck(() => `SELECT * FROM 'data.parquet' LIMIT 10`)",
+    ];
+    if (opts.tidyduck) {
+      steps.push(
+        '',
+        'Tidyduck builder:',
+        "  import { database } from '$lib/db/tidyduck.svelte'",
+        "  const db = database({ flights: 'flights.parquet' })",
+        "  const q = db.from('flights').between('year', () => range).rows()"
+      );
+    }
+    return steps;
+  }
 });

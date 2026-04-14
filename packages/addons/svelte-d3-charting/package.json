@@ -1,13 +1,13 @@
 {
-  "name": "@the-vcsi/skills",
+  "name": "@the-vcsi/svelte-d3-charting",
   "version": "0.0.1",
-  "description": "sv CLI add-on — Claude Code skills for scrolly-kit and Svelte 5",
+  "description": "sv CLI add-on — Claude Code skill for Svelte 5 + D3 charting best practices",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
   },
   "files": ["src"],
-  "keywords": ["sv-add", "svelte", "sveltekit", "claude", "skills", "llm"],
+  "keywords": ["sv-add", "svelte", "sveltekit", "d3", "charting", "claude", "skills"],
   "dependencies": {},
   "peerDependencies": {
     "sv": "^0.13.0"
