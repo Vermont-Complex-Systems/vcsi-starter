@@ -3,117 +3,35 @@ name: scrolly-kit
 description: Use when building scrollytelling stories, working with split/fullscreen/triple/dashboard layouts, ScrollyContent steps, copy.json content, VCSI CSS variables, or story theming in a SvelteKit project using @the-vcsi/scrolly-kit
 ---
 
-# @the-vcsi/scrolly-kit
+## New story
 
-Scrollytelling components, layouts, and CSS for SvelteKit. Stories are Svelte components that combine layout CSS classes with reactive scroll-tracking components.
+**Check `package.json` for a `"new-story"` script first.** If it exists, use it — do NOT scaffold manually:
 
-## Quick Start: Create a Story
-
-**Before manually scaffolding files**, check if the project has a `new-story` script. VCSI templates (`baked`, `fresh`, `simple`) ship with `scripts/new-story.js`:
-
-1. Look for `"new-story"` in `package.json` scripts.
-2. If it exists, run the script instead of creating files by hand:
-   ```bash
-   npm run new-story <slug>             # minimal template
-   npm run new-story <slug> --detailed  # with documentation comments
-   ```
-   This creates the full story scaffold (`components/Index.svelte`, `components/ScrollyPlot.svelte`, `data/copy.json`, `data/data.csv`) and appends an entry to `stories.csv`.
-3. If the script does **not** exist (custom project), scaffold manually using the structure below.
-
-### Manual scaffold (non-template projects)
-
-A story lives in `src/lib/stories/{slug}/` with two parts:
-
-**1. Content data** (`data/copy.json`):
-```json
-{
-  "title": "My Story",
-  "subtitle": "A data-driven exploration",
-  "authors": [{ "name": "Alice Smith", "url": "https://..." }],
-  "date": "April 2026",
-  "introduction": [
-    { "type": "markdown", "value": "Opening paragraph with **bold** and $math$." }
-  ],
-  "steps": [
-    { "type": "markdown", "value": "## Step 1\nFirst insight..." },
-    { "type": "markdown", "value": "## Step 2\nSecond insight..." },
-    { "type": "html", "value": "<strong>Step 3</strong> with raw HTML" }
-  ],
-  "conclusion": [
-    { "type": "markdown", "value": "Wrapping up..." }
-  ]
-}
+```bash
+npm run new-story <slug>             # minimal
+npm run new-story <slug> --detailed  # with docs
 ```
 
-**2. Story component** (`components/Index.svelte`):
-```svelte
-<script>
-  import { ScrollyContent, RenderContent, StoryHeader, Footer, ScrollIndicator } from '@the-vcsi/scrolly-kit';
-  import BackToHome from '$lib/components/helpers/BackToHome.svelte';
+Only create files by hand if the script does not exist. Structure: `src/lib/stories/{slug}/components/Index.svelte` + `data/copy.json`.
 
-  let { story, data } = $props();
-  let scrollyIndex = $state(0);
-</script>
+## Layouts
 
-<BackToHome />
-<ScrollIndicator />
+| Class | Pattern |
+|-------|---------|
+| `.split-layout` | Side-by-side: `.sticky-panel` + `.scrolly-content`. Add `.reversed` for chart-left. |
+| `.fullscreen-layout` | Full-viewport background + overlay steps. |
+| `.triple-layout` | Three columns: steps + code + chart. |
+| `.dashboard-layout` | Sidebar + main content, no scrolly. |
 
-<article class="story">
-  <StoryHeader title={data.title} subtitle={data.subtitle} authors={data.authors} date={data.date} />
-
-  <section id="intro">
-    <RenderContent items={data.introduction} />
-  </section>
-
-  <section class="split-layout">
-    <div class="sticky-panel">
-      <!-- Your visualization here, reacts to {scrollyIndex} -->
-    </div>
-    <div class="scrolly-content">
-      <ScrollyContent steps={data.steps} bind:value={scrollyIndex} />
-    </div>
-  </section>
-
-  <section id="conclusion">
-    <RenderContent items={data.conclusion} />
-  </section>
-</article>
-
-<Footer theme="light" />
-```
-
-## Layout Options
-
-| Layout | Class | Use when |
-|--------|-------|----------|
-| **Split** | `.split-layout` | Side-by-side: text scrolls, chart sticks. Default: chart right. Add `.reversed` for chart left. |
-| **Fullscreen** | `.fullscreen-layout` | Immersive: chart fills viewport, text overlays on top. |
-| **Triple** | `.triple-layout` | Three columns: steps + code panel + chart panel. |
-| **Dashboard** | `.dashboard-layout` | Sidebar + main content. No scrolly mechanics. |
-
-All layouts stack to single-column on mobile (768px breakpoint).
-
-## Key Imports
+## Key imports
 
 ```js
-// Core scrolly
-import { Scrolly, ScrollyContent } from '@the-vcsi/scrolly-kit';
-
-// Content rendering
-import { RenderContent, MarkdownRenderer, CodeBlock, CopyCodeBlock } from '@the-vcsi/scrolly-kit';
-
-// Layout components
-import { StoryHeader, Nav, Footer, Meta } from '@the-vcsi/scrolly-kit';
-
-// UI controls
-import { ThemeToggle, SimpleSelect, SimpleToggle, Tooltip } from '@the-vcsi/scrolly-kit';
-
-// Types
-import type { ContentItem, Author, ScrollyContentProps } from '@the-vcsi/scrolly-kit';
+import { Scrolly, ScrollyContent, RenderContent, StoryHeader, Footer, ScrollIndicator } from '@the-vcsi/scrolly-kit';
+import type { ContentItem, Author } from '@the-vcsi/scrolly-kit';
 ```
 
-## Deeper Reference
+## Reference
 
-- **Component props, CSS vars, usage examples**: See [COMPONENTS.md](COMPONENTS.md)
-- **Layout CSS classes, variables, responsive behavior, containment rules**: See [LAYOUTS.md](LAYOUTS.md)
-- **Story structure, copy.json schema, multi-section, theming, SSR gotchas**: See [PATTERNS.md](PATTERNS.md)
+- [COMPONENTS.md](COMPONENTS.md) — props, CSS vars, usage
+- [LAYOUTS.md](LAYOUTS.md) — CSS classes, variables, containment rules
+- [PATTERNS.md](PATTERNS.md) — copy.json schema, multi-section, theming, SSR
