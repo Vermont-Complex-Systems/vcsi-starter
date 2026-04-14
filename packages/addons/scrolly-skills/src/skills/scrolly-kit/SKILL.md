@@ -9,6 +9,19 @@ Scrollytelling components, layouts, and CSS for SvelteKit. Stories are Svelte co
 
 ## Quick Start: Create a Story
 
+**Before manually scaffolding files**, check if the project has a `new-story` script. VCSI templates (`baked`, `fresh`, `simple`) ship with `scripts/new-story.js`:
+
+1. Look for `"new-story"` in `package.json` scripts.
+2. If it exists, run the script instead of creating files by hand:
+   ```bash
+   npm run new-story <slug>             # minimal template
+   npm run new-story <slug> --detailed  # with documentation comments
+   ```
+   This creates the full story scaffold (`components/Index.svelte`, `components/ScrollyPlot.svelte`, `data/copy.json`, `data/data.csv`) and appends an entry to `stories.csv`.
+3. If the script does **not** exist (custom project), scaffold manually using the structure below.
+
+### Manual scaffold (non-template projects)
+
 A story lives in `src/lib/stories/{slug}/` with two parts:
 
 **1. Content data** (`data/copy.json`):

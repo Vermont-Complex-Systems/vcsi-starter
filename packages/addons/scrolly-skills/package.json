@@ -1,5 +1,5 @@
 {
-  "name": "@the-vcsi/scrollykit-skills",
+  "name": "@the-vcsi/scrolly-skills",
   "version": "0.0.1",
   "description": "sv CLI add-on — Claude Code skills for scrolly-kit and Svelte 5",
   "type": "module",
