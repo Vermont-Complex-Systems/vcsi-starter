@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
 	// scrolly-kit provides reusable components for scrollytelling
-	import { Footer, ScrollyContent, StoryHeader } from '@the-vcsi/scrolly-kit';
+	import { Footer, ScrollyContent, StoryHeader, RenderContent } from '@the-vcsi/scrolly-kit';
 
 	// BackToHome shows a floating home button in the top-left corner
 	import BackToHome from '$lib/components/helpers/BackToHome.svelte';
@@ -54,6 +54,10 @@
 	<!-- <h1>{data.title}</h1>
 	<p>{data.subtitle}</p> -->
 
+	<!-- This component knows how to ingest copy.json -->
+	<section class="intro">
+		<RenderContent items={data.introduction} />
+	</section>
 	<!--
 	  .split-layout creates a two-column scrollytelling layout:
 	  - Left: sticky visualization panel (stays in view)
@@ -124,6 +128,10 @@
 		width: 1px;               /* Line thickness */
 		background: var(--vcsi-border, #ddd);  /* Line color (falls back to light gray) */
 		pointer-events: none;     /* Clicks pass through the line to elements behind */
+	}
+
+	.intro {
+		margin-bottom: 5rem;
 	}
 
 	
