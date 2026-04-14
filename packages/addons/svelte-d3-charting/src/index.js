@@ -15,10 +15,7 @@ export default defineAddon({
 	options,
 
 	run: ({ sv }) => {
-		sv.file('.claude/skills/svelte-d3-charting/SKILL.md', (content) => {
-			if (content) return content;
-			return readSkill('svelte-d3-charting/SKILL.md');
-		});
+		sv.file('.claude/skills/svelte-d3-charting/SKILL.md', () => readSkill('svelte-d3-charting/SKILL.md'));
 	},
 
 	nextSteps: () => [

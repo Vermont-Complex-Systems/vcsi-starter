@@ -16,34 +16,16 @@ export default defineAddon({
 
 	run: ({ sv }) => {
 		// --- scrolly-kit skill (core + reference files) ---
-		sv.file('.claude/skills/scrolly-kit/SKILL.md', (content) => {
-			if (content) return content;
-			return readSkill('scrolly-kit/SKILL.md');
-		});
-		sv.file('.claude/skills/scrolly-kit/COMPONENTS.md', (content) => {
-			if (content) return content;
-			return readSkill('scrolly-kit/COMPONENTS.md');
-		});
-		sv.file('.claude/skills/scrolly-kit/LAYOUTS.md', (content) => {
-			if (content) return content;
-			return readSkill('scrolly-kit/LAYOUTS.md');
-		});
-		sv.file('.claude/skills/scrolly-kit/PATTERNS.md', (content) => {
-			if (content) return content;
-			return readSkill('scrolly-kit/PATTERNS.md');
-		});
+		sv.file('.claude/skills/scrolly-kit/SKILL.md', () => readSkill('scrolly-kit/SKILL.md'));
+		sv.file('.claude/skills/scrolly-kit/COMPONENTS.md', () => readSkill('scrolly-kit/COMPONENTS.md'));
+		sv.file('.claude/skills/scrolly-kit/LAYOUTS.md', () => readSkill('scrolly-kit/LAYOUTS.md'));
+		sv.file('.claude/skills/scrolly-kit/PATTERNS.md', () => readSkill('scrolly-kit/PATTERNS.md'));
 
 		// --- svelte-code-writer skill ---
-		sv.file('.claude/skills/svelte-code-writer/SKILL.md', (content) => {
-			if (content) return content;
-			return readSkill('svelte-code-writer/SKILL.md');
-		});
+		sv.file('.claude/skills/svelte-code-writer/SKILL.md', () => readSkill('svelte-code-writer/SKILL.md'));
 
 		// --- svelte-core-bestpractices skill + references ---
-		sv.file('.claude/skills/svelte-core-bestpractices/SKILL.md', (content) => {
-			if (content) return content;
-			return readSkill('svelte-core-bestpractices/SKILL.md');
-		});
+		sv.file('.claude/skills/svelte-core-bestpractices/SKILL.md', () => readSkill('svelte-core-bestpractices/SKILL.md'));
 
 		const refs = [
 			'@attach.md',
@@ -57,10 +39,9 @@ export default defineAddon({
 			'svelte-reactivity.md'
 		];
 		for (const ref of refs) {
-			sv.file(`.claude/skills/svelte-core-bestpractices/references/${ref}`, (content) => {
-				if (content) return content;
-				return readSkill(`svelte-core-bestpractices/references/${ref}`);
-			});
+			sv.file(`.claude/skills/svelte-core-bestpractices/references/${ref}`, () =>
+				readSkill(`svelte-core-bestpractices/references/${ref}`)
+			);
 		}
 	},
 
