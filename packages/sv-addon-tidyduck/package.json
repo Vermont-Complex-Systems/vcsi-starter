@@ -12,8 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "dependencies": {
-    "sv": "^0.11.0"
+  "dependencies": {},
+  "peerDependencies": {
+    "sv": "^0.13.0"
   },
   "devDependencies": {
     "vitest": "^4.0.18",

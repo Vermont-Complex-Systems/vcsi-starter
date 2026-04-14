@@ -1,4 +1,4 @@
-import { defineAddon, defineAddonOptions } from 'sv/core';
+import { defineAddon, defineAddonOptions } from 'sv';
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -14,6 +14,7 @@ const options = defineAddonOptions().build();
 
 export default defineAddon({
   id: '@the-vcsi/tidyduck',
+  shortDescription: 'Tidyverse-inspired reactive DuckDB-WASM query builder',
   options,
 
   run: ({ sv }) => {
@@ -105,16 +106,13 @@ export default defineAddon({
 
     // ── 5. Post-install instructions ──
 
-    console.log('\n  DuckDB-WASM integration added!');
-    console.log('  1. Run: npm install');
-    console.log('  2. Place .parquet files in static/data/');
-    console.log('  3. Import the query builder:');
-    console.log("     import { database } from '$lib/db/duck.svelte';");
-    console.log('  4. Register tables and query:');
-    console.log("     const db = database({ mydata: 'my-file.parquet' });");
-    console.log("     const data = db.from('mydata');");
-    console.log('     const allRows = data.rows();');
-    console.log('     const total = data.count();');
-    console.log("     const filtered = data.between('year', () => range).rows();");
-  }
+  },
+
+  nextSteps: () => [
+    'Run npm install',
+    'Place .parquet files in static/data/',
+    "Import: import { database } from '$lib/db/duck.svelte'",
+    "Register tables: const db = database({ mydata: 'my-file.parquet' })",
+    "Query: const rows = db.from('mydata').rows()"
+  ]
 });

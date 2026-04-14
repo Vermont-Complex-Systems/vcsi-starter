@@ -1,4 +1,4 @@
-import { defineAddon, defineAddonOptions } from 'sv/core';
+import { defineAddon, defineAddonOptions } from 'sv';
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -18,6 +18,7 @@ const options = defineAddonOptions()
 
 export default defineAddon({
   id: '@the-vcsi/openalex',
+  shortDescription: 'OpenAlex academic data integration with Drizzle ORM',
   options,
 
   setup: ({ dependsOn }) => {
@@ -66,10 +67,12 @@ bob,Bob Jones,Graduate Student,A5087654321
       return JSON.stringify(pkg, null, 2);
     });
 
-    console.log('\n  OpenAlex integration added!');
-    console.log('  1. Ensure drizzle is set up with better-sqlite3');
-    console.log('  2. Add openAlexId column to your members.csv');
-    console.log('  3. Run: npm run db:push (to create tables)');
-    console.log('  4. Run: npm run db:populate-openalex');
-  }
+  },
+
+  nextSteps: () => [
+    'Ensure drizzle is set up with better-sqlite3',
+    'Add openAlexId column to your members.csv',
+    'Run npm run db:push (to create tables)',
+    'Run npm run db:populate-openalex'
+  ]
 });

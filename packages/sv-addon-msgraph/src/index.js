@@ -1,4 +1,4 @@
-import { defineAddon, defineAddonOptions } from 'sv/core';
+import { defineAddon, defineAddonOptions } from 'sv';
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -19,6 +19,7 @@ const options = defineAddonOptions()
 
 export default defineAddon({
   id: '@the-vcsi/msgraph',
+  shortDescription: 'Microsoft Graph / SharePoint integration for fetching story content',
   options,
 
   run: ({ sv, options: opts }) => {
@@ -52,13 +53,12 @@ export default defineAddon({
       return JSON.stringify(pkg, null, 2);
     });
 
-    console.log('\n  Microsoft Graph integration added!');
-    console.log('  1. Copy .env.example to .env');
-    console.log('  2. Get credentials from Azure Portal > App registrations:');
-    console.log('     - tenantId: Directory (tenant) ID');
-    console.log('     - clientId: Application (client) ID');
-    console.log('     - clientSecret: Certificates & secrets > New client secret');
-    console.log('  3. Run: npm install');
-    console.log('  4. Run: npm run fetch:sharepoint');
-  }
+  },
+
+  nextSteps: () => [
+    'Copy .env.example to .env',
+    'Get credentials from Azure Portal > App registrations',
+    'Run npm install',
+    'Run npm run fetch:sharepoint'
+  ]
 });

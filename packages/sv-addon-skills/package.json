@@ -1,13 +1,13 @@
 {
-  "name": "@the-vcsi/msgraph",
+  "name": "@the-vcsi/skills",
   "version": "0.0.1",
-  "description": "sv CLI add-on for Microsoft Graph / SharePoint integration",
+  "description": "sv CLI add-on — Claude Code skills for scrolly-kit and Svelte 5",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
   },
   "files": ["src"],
-  "keywords": ["sv-add", "svelte", "sveltekit", "microsoft-graph", "sharepoint"],
+  "keywords": ["sv-add", "svelte", "sveltekit", "claude", "skills", "llm"],
   "dependencies": {},
   "peerDependencies": {
     "sv": "^0.13.0"
