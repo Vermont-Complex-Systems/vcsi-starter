@@ -163,6 +163,71 @@ Dashboards use a different layout — no scrolly mechanics:
 
 Add `.sidebar-collapsed` to the root element to collapse the sidebar.
 
+## Visualization Component Patterns
+
+Plot components inside `.sticky-panel` must be sized to match their layout. See LAYOUTS.md for the CSS contract each layout provides; this section covers **how to scaffold the Svelte component**.
+
+### Split Layout Plot
+
+The panel has constrained width and capped height. The plot only needs to track width.
+
+```svelte
+<script>
+  let { scrollyIndex } = $props();
+
+  let width = $state(800);       // bind width only
+  const height = 400;             // fixed height
+  const margin = { top: 20, right: 20, bottom: 80, left: 60 };
+
+  let innerWidth = $derived(width - margin.left - margin.right);
+  let innerHeight = $derived(height - margin.top - margin.bottom);
+</script>
+
+<div class="chart-container" bind:clientWidth={width}>
+  <svg viewBox={`0 0 ${width} ${height}`}>
+    <g transform={`translate(${margin.left},${margin.top})`}>
+      <!-- chart content -->
+    </g>
+  </svg>
+</div>
+```
+
+**Rules:** `bind:clientWidth` only. Fixed `height` constant. The `viewBox` scales the SVG proportionally. No viewport units.
+
+### Fullscreen Layout Plot
+
+The panel fills the viewport. The plot must track both dimensions.
+
+```svelte
+<script>
+  let { scrollyIndex } = $props();
+
+  let width = $state(800);        // bind both
+  let height = $state(600);
+
+  let isMobile = $derived(width < 768);
+  let chartHeight = $derived(isMobile ? width : height);  // square on mobile
+
+  let margin = $derived(isMobile
+    ? { top: 40, right: 20, bottom: 50, left: 50 }
+    : { top: 60, right: 40, bottom: 70, left: 70 }
+  );
+
+  let innerWidth = $derived(width - margin.left - margin.right);
+  let innerHeight = $derived(chartHeight - margin.top - margin.bottom);
+</script>
+
+<div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
+  <svg viewBox={`0 0 ${width} ${chartHeight}`}>
+    <g transform={`translate(${margin.left},${margin.top})`}>
+      <!-- chart content -->
+    </g>
+  </svg>
+</div>
+```
+
+**Rules:** `bind:clientWidth` AND `bind:clientHeight`. Derive `chartHeight` from bounds (square on mobile via `width`). Responsive margins. No viewport units — the layout already provides vh/vw.
+
 ## CSS Variable Scoping
 
 Override variables at any level to customize a section:

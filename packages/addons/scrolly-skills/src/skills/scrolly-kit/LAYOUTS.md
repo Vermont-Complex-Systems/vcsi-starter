@@ -70,6 +70,15 @@ Two-column: scrolling text + sticky visualization panel. Default: text left, cha
 
 **Mobile (< 768px):** Stacks to single column. Sticky panel becomes full-viewport background, scrolly content overlays on top with `z-index: 1`. `.reversed` has no effect.
 
+**Component CSS inside `.sticky-panel`:**
+
+```css
+.chart-container { width: 100%; height: auto; }
+svg { width: 100%; height: auto; }
+```
+
+The panel has capped height; the component lets the SVG `viewBox` determine its own height.
+
 ## Fullscreen Layout (`.fullscreen-layout`)
 
 Full-viewport immersive background with text overlay. For cinematic, full-bleed visualizations.
@@ -91,26 +100,25 @@ Full-viewport immersive background with text overlay. For cinematic, full-bleed 
 
 **Mobile:** Same grid-overlap pattern as split layout.
 
-## Triple Layout (`.triple-layout`)
+**Component CSS inside `.sticky-panel`:**
 
-Three equal columns: scrolly steps + code panel + chart panel. For code explainers.
+```css
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+svg { width: 100%; height: 100%; max-height: 100%; }
 
-```html
-<section class="triple-layout">
-  <div class="scrolly-content"><!-- steps --></div>
-  <div class="code-panel"><!-- code display --></div>
-  <div class="chart-panel"><!-- visualization --></div>
-</section>
+@media (max-width: 768px) {
+  svg { width: 100%; height: auto; aspect-ratio: 1; }
+}
 ```
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--vcsi-panel-height` | `min(95vh, 900px)` | Height of sticky panels |
-| `--vcsi-panel-top-offset` | auto-centered | Vertical position |
-| `--vcsi-layout-gap` | `1.5rem` | Gap between columns |
-
-**Tablet (< 1024px):** Collapses to 2 columns (steps + chart). Code panel hidden.
-**Mobile (< 768px):** Single column. Chart becomes background, steps overlay.
+The panel fills the viewport; the component must fill it with `100%` and use flex centering. On mobile, constrain SVG to a square aspect ratio.
 
 ## Dashboard Layout (`.dashboard-layout`)
 
