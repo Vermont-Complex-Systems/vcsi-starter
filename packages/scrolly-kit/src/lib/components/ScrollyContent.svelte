@@ -33,6 +33,8 @@ const steps = [
         steps: ContentItem[];
         /** Current active step index (bindable) */
         value?: number;
+        /** Progress through the active step, 0 to 1 (bindable) */
+        scrollProgress?: number;
         /** Show spacer before first step (default: true) */
         topSpacer?: boolean;
         /** Show spacer after last step (default: true) */
@@ -44,6 +46,7 @@ const steps = [
     let {
         steps,
         value = $bindable(undefined),
+        scrollProgress = $bindable(0),
         topSpacer = true,
         bottomSpacer = true,
         contentRenderer
@@ -85,7 +88,7 @@ const steps = [
 
 <div class="scrolly-content">
     {#if topSpacer}<div class="spacer"></div>{/if}
-    <Scrolly bind:value>
+    <Scrolly bind:value bind:scrollProgress>
         {#each steps as step, i}
             {@const active = value === i}
             <div class="step" class:active>

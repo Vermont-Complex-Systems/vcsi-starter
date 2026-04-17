@@ -143,18 +143,60 @@ Renders markdown with KaTeX math support and syntax highlighting.
 
 ### RenderContent
 
-Renders a single content item based on its type.
+Renders ContentItem(s) from a story's copy.json. Accepts a single item or an array.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `item` | `ContentItem` | — | Content item with `type` and `value` |
+| `items` | `ContentItem \| ContentItem[]` | — | One or more content items to render |
+| `components` | `Record<string, Component>` | `undefined` | Map of Svelte components for `type: "component"` items |
 
-Supported types: `html`, `markdown`, `math`, `code` (with optional `language` field).
+**Supported types:**
+
+| Type | Description | Extra fields |
+|------|-------------|-------------|
+| `markdown` | Rendered via MarkdownRenderer (supports KaTeX: `$inline$`, `$$block$$`) | — |
+| `html` | Raw HTML, rendered directly | — |
+| `math` | Centered math expression (KaTeX) | — |
+| `code` | Syntax-highlighted code block | `language`, `highlightLines` (optional) |
+| `component` | Renders a Svelte component by name from the `components` map | — |
+
+**Basic usage (text sections):**
 
 ```svelte
-<RenderContent item={{ type: 'markdown', value: '## Hello' }} />
-<RenderContent item={{ type: 'code', value: 'const x = 1;', language: 'javascript' }} />
+<RenderContent items={data.introduction} />
+<RenderContent items={data.conclusion} />
 ```
+
+**Embedding Svelte components inline:**
+
+To render a component within a text section, add a `{ "type": "component", "value": "ComponentName" }` entry in copy.json, then pass a components map:
+
+```json
+// copy.json
+{
+  "interlude": [
+    { "type": "markdown", "value": "Here is some text before the chart." },
+    { "type": "component", "value": "SlopeChart" },
+    { "type": "markdown", "value": "And text after the chart." }
+  ]
+}
+```
+
+```svelte
+<script>
+  import { RenderContent } from '@the-vcsi/scrolly-kit';
+  import SlopeChart from './SlopeChart.svelte';
+
+  let { data } = $props();
+  const components = { SlopeChart };
+</script>
+
+<section id="interlude">
+  <RenderContent items={data.interlude} {components} />
+</section>
+```
+
+The `value` in copy.json must match a key in the `components` map exactly. Components are rendered with no props — they should be self-contained.
 
 ### CodeBlock
 

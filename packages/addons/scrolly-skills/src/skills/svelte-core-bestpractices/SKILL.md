@@ -156,7 +156,69 @@ Consider using context instead of declaring state in a shared module. This will 
 
 Use `createContext` rather than `setContext` and `getContext`, as it provides type safety.
 
-## Async Svelte
+## Async Data
+
+### `{#await}` blocks (stable, preferred)
+
+Use `{#await}` in the template to handle promises with loading/error states. This is the standard approach — no experimental flags needed.
+
+```svelte
+{#await fetchData()}
+  <p>Loading...</p>
+{:then data}
+  <p>{data.name}</p>
+{:catch error}
+  <p>Error: {error.message}</p>
+{/await}
+```
+
+For remote functions that return promises (e.g. SvelteKit's `prerender()` helpers), call them directly in the template:
+
+```svelte
+{#await getStory(slug)}
+  <p>Loading...</p>
+{:then story}
+  <StoryComponent {story} />
+{/await}
+```
+
+### `$derived` for reactive async (stable)
+
+When you need a promise result in the script tag that reacts to state changes, use `$derived` to create a reactive promise, then `{#await}` it in the template:
+
+```svelte
+<script>
+  let selectedId = $state('default');
+  let dataPromise = $derived(fetchItem(selectedId));
+</script>
+
+<select bind:value={selectedId}>
+  <option value="a">A</option>
+  <option value="b">B</option>
+</select>
+
+{#await dataPromise}
+  <p>Loading...</p>
+{:then item}
+  <Chart {item} />
+{/await}
+```
+
+The promise re-evaluates whenever `selectedId` changes, and the `{#await}` block handles the loading transition.
+
+### Do NOT use `$effect` for fetching
+
+Never fetch data inside `$effect` and write to `$state`. This creates race conditions and bypasses Svelte's rendering model:
+
+```js
+// DON'T do this
+let data = $state(null);
+$effect(() => {
+  fetch(`/api/${id}`).then(r => r.json()).then(d => data = d);
+});
+```
+
+### Experimental async (Svelte 5.36+)
 
 If using version 5.36 or higher, you can use [await expressions](references/await-expressions.md) and [hydratable](references/hydratable.md) to use promises directly inside components. Note that these require the `experimental.async` option to be enabled in `svelte.config.js` as they are not yet considered fully stable.
 

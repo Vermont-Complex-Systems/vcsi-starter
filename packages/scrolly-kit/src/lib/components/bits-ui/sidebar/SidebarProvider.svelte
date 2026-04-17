@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { untrack } from 'svelte';
     import { SidebarState, setSidebarState } from './sidebar-state.svelte';
     import type { Snippet } from 'svelte';
 
@@ -14,7 +15,7 @@
         children: Snippet;
     } = $props();
 
-    const state = new SidebarState({ collapsed, sidebarWidth, collapsedWidth });
+    const state = untrack(() => new SidebarState({ collapsed, sidebarWidth, collapsedWidth }));
     setSidebarState(state);
 
     // Sync bindable prop with state (bidirectional)

@@ -107,13 +107,28 @@
 }
 
 
-/* Layout classes break out to full width */
+/* Layout classes break out of the prose max-width AND win specificity
+   against the .story > section prose rule above. Each layout routes through
+   its own CSS var so authors can override from .story or any ancestor. */
 .story > .split-layout,
-.story > .fullscreen-layout,
 .story > .triple-layout,
 .story > .scrolly-section {
   max-width: none;
-  padding-inline: 0;
+  padding-inline: var(--vcsi-content-padding-inline, 0);
+}
+
+.story > .fullscreen-layout {
+  max-width: none;
+  padding-inline: var(--vcsi-fullscreen-padding-inline, 0);
+}
+
+/* Full-bleed: escape prose column to full viewport width.
+   Use for standalone components (charts, images, maps) that aren't scrolly sections. */
+.story > .full-bleed {
+  max-width: none;
+  padding-inline: var(--vcsi-bleed-padding-inline, 2rem);
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
 
@@ -183,33 +198,23 @@
    ============================================================================= */
 
 .split-layout {
-  /* Panel configuration (specific to two-column layout) */
-  --vcsi-panel-min-width: 450px;
-  --vcsi-panel-width: 45%;
-  --vcsi-panel-height: min(80vh, 600px); /* Capped so top-offset calc stays accurate */
-  --vcsi-panel-top-offset: calc((100vh - var(--vcsi-panel-height)) / 2); /* auto-center vertically */
-  --vcsi-layout-gap: 2rem;
-
   position: relative;
   display: grid;
-  grid-template-columns: 1fr minmax(var(--vcsi-panel-min-width), var(--vcsi-panel-width));
-  gap: var(--vcsi-layout-gap);
+  grid-template-columns: 1fr minmax(var(--vcsi-panel-min-width, 450px), var(--vcsi-panel-width, 45%));
+  gap: var(--vcsi-layout-gap, 2rem);
   align-items: start;
   padding-inline: var(--vcsi-content-padding-inline, 2rem);
-
-  /* Override shared defaults for this layout */
-  --vcsi-content-max-width: none;
 }
 
 /* Reversed: panel on left, content on right */
 .split-layout.reversed {
-  grid-template-columns: minmax(var(--vcsi-panel-min-width), var(--vcsi-panel-width)) 1fr;
+  grid-template-columns: minmax(var(--vcsi-panel-min-width, 450px), var(--vcsi-panel-width, 45%)) 1fr;
 }
 
 .split-layout .sticky-panel {
   position: sticky;
-  top: var(--vcsi-panel-top-offset);
-  height: var(--vcsi-panel-height);
+  top: var(--vcsi-panel-top-offset, calc((100vh - var(--vcsi-panel-height, min(80vh, 600px))) / 2));
+  height: var(--vcsi-panel-height, min(80vh, 600px));
   grid-column: 2;
   display: flex;
   align-items: center;
@@ -230,9 +235,13 @@
 }
 
 @media (max-width: 768px) {
+  /* Match the specificity of `.story > .split-layout` so the mobile reset
+     beats the desktop break-out rule above. Routes padding through the var
+     so stories can opt into mobile padding via --vcsi-content-padding-inline. */
+  .story > .split-layout,
   .split-layout {
     grid-template-columns: 1fr;
-    padding-inline: 0;
+    padding-inline: var(--vcsi-content-padding-inline, 0);
     --vcsi-step-max-width: 100%;
     max-width: 100vw;
     overflow-x: clip; /* clip instead of hidden to preserve sticky */
@@ -287,17 +296,22 @@
   position: relative;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
+  padding-inline: var(--vcsi-fullscreen-padding-inline, 0);
+}
 
-  /* Override shared defaults for immersive fullscreen experience */
-  --vcsi-step-max-width: 500px;
-  --vcsi-step-padding: 2rem;
-  --vcsi-step-pointer-events: none; /* Let events pass to panel behind */
+/* Fullscreen-specific step defaults (narrower, more padding, pass events through
+   to the panel behind). Consumers can override via --vcsi-step-* on any ancestor
+   of .fullscreen-layout (e.g. .story), or target specific sections directly. */
+.fullscreen-layout .scrolly-content {
+  --vcsi-step-max-width: var(--vcsi-fullscreen-step-max-width, 500px);
+  --vcsi-step-padding: var(--vcsi-fullscreen-step-padding, 2rem);
+  --vcsi-step-pointer-events: var(--vcsi-fullscreen-step-pointer-events, none);
 }
 
 .fullscreen-layout .sticky-panel {
   position: sticky;
   top: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   z-index: 0;
 }
@@ -309,10 +323,16 @@
 }
 
 @media (max-width: 768px) {
+  /* Match the specificity of `.story > .fullscreen-layout` so the mobile reset
+     beats the desktop break-out rule above. Routes padding through the var
+     so stories can opt into mobile padding via --vcsi-fullscreen-padding-inline. */
+  .story > .fullscreen-layout,
   .fullscreen-layout {
     display: grid;
     grid-template-columns: 1fr;
     overflow-x: clip; /* clip instead of hidden to preserve sticky */
+    padding-inline: var(--vcsi-fullscreen-padding-inline, 0);
+    --vcsi-step-max-width: 100%;
   }
 
   .fullscreen-layout .sticky-panel {
@@ -347,14 +367,10 @@
    ============================================================================= */
 
 .triple-layout {
-  --vcsi-panel-height: min(95vh, 900px);
-  --vcsi-panel-top-offset: calc((100vh - var(--vcsi-panel-height)) / 2);
-  --vcsi-layout-gap: 1.5rem;
-
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--vcsi-layout-gap);
+  gap: var(--vcsi-layout-gap, 1.5rem);
   align-items: start;
   padding-inline: var(--vcsi-content-padding-inline, 2rem);
 }
@@ -365,15 +381,15 @@
 
 .triple-layout .code-panel {
   position: sticky;
-  top: var(--vcsi-panel-top-offset);
-  height: var(--vcsi-panel-height);
+  top: var(--vcsi-panel-top-offset, calc((100vh - var(--vcsi-panel-height, min(95vh, 900px))) / 2));
+  height: var(--vcsi-panel-height, min(95vh, 900px));
   grid-column: 2;
 }
 
 .triple-layout .chart-panel {
   position: sticky;
-  top: var(--vcsi-panel-top-offset);
-  height: var(--vcsi-panel-height);
+  top: var(--vcsi-panel-top-offset, calc((100vh - var(--vcsi-panel-height, min(95vh, 900px))) / 2));
+  height: var(--vcsi-panel-height, min(95vh, 900px));
   grid-column: 3;
 }
 
@@ -393,8 +409,14 @@
 }
 
 @media (max-width: 768px) {
+  /* Match the specificity of `.story > .triple-layout` so the mobile reset
+     beats the desktop break-out rule above. Routes padding through the var
+     so stories can opt into mobile padding via --vcsi-content-padding-inline. */
+  .story > .triple-layout,
   .triple-layout {
     grid-template-columns: 1fr;
+    padding-inline: var(--vcsi-content-padding-inline, 0);
+    --vcsi-step-max-width: 100%;
   }
 
   .triple-layout .chart-panel {

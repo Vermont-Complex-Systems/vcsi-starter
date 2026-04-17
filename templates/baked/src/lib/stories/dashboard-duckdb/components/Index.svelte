@@ -1,6 +1,7 @@
 <script>
 	import { scaleLinear, scaleOrdinal, extent, zoomIdentity } from 'd3';
 
+	import { page } from '$app/state';
 	import { Sidebar, ChartTooltip, Spinner, useIsMobile } from '@the-vcsi/scrolly-kit';
 	import { database, ilike, or } from '$lib/db/duck.svelte';
 
@@ -18,8 +19,7 @@
 	let searchQuery = $state('');
 
 	// ── DuckDB queries via builder ──
-
-	const db = database({ embeddings: `${story.slug}.parquet` });
+	const db = database({ embeddings: `${page.params.slug}.parquet` });
 	const embeddings = db.from('embeddings');
 
 	// Unfiltered — runs once, stable scales & background dots

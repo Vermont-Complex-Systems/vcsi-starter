@@ -22,6 +22,12 @@ Accepts a single item or an array of items. Supports:
     let itemList = $derived(
         !items ? [] : Array.isArray(items) ? items : [items]
     );
+
+    /** Ensure math value is wrapped as display math ($$...$$ on own lines) */
+    function asDisplayMath(value: string): string {
+        const stripped = value.replace(/^\$\$|\$\$$/g, '').trim();
+        return `\n$$\n${stripped}\n$$\n`;
+    }
 </script>
 
 {#each itemList as item}
@@ -34,7 +40,7 @@ Accepts a single item or an array of items. Supports:
         {@html item.value}
     {:else if item.type === 'math'}
         <div class="math-container">
-            <Md text={item.value} />
+            <Md text={asDisplayMath(item.value)} />
         </div>
     {:else if item.type === 'code'}
         <div class="code-block">

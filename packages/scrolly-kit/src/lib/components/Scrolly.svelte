@@ -7,6 +7,7 @@ Used internally by ScrollyContent, but can be used directly for custom layouts.
 
 ## Props
 - `value` - Index of most visible child (bindable)
+- `scrollProgress` - Progress through the active step, 0 to 1 (bindable)
 - `root` - IntersectionObserver root element (default: null = viewport)
 - `top` - Top margin offset in pixels (default: 0)
 - `bottom` - Bottom margin offset in pixels (default: 0)
@@ -25,6 +26,7 @@ Wrap step elements and bind to track active index:
 		bottom?: number;
 		increments?: number;
 		value?: number;
+		scrollProgress?: number;
 		children?: Snippet;
 	}
 
@@ -34,6 +36,7 @@ Wrap step elements and bind to track active index:
 		bottom = 0,
 		increments = 100,
 		value = $bindable<number | undefined>(undefined),
+		scrollProgress = $bindable<number>(0),
 		children
 	}: Props = $props();
 
@@ -53,8 +56,20 @@ Wrap step elements and bind to track active index:
 			}
 		}
 
-		if (maxRatio > 0) value = maxIndex;
-		else value = undefined;
+		if (maxRatio > 0) {
+			value = maxIndex;
+			const node = nodes[maxIndex] as HTMLElement | undefined;
+			if (node) {
+				const rect = node.getBoundingClientRect();
+				const prog = (window.innerHeight / 2 - rect.top) / rect.height;
+				scrollProgress = Math.min(1, Math.max(0, prog));
+			} else {
+				scrollProgress = 0;
+			}
+		} else {
+			value = undefined;
+			scrollProgress = 0;
+		}
 	}
 
 	function createObserver(node: Element, index: number): void {
