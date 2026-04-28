@@ -17,6 +17,6 @@
   {keywords}
   {image}
   {author}
-  baseUrl="https://vermontcomplexsystems.org"
+  baseUrl="https://vcsi.cmplxsys.w3.uvm.edu/"
   siteName="VCSI"
 />

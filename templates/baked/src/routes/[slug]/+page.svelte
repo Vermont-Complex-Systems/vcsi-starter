@@ -9,6 +9,7 @@
   import { page } from '$app/state';
   import { getStory } from '$lib/story.remote.js';
   import { loadStoryComponent } from '$lib/story-loader.js';
+  import Meta from '$lib/components/Meta.svelte';
 
   const slug = page.params.slug;
 
@@ -18,5 +19,10 @@
     getStory(slug)
   ]);
 </script>
+
+<Meta
+  title={story.title}
+  description={story.description}
+/>
 
 <StoryComponent {story} data={copyData} />

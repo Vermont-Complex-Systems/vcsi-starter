@@ -1,6 +1,6 @@
 {
   "name": "@the-vcsi/scrolly-kit",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Scrollytelling components and layouts for SvelteKit",
   "type": "module",
   "svelte": "./dist/index.js",
@@ -39,6 +39,7 @@
     "vite": "^7.2.6"
   },
   "dependencies": {
+    "@the-vcsi/scrolly-skills": "*",
     "bits-ui": "^2.16.1",
     "highlight.js": "^11.11.1",
     "katex": "^0.16.27",
