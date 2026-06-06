@@ -7,7 +7,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "generate:docs": "node scripts/generate-component-docs.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
@@ -19,9 +20,10 @@
     "vite": "^7.2.6"
   },
   "dependencies": {
-    "@duckdb/duckdb-wasm": "^1.29.0",
     "@lucide/svelte": "^0.564.0",
     "@the-vcsi/scrolly-kit": "*",
-    "mode-watcher": "^1.1.0"
+    "mdsvex": "^0.12.7",
+    "mode-watcher": "^1.1.0",
+    "rehype-slug": "^6.0.0"
   }
 }

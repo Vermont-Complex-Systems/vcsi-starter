@@ -1,0 +1,21 @@
+{
+  "name": "@the-vcsi/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "scrolly-mcp": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js"
+  },
+  "dependencies": {
+    "tmcp": "^1.19.4",
+    "@tmcp/transport-stdio": "^0.4.3",
+    "@tmcp/adapter-valibot": "^0.1.6",
+    "valibot": "^1.4.1"
+  },
+  "license": "MIT"
+}

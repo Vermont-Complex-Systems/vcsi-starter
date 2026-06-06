@@ -6,7 +6,8 @@
       id: 'tidyduck',
       name: '@the-vcsi/tidyduck',
       desc: 'Tidyverse-inspired reactive DuckDB-WASM query builder for Svelte 5.',
-      install: 'npx sv add @the-vcsi/tidyduck',
+      install: 'npx sv add @the-vcsi/duckdb',
+      external: 'https://github.com/Vermont-Complex-Systems/tidyduck',
     },
     {
       id: 'msgraph',
@@ -35,8 +36,13 @@
 
   <div class="extension-grid">
     {#each extensions as ext}
-      <a href="{base}/extensions/{ext.id}" class="extension-card">
-        <h3>{ext.name}</h3>
+      <a
+        href={ext.external ?? `${base}/extensions/${ext.id}`}
+        class="extension-card"
+        target={ext.external ? '_blank' : undefined}
+        rel={ext.external ? 'noopener noreferrer' : undefined}
+      >
+        <h3>{ext.name}{#if ext.external} <span class="external-badge">external</span>{/if}</h3>
         <p>{ext.desc}</p>
         <code class="install-cmd">{ext.install}</code>
       </a>
@@ -101,6 +107,15 @@
     font-size: 0.875rem;
     color: var(--vcsi-gray-600);
     line-height: 1.4;
+  }
+
+  .external-badge {
+    font-size: 0.65rem;
+    font-family: var(--vcsi-font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.5;
+    vertical-align: middle;
   }
 
   .install-cmd {
