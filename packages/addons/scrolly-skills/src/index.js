@@ -11,7 +11,7 @@ const options = defineAddonOptions().build();
 
 export default defineAddon({
 	id: '@the-vcsi/scrolly-skills',
-	shortDescription: 'Claude Code skills for scrolly-kit and Svelte 5',
+	shortDescription: 'Claude Code skills and MCP config for scrolly-kit',
 	options,
 
 	run: ({ sv }) => {
@@ -21,33 +21,23 @@ export default defineAddon({
 		sv.file('.claude/skills/scrolly-kit/LAYOUTS.md', () => readSkill('scrolly-kit/LAYOUTS.md'));
 		sv.file('.claude/skills/scrolly-kit/PATTERNS.md', () => readSkill('scrolly-kit/PATTERNS.md'));
 
-		// --- svelte-code-writer skill ---
-		sv.file('.claude/skills/svelte-code-writer/SKILL.md', () => readSkill('svelte-code-writer/SKILL.md'));
-
-		// --- svelte-core-bestpractices skill + references ---
-		sv.file('.claude/skills/svelte-core-bestpractices/SKILL.md', () => readSkill('svelte-core-bestpractices/SKILL.md'));
-
-		const refs = [
-			'@attach.md',
-			'@render.md',
-			'$inspect.md',
-			'await-expressions.md',
-			'bind.md',
-			'each.md',
-			'hydratable.md',
-			'snippet.md',
-			'svelte-reactivity.md'
-		];
-		for (const ref of refs) {
-			sv.file(`.claude/skills/svelte-core-bestpractices/references/${ref}`, () =>
-				readSkill(`svelte-core-bestpractices/references/${ref}`)
-			);
-		}
+		// --- MCP server config ---
+		sv.file('.mcp.json', (content) => {
+			const config = content ? JSON.parse(content) : {};
+			config.mcpServers = config.mcpServers || {};
+			if (!config.mcpServers['scrolly-kit']) {
+				config.mcpServers['scrolly-kit'] = {
+					command: 'npx',
+					args: ['@the-vcsi/mcp']
+				};
+			}
+			return JSON.stringify(config, null, '\t');
+		});
 	},
 
 	nextSteps: () => [
-		'Skills are now available to Claude Code',
-		'Claude will auto-detect when to use them based on your requests',
-		'No manual setup needed — just ask Claude to build a story'
+		'scrolly-kit skill installed — Claude will auto-detect when to use it',
+		'scrolly-kit MCP server configured in .mcp.json',
+		'For Svelte 5 docs, connect to the Svelte MCP separately (npx @sveltejs/mcp)'
 	]
 });
