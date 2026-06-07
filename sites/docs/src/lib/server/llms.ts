@@ -1,16 +1,26 @@
-import { components, type ComponentDoc } from '$lib/data/components';
-
-// Raw markdown imports for prose pages
+// Raw markdown imports for prose pages (mdsvex routes)
 import getting_started_raw from '../../routes/+page.md?raw';
 import reference_raw from '../../routes/reference/+page.md?raw';
 import msgraph_raw from '../../routes/extensions/msgraph/+page.md?raw';
 import openalex_raw from '../../routes/extensions/openalex/+page.md?raw';
 
-function clean(md: string): string {
+// Raw markdown imports for component docs (pure markdown in src/lib/docs/)
+const component_docs = import.meta.glob('/src/lib/docs/components/*.md', {
+	query: '?raw',
+	eager: true
+}) as Record<string, { default: string }>;
+
+function clean_mdsvex(md: string): string {
 	return md
 		.replace(/^---[\s\S]*?---\s*/, '')
 		.replace(/<script[\s\S]*?<\/script>\s*/gi, '')
 		.trim();
+}
+
+function all_components(): string {
+	return Object.values(component_docs)
+		.map((mod) => mod.default.trim())
+		.join('\n\n---\n\n');
 }
 
 export interface Section {
@@ -51,61 +61,12 @@ export function get_sections(): Section[] {
 	];
 }
 
-export function serialize_component(comp: ComponentDoc): string {
-	const lines: string[] = [];
-
-	lines.push(`# ${comp.name}`);
-	lines.push('');
-	lines.push(comp.description);
-	lines.push('');
-	lines.push(`Category: ${comp.category}`);
-	lines.push('');
-
-	if (comp.props.length > 0) {
-		lines.push('## Props');
-		lines.push('');
-		for (const p of comp.props) {
-			lines.push(`- \`${p.name}\` (${p.type}, default: ${p.default}) — ${p.description}`);
-		}
-		lines.push('');
-	}
-
-	if (comp.cssVars && comp.cssVars.length > 0) {
-		lines.push('## CSS Variables');
-		lines.push('');
-		for (const v of comp.cssVars) {
-			lines.push(`- \`${v.name}\` (default: ${v.default}) — ${v.description}`);
-		}
-		lines.push('');
-	}
-
-	lines.push('## Import');
-	lines.push('');
-	lines.push(`import { ${comp.name} } from '@the-vcsi/scrolly-kit';`);
-	lines.push('');
-
-	if (comp.usage) {
-		lines.push('## Usage');
-		lines.push('');
-		lines.push(comp.usage);
-		lines.push('');
-	}
-
-	return lines.join('\n');
-}
-
-export function serialize_all_components(): string {
-	return Object.values(components)
-		.map(serialize_component)
-		.join('\n---\n\n');
-}
-
 const section_content: Record<string, () => string> = {
-	'getting-started': () => clean(getting_started_raw),
-	'reference': () => clean(reference_raw),
-	'components': () => serialize_all_components(),
-	'extensions/msgraph': () => clean(msgraph_raw),
-	'extensions/openalex': () => clean(openalex_raw)
+	'getting-started': () => clean_mdsvex(getting_started_raw),
+	'reference': () => clean_mdsvex(reference_raw),
+	'components': () => all_components(),
+	'extensions/msgraph': () => clean_mdsvex(msgraph_raw),
+	'extensions/openalex': () => clean_mdsvex(openalex_raw)
 };
 
 export function get_section_content(slug: string): string | null {
