@@ -22,7 +22,7 @@ async function fetch_text(url) {
 
 export const server = new McpServer(
 	{
-		name: 'scrolly-kit MCP',
+		name: 'scrolly-mcp',
 		version: '0.1.0',
 		description: 'MCP server for @the-vcsi/scrolly-kit documentation and code analysis',
 	},

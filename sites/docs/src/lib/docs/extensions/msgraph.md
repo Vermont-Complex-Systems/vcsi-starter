@@ -1,16 +1,6 @@
----
-title: msgraph - Extensions - scrolly-kit
----
-
-<div class="breadcrumb"><a href="{base}/extensions">Extensions</a> / msgraph</div>
-
-<script>
-  import { base } from '$app/paths';
-</script>
-
 # @the-vcsi/msgraph
 
-<p class="subtitle">Fetch story content from SharePoint Excel files via Microsoft Graph.</p>
+Fetch story content from SharePoint Excel files via Microsoft Graph.
 
 ## Installation
 

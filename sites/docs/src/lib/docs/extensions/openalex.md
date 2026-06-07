@@ -1,16 +1,6 @@
----
-title: openalex - Extensions - scrolly-kit
----
-
-<div class="breadcrumb"><a href="{base}/extensions">Extensions</a> / openalex</div>
-
-<script>
-  import { base } from '$app/paths';
-</script>
-
 # @the-vcsi/openalex
 
-<p class="subtitle">Populate your database with OpenAlex author and paper data.</p>
+Populate your database with OpenAlex author and paper data.
 
 ## Installation
 

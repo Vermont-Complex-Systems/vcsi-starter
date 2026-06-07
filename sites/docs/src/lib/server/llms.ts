@@ -1,26 +1,21 @@
-// Raw markdown imports for prose pages (mdsvex routes)
-import getting_started_raw from '../../routes/+page.md?raw';
-import reference_raw from '../../routes/reference/+page.md?raw';
-import msgraph_raw from '../../routes/extensions/msgraph/+page.md?raw';
-import openalex_raw from '../../routes/extensions/openalex/+page.md?raw';
+import use_cases from '$lib/docs/use_cases.json';
 
-// Raw markdown imports for component docs (pure markdown in src/lib/docs/)
-const component_docs = import.meta.glob('/src/lib/docs/components/*.md', {
+// All docs live in src/lib/docs/ as pure markdown
+const all_docs = import.meta.glob('/src/lib/docs/**/*.md', {
 	query: '?raw',
 	eager: true
 }) as Record<string, { default: string }>;
 
-function clean_mdsvex(md: string): string {
-	return md
-		.replace(/^---[\s\S]*?---\s*/, '')
-		.replace(/<script[\s\S]*?<\/script>\s*/gi, '')
-		.trim();
+// Build slug → content map
+const content_map: Record<string, string> = {};
+for (const [path, mod] of Object.entries(all_docs)) {
+	content_map[path.replace('/src/lib/docs/', '').replace('.md', '')] = mod.default;
 }
 
-function all_components(): string {
-	return Object.values(component_docs)
-		.map((mod) => mod.default.trim())
-		.join('\n\n---\n\n');
+// Extract title from first # heading
+function get_title(content: string): string {
+	const match = content.match(/^#\s+(.+)$/m);
+	return match ? match[1] : 'Untitled';
 }
 
 export interface Section {
@@ -30,52 +25,49 @@ export interface Section {
 }
 
 export function get_sections(): Section[] {
-	return [
-		{
-			title: 'Getting Started',
-			slug: 'getting-started',
-			use_cases: 'setup, installation, scaffolding, new project, quick start'
-		},
-		{
-			title: 'Reference',
-			slug: 'reference',
-			use_cases:
-				'layouts, CSS variables, split layout, fullscreen, dashboard, story theming, scrolly styling, gotchas'
-		},
-		{
+	const summaries = use_cases as Record<string, string>;
+
+	// Top-level docs (not under components/)
+	const top_level = Object.entries(content_map)
+		.filter(([slug]) => !slug.startsWith('components/'))
+		.map(([slug, content]) => ({
+			title: get_title(content),
+			slug,
+			use_cases: summaries[slug] ?? ''
+		}));
+
+	// Components as a single aggregated section
+	const component_slugs = Object.keys(content_map).filter((s) => s.startsWith('components/'));
+	if (component_slugs.length > 0) {
+		top_level.push({
 			title: 'Components',
 			slug: 'components',
-			use_cases:
-				'scrolly, scroll detection, story header, navigation, footer, markdown, code blocks, theme toggle, tooltips'
-		},
-		{
-			title: 'Extensions - msgraph',
-			slug: 'extensions/msgraph',
-			use_cases: 'SharePoint, Excel, content sync, Microsoft Graph'
-		},
-		{
-			title: 'Extensions - openalex',
-			slug: 'extensions/openalex',
-			use_cases: 'academic data, papers, authors, OpenAlex, database'
-		}
-	];
+			use_cases: component_slugs
+				.map((s) => summaries[s] ?? '')
+				.filter(Boolean)
+				.join(', ')
+		});
+	}
+
+	return top_level;
 }
 
-const section_content: Record<string, () => string> = {
-	'getting-started': () => clean_mdsvex(getting_started_raw),
-	'reference': () => clean_mdsvex(reference_raw),
-	'components': () => all_components(),
-	'extensions/msgraph': () => clean_mdsvex(msgraph_raw),
-	'extensions/openalex': () => clean_mdsvex(openalex_raw)
-};
-
 export function get_section_content(slug: string): string | null {
-	const fn = section_content[slug];
-	return fn ? fn() : null;
+	if (content_map[slug]) return content_map[slug];
+
+	// "components" → concatenate all component docs
+	if (slug === 'components') {
+		return Object.entries(content_map)
+			.filter(([k]) => k.startsWith('components/'))
+			.map(([, v]) => v.trim())
+			.join('\n\n---\n\n');
+	}
+
+	return null;
 }
 
 export function get_all_content(): string {
 	return get_sections()
-		.map((s) => `## ${s.title}\n\n${get_section_content(s.slug)}`)
+		.map((s) => `## ${s.title}\n\n${get_section_content(s.slug) ?? ''}`)
 		.join('\n\n---\n\n');
 }

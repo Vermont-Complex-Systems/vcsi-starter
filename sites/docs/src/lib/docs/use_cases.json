@@ -1,0 +1,23 @@
+{
+	"getting-started": "setup, installation, scaffolding, new project, quick start",
+	"reference": "layouts, CSS variables, split layout, fullscreen, dashboard, story theming, scrolly styling, gotchas",
+	"components-overview": "component list, categories",
+	"components/Scrolly": "scroll detection, IntersectionObserver, step tracking",
+	"components/ScrollyContent": "step boxes, content rendering, scrollytelling steps",
+	"components/StoryHeader": "title, subtitle, authors, date, story header",
+	"components/Nav": "navigation bar, responsive menu, hamburger",
+	"components/Footer": "footer, social links, theme",
+	"components/MarkdownRenderer": "markdown, KaTeX, math, syntax highlighting",
+	"components/RenderContent": "content items, html, markdown, math, code",
+	"components/CopyCodeBlock": "code block, clipboard, copy",
+	"components/CodeBlock": "syntax highlighting, line numbers, code display",
+	"components/ThemeToggle": "dark mode, light mode, theme toggle",
+	"components/SimpleSelect": "dropdown, select, options",
+	"components/SimpleToggle": "toggle switch, on/off",
+	"components/Tooltip": "hover tooltip, context",
+	"components/Meta": "SEO, meta tags, Open Graph, Twitter cards",
+	"components/Spinner": "loading indicator, spinner",
+	"components/ScrollIndicator": "scroll down arrow, animated indicator",
+	"extensions/msgraph": "SharePoint, Excel, content sync, Microsoft Graph",
+	"extensions/openalex": "academic data, papers, authors, OpenAlex, database"
+}

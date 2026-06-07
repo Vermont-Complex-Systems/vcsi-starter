@@ -37,7 +37,7 @@
   <div class="extension-grid">
     {#each extensions as ext}
       <a
-        href={ext.external ?? `${base}/extensions/${ext.id}`}
+        href={ext.external ?? `${base}/docs/extensions/${ext.id}`}
         class="extension-card"
         target={ext.external ? '_blank' : undefined}
         rel={ext.external ? 'noopener noreferrer' : undefined}

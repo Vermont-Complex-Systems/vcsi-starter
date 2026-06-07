@@ -1,57 +1,3 @@
----
-title: Reference - scrolly-kit
----
-
-<script>
-  import TableOfContents from '$lib/components/TableOfContents.svelte';
-  import ShowcaseGrid from '$lib/components/ShowcaseGrid.svelte';
-
-  import PageLayoutDiagram from '$lib/components/diagrams/PageLayoutDiagram.svelte';
-  import StoryContainerDiagram from '$lib/components/diagrams/StoryContainerDiagram.svelte';
-  import SplitLayoutDiagram from '$lib/components/diagrams/SplitLayoutDiagram.svelte';
-  import CustomPanelSizeDiagram from '$lib/components/diagrams/CustomPanelSizeDiagram.svelte';
-  import FullscreenLayoutDiagram from '$lib/components/diagrams/FullscreenLayoutDiagram.svelte';
-  import StepPositionsDiagram from '$lib/components/diagrams/StepPositionsDiagram.svelte';
-  import StepThemesDiagram from '$lib/components/diagrams/StepThemesDiagram.svelte';
-  import DashboardLayoutDiagram from '$lib/components/diagrams/DashboardLayoutDiagram.svelte';
-
-  const fullscreenExamples = [
-    {
-      title: 'Hello Stranger',
-      url: 'https://pudding.cool/2025/06/hello-stranger/',
-      thumbnail: '/hello-stranger.jpg',
-      source: 'The Pudding'
-    },
-    {
-      title: 'Visualizing neglect',
-      url: 'https://endfund.org/visualizing-neglect/',
-      thumbnail: '/visualizing-neglect.jpg',
-      source: 'Nadieh Bremer'
-    },
-    {
-      title: 'A Guide to the Circular Deals Underpinning the AI Boom',
-      url: 'https://www.bloomberg.com/graphics/2026-ai-circular-deals/?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb3VyY2UiOiJTdWJzY3JpYmVyR2lmdGVkQXJ0aWNsZSIsImlhdCI6MTc3MTMzNjc1MCwiZXhwIjoxNzcxOTQxNTUwLCJhcnRpY2xlSWQiOiJUOUFENFhLSVVQU1QwMCIsImJjb25uZWN0SWQiOiIwQ0NDMzAxQUU3QTQ0RDI0QjcwQzhDQTIwNjdCNENFOSJ9.eqGZyj5Rg5VxDa-TzjWU98Am_xtYItKUU0SlXPe7UZA&leadSource=uverify%20wall',
-      thumbnail: '/2026-ai-circular-deals.jpg',
-      source: 'Bloomberg'
-    }
-  ];
-
-  const sections = [
-    { id: 'page-layout', label: 'Page Layout' },
-    { id: 'story-container', label: 'Story Container' },
-    { id: 'split-layout', label: 'Split Layout' },
-    { id: 'fullscreen-layout', label: 'Fullscreen Layout' },
-    { id: 'dashboard-layout', label: 'Dashboard Layout' },
-    { id: 'step-styling', label: 'Step Styling' },
-    { id: 'css-variable-scoping', label: 'Variable Scoping' },
-    { id: 'multi-section-stories', label: 'Multi-Section Stories' },
-    { id: 'gotchas', label: 'Gotchas' },
-    { id: 'global-css-variables', label: 'CSS Variables' }
-  ];
-</script>
-
-<div class="reference-layout">
-
 # Reference
 
 Layout patterns and CSS variables for scrollytelling stories.
@@ -59,8 +5,6 @@ Layout patterns and CSS variables for scrollytelling stories.
 ## Page Layout
 
 The `.page` class provides a centered, width-constrained container for standard content pages. It's typically used with `Nav` and `Footer` components.
-
-<PageLayoutDiagram />
 
 ```svelte
 <script>
@@ -101,8 +45,6 @@ The `.story` class is the main container for scrollytelling content. It provides
 - Light theme isolation from global dark mode
 - Padding and spacing for readability
 
-<StoryContainerDiagram />
-
 ```svelte
 <article class="story">
   <h1>Story Title</h1>
@@ -137,8 +79,6 @@ Add `data-theme="dark"` for dark stories:
 ## Split Layout
 
 Two-column layout with a sticky visualization panel and scrolling content. While it breaks out of the prose max-width, it maintains its own side padding (2rem by default) rather than going edge-to-edge like `.fullscreen-layout`.
-
-<SplitLayoutDiagram />
 
 ```svelte
 <section class="split-layout">
@@ -179,8 +119,6 @@ On screens &lt;768px, the layout stacks with the sticky panel as a full-screen b
 
 To give the visualization more space while capping its absolute width:
 
-<CustomPanelSizeDiagram />
-
 ```css
 .split-layout {
   --vcsi-panel-width: 60%;
@@ -197,8 +135,6 @@ The grid uses `minmax(min-width, width)`, so the panel scales between the min an
 ## Fullscreen Layout
 
 Full-viewport immersive layout for dramatic visualizations.
-
-<FullscreenLayoutDiagram />
 
 ```svelte
 <section class="fullscreen-layout">
@@ -225,8 +161,6 @@ Full-viewport immersive layout for dramatic visualizations.
 
 By default, step boxes are horizontally centered via `margin: 0 auto` on `.scrolly-content`. Override to position them differently:
 
-<StepPositionsDiagram />
-
 ```css
 /* Left-aligned steps */
 .fullscreen-layout .scrolly-content {
@@ -241,13 +175,9 @@ The `margin-left: auto` / `margin-right: auto` pattern pushes the content to the
 
 Inspiring fullscreen scrollytelling stories from around the web.
 
-<ShowcaseGrid examples={fullscreenExamples} />
-
 ## Dashboard Layout
 
 Sidebar + main content for interactive data dashboards.
-
-<DashboardLayoutDiagram />
 
 ```svelte
 <article class="dashboard-layout">
@@ -284,8 +214,6 @@ On mobile, sidebar becomes a slide-down drawer. Toggle `.sidebar-open` class to 
 ## Step Styling
 
 Step boxes in scrolly layouts use these CSS variables for colors and sizing. These apply to both `.split-layout` and `.fullscreen-layout`.
-
-<StepThemesDiagram />
 
 ### CSS Variables
 
@@ -628,7 +556,3 @@ Design tokens available throughout your project. See [tokens.css](https://github
 | `--vcsi-transition-fast` | 150ms ease |
 | `--vcsi-transition-base` | 200ms ease |
 | `--vcsi-transition-slow` | 300ms ease |
-
-<TableOfContents {sections} />
-
-</div>

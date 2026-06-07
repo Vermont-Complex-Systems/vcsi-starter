@@ -28,7 +28,7 @@ export default defineAddon({
 			if (!config.mcpServers['scrolly-kit']) {
 				config.mcpServers['scrolly-kit'] = {
 					command: 'npx',
-					args: ['@the-vcsi/mcp']
+					args: ['@the-vcsi/scrolly-mcp']
 				};
 			}
 			return JSON.stringify(config, null, '\t');

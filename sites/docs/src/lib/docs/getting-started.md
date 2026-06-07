@@ -1,11 +1,3 @@
----
-title: scrolly-kit - Getting Started
----
-
-<script>
-  import { base } from '$app/paths';
-</script>
-
 # Minimal CSS Framework for data-driven stories
 
 Built for scientists in a hurry who want to tell data stories without learning full web development. [@the-vcsi/scrolly-kit](https://www.npmjs.com/package/@the-vcsi/scrolly-kit) provides the engine -- CSS tokens and reusable components -- while templates give you a ready-to-customize website. Extend with `sv` add-ons for integrations like SharePoint or [OpenAlex](https://openalex.org/).
@@ -88,7 +80,7 @@ Override CSS variables in `src/lib/styles/app.css`:
 }
 ```
 
-See the [Styling]({base}/reference) for all available CSS variables.
+See the [Styling](reference) page for all available CSS variables.
 
 ## Inspiration
 
@@ -99,8 +91,8 @@ See the [Styling]({base}/reference) for all available CSS variables.
 
 ## Next Steps
 
-- [Styling]({base}/reference) -- Layout patterns and CSS variables
-- [Components]({base}/components) -- Reusable components used across templates
+- [Styling](reference) -- Layout patterns and CSS variables
+- [Components](components-overview) -- Reusable components used across templates
 - [Examples](https://vcsi.cmplxsys.w3.uvm.edu/) -- See pedagogical stories built with scrolly-kit
 
 ## P.S. Who is this library for?
