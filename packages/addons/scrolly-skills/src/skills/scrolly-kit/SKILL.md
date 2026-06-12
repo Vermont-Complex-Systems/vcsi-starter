@@ -3,23 +3,7 @@ name: scrolly-kit
 description: Use when building scrollytelling stories, working with split/fullscreen/triple/dashboard layouts, ScrollyContent steps, copy.json content, VCSI CSS variables, or story theming in a SvelteKit project using @the-vcsi/scrolly-kit
 ---
 
-## MCP Tools
-
-You have access to the scrolly-kit MCP server with full documentation for @the-vcsi/scrolly-kit.
-
-### 1. list-sections
-
-Use FIRST to discover available documentation sections. Returns titles, use_cases, and paths.
-
-### 2. get-documentation
-
-Fetch full documentation for specific sections. After list-sections, fetch ALL relevant sections for the user's task. Available sections: getting-started, reference (layouts, CSS vars), components (all 16 component APIs with usage), extensions/msgraph, extensions/openalex.
-
-For generic Svelte 5 questions (runes, reactivity, SvelteKit routing), use the **Svelte MCP** instead.
-
-## Quick Reference
-
-### New story
+## New story
 
 **Check `package.json` for a `"new-story"` script first.** If it exists, use it -- do NOT scaffold manually:
 

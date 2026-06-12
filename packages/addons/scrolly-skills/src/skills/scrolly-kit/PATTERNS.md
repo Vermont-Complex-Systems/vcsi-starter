@@ -165,68 +165,254 @@ Add `.sidebar-collapsed` to the root element to collapse the sidebar.
 
 ## Visualization Component Patterns
 
-Plot components inside `.sticky-panel` must be sized to match their layout. See LAYOUTS.md for the CSS contract each layout provides; this section covers **how to scaffold the Svelte component**.
+For general Svelte + D3 charting patterns (responsive sizing, reactive scales, animations, component decomposition), see the **svelte-d3-charting** skill. This section covers only the scrolly-kit-specific sizing rules.
 
-### Split Layout Plot
+### Layout-Specific Sizing Rules
 
-The panel has constrained width and capped height. The plot only needs to track width.
+| Layout | Bind | Height | Why |
+|--------|------|--------|-----|
+| `.split-layout` | `bind:clientWidth` only | Fixed constant | Panel has capped height; viewBox scales proportionally |
+| `.fullscreen-layout` | `bind:clientWidth` AND `bind:clientHeight` | Derived from bounds | Panel fills viewport; derive `chartHeight` (square on mobile via `width`) |
+| `.dashboard-layout` | `bind:clientWidth` only | Fixed or `auto` | Main area is scrollable; no viewport filling |
 
-```svelte
-<script>
-  let { scrollyIndex } = $props();
+**Key rule:** Never use `vh`/`vw` in chart components -- the layout already provides those. Use `100%`, `inherit`, or `bind:clientWidth/Height`.
 
-  let width = $state(800);       // bind width only
-  const height = 400;             // fixed height
-  const margin = { top: 20, right: 20, bottom: 80, left: 60 };
+## Scrolly Index Reactivity
 
-  let innerWidth = $derived(width - margin.left - margin.right);
-  let innerHeight = $derived(height - margin.top - margin.bottom);
-</script>
+The scroll position drives visualization state. Each scrolly section needs its own `$state()` variable that flows through a simple reactive chain:
 
-<div class="chart-container" bind:clientWidth={width}>
-  <svg viewBox={`0 0 ${width} ${height}`}>
-    <g transform={`translate(${margin.left},${margin.top})`}>
-      <!-- chart content -->
-    </g>
-  </svg>
-</div>
+```
+$state (Index.svelte) → bind:value (ScrollyContent) → prop (VizComponent) → $derived (visual changes)
 ```
 
-**Rules:** `bind:clientWidth` only. Fixed `height` constant. The `viewBox` scales the SVG proportionally. No viewport units.
+### 1. Declare index state in the story's Index.svelte
 
-### Fullscreen Layout Plot
+```svelte
+<script lang="ts">
+  let barIndex = $state(undefined);  // nothing highlighted until user scrolls in
+  let rankIndex = $state(0);         // first step active immediately
+</script>
+```
 
-The panel fills the viewport. The plot must track both dimensions.
+- Use `undefined` when the visualization should show a neutral/default state before the user reaches that section.
+- Use `0` when the first step should be active as soon as the section is visible.
+
+### 2. Wire up the layout
+
+```svelte
+<section class="split-layout">
+  <div class="sticky-panel">
+    <ScrollyPlot scrollyIndex={barIndex} />
+  </div>
+  <div class="scrolly-content">
+    <ScrollyContent steps={data.steps} bind:value={barIndex} />
+  </div>
+</section>
+```
+
+`ScrollyContent` updates the bound value as the user scrolls through steps. The visualization receives it as a read-only prop.
+
+### 3. React to index changes in the visualization
+
+Use `$derived` to map the index to visual states:
 
 ```svelte
 <script>
   let { scrollyIndex } = $props();
 
-  let width = $state(800);        // bind both
-  let height = $state(600);
+  // Data transforms driven by scroll position
+  let currentData = $derived.by(() => {
+    if (scrollyIndex !== undefined && scrollyIndex >= 1) {
+      return sortedData;
+    }
+    return shuffledData;
+  });
 
-  let isMobile = $derived(width < 768);
-  let chartHeight = $derived(isMobile ? width : height);  // square on mobile
+  // Simple boolean flags for conditional rendering
+  let showLabels = $derived(scrollyIndex >= 1);
+  let showTail = $derived(scrollyIndex >= 2);
 
-  let margin = $derived(isMobile
-    ? { top: 40, right: 20, bottom: 50, left: 50 }
-    : { top: 60, right: 40, bottom: 70, left: 70 }
+  // Chart type switching
+  let chartType = $derived(scrollyIndex >= 2 ? 'lollipop' : 'bar');
+</script>
+```
+
+**Key patterns in visualization components:**
+
+- **Progressive reveal** — use `$derived` booleans to conditionally show elements (`{#if showLabels}`)
+- **Data filtering/sorting** — use `$derived.by()` to compute new datasets based on the index
+- **Style switching** — derive opacity, fill, or class names from the index
+- **CSS transitions** — add `style="transition: ..."` on SVG elements for smooth animated changes between steps
+
+### 4. Handling `undefined` vs numeric index
+
+When initialized to `undefined`, guard against it in derived values:
+
+```svelte
+// Safe: treats undefined as "before step 0"
+let currentData = $derived.by(() => {
+  if (scrollyIndex !== undefined && scrollyIndex >= 1) {
+    return transformedData;
+  }
+  return defaultData;
+});
+```
+
+This lets the visualization show a meaningful default before the user scrolls into the section.
+
+### 5. Index as array lookup (time-series / stepper pattern)
+
+Instead of using the index for boolean flags, map it to a value from a predefined array:
+
+```svelte
+<script>
+  let { scrollyIndex } = $props();
+
+  const years = [2001, 2007, 2013, 2020, 2022];
+
+  // Nullish coalescing handles undefined gracefully
+  let currentYear = $derived(years[scrollyIndex ?? 0]);
+
+  // Data pipeline: index → year → filtered dataset → scales → rendering
+  let currentData = $derived(
+    allData.filter(d => d.year === currentYear && d.x_variable === selectedXVar)
+  );
+</script>
+```
+
+This pattern is ideal for:
+- **Time-stepping** through years/dates
+- **Category cycling** through discrete states
+- Any case where each step represents a named value rather than a threshold
+
+### 6. Combining scroll state with user-controlled state
+
+For rich interactive visualizations, scroll index coexists with UI-driven state:
+
+```svelte
+<script>
+  let { scrollyIndex } = $props();
+
+  // Scroll-driven (read-only from this component's perspective)
+  let currentYear = $derived(years[scrollyIndex ?? 0]);
+
+  // User-controlled (interactive UI elements)
+  let selectedXVar = $state('democracy');
+  let selectedRegions = $state(new Set());
+  let usePopulationSize = $state(true);
+
+  // Data pipeline combines both sources
+  let currentData = $derived(
+    allData.filter(d =>
+      d.year === currentYear &&
+      d.x_variable === selectedXVar
+    )
   );
 
-  let innerWidth = $derived(width - margin.left - margin.right);
-  let innerHeight = $derived(chartHeight - margin.top - margin.bottom);
+  let filteredData = $derived(
+    selectedRegions.size === 0
+      ? currentData
+      : currentData.filter(d => selectedRegions.has(d.owid_region))
+  );
 </script>
-
-<div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
-  <svg viewBox={`0 0 ${width} ${chartHeight}`}>
-    <g transform={`translate(${margin.left},${margin.top})`}>
-      <!-- chart content -->
-    </g>
-  </svg>
-</div>
 ```
 
-**Rules:** `bind:clientWidth` AND `bind:clientHeight`. Derive `chartHeight` from bounds (square on mobile via `width`). Responsive margins. No viewport units — the layout already provides vh/vw.
+The reactive chain flows: `scrollyIndex` + UI state → derived data → derived scales → rendering. Each layer only recomputes when its inputs change.
+
+### 7. Smooth transitions with `Tween.of()`
+
+When the index drives scale changes (e.g., axis domain shifts as data filters), use `Tween.of()` from `svelte/motion` for animated transitions:
+
+```svelte
+<script>
+  import { Tween } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
+
+  let lifeExpExtent = $derived.by(() => {
+    const data = filteredData.length > 0 ? filteredData : currentData;
+    if (data.length === 0) return [40, 90];
+    return [
+      Math.floor(Math.min(...data.map(d => d.life_expectancy))) - 5,
+      Math.ceil(Math.max(...data.map(d => d.life_expectancy))) + 5
+    ];
+  });
+
+  const yMin = Tween.of(() => lifeExpExtent[0], { duration: 800, easing: cubicOut });
+  const yMax = Tween.of(() => lifeExpExtent[1], { duration: 800, easing: cubicOut });
+
+  let yScale = $derived(
+    scaleLinear().domain([yMin.current, yMax.current]).range([innerHeight, 0])
+  );
+</script>
+```
+
+Use this when axis domains change between steps — it prevents jarring jumps. Pair with CSS transitions on SVG elements for the data points themselves.
+
+### 8. Config object per step (switch pattern)
+
+When the geometry is static but the visual encoding changes per step, derive a full configuration object using a `switch`:
+
+```svelte
+<script>
+  let { scrollyIndex } = $props();
+
+  // Normalize index (handle undefined)
+  let stepIndex = $derived(scrollyIndex ?? 0);
+
+  // Each step returns a complete rendering config
+  let mapConfig = $derived.by(() => {
+    switch (stepIndex) {
+      case 0:
+        return {
+          title: 'Montreal',
+          colors: null,
+          labelsToShow: null,
+          legend: null
+        };
+
+      case 1: {
+        const colorScale = d3.scaleSequential(d3.interpolateSpectral)
+          .domain([maxPopulation, 0]);
+        const colors = new Map(
+          [...pop2011.entries()].map(([arr, pop]) => [arr, colorScale(pop)])
+        );
+        return { title: 'Population 2011', colors, labelsToShow, legend: colorScale };
+      }
+
+      case 2: {
+        const colorScale = d3.scaleDiverging(d3.interpolateRdBu)
+          .domain([-maxChange, 0, maxChange]);
+        const colors = new Map(
+          [...changeMap.entries()].map(([arr, change]) => [arr, colorScale(change)])
+        );
+        return { title: 'Change 2011→2016', colors, labelsToShow, legend: colorScale };
+      }
+
+      default:
+        return { title: null, colors: null, labelsToShow: null, legend: null };
+    }
+  });
+</script>
+
+<!-- Static geometry, dynamic styling from config -->
+{#each districts as feature (feature.properties.id)}
+  {@const fill = mapConfig.colors?.get(feature.properties.id) ?? '#e0e0e0'}
+  <path d={pathGenerator(feature)} {fill} style="transition: fill 0.5s ease;" />
+{/each}
+
+<Legend scale={mapConfig.legend} />
+```
+
+**When to use this pattern:**
+- **Maps** — geometry stays fixed, only choropleth coloring/labels change
+- **Diagrams** — structure is constant, annotations or highlights change per step
+- **Any visualization where the layout is expensive to recompute** — only swap the visual encoding
+
+**Key principles:**
+- Return `null` for unused fields so the template can use optional chaining (`mapConfig.colors?.get(...)`)
+- Include a `default` case for overflow (more steps than configs)
+- Put expensive computations (scale construction, data lookups) inside the relevant `case` block so they only run for that step
+- Use CSS `transition` on the rendered elements for smooth step-to-step changes
 
 ## CSS Variable Scoping
 

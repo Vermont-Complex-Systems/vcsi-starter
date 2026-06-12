@@ -31,6 +31,12 @@ export default defineAddon({
 					args: ['@the-vcsi/scrolly-mcp']
 				};
 			}
+			if (!config.mcpServers['svelte']) {
+				config.mcpServers['svelte'] = {
+					type: 'http',
+					url: 'https://mcp.svelte.dev/mcp'
+				};
+			}
 			return JSON.stringify(config, null, '\t');
 		});
 	},
