@@ -17,13 +17,13 @@ src/
 │   │       │   └── Index.svelte
 │   │       └── data/
 │   │           └── copy.json
-│   └── components/       # Shared components
-├── routes/               # SvelteKit routes
-├── data/
-│   ├── stories.csv       # Story metadata for routing
-│   └── members.csv       # Team member data
-└── styles/
-    └── app.css           # Your customizations
+│   ├── components/       # Shared components
+│   ├── data/
+│   │   ├── stories.csv   # Story metadata for routing
+│   │   └── members.csv   # Team member data
+│   └── styles/
+│       └── app.css       # Your customizations
+└── routes/               # SvelteKit routes
 ```
 
 ## Commands
@@ -34,7 +34,7 @@ All commands are run from the root of the project, from a terminal:
 | :------------------------ | :----------------------------------------------- |
 | `npm install`             | Installs dependencies                            |
 | `npm run dev`             | Starts local dev server at `localhost:5173`      |
-| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run build`           | Build your production site to `build/`          |
 | `npm run preview`         | Preview your build locally, before deploying     |
 
 
@@ -66,7 +66,7 @@ This creates the folder structure, boilerplate files, and adds an entry to `stor
 
 ## Customization
 
-Edit `src/styles/app.css` to override CSS variables.
+Edit `src/lib/styles/app.css` to override CSS variables.
 
 ## 👀 Want to learn more?
 
