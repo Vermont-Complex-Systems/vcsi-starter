@@ -1,13 +1,22 @@
 {
   "name": "@the-vcsi/scrolly-skills",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "sv CLI add-on — Claude Code skills for scrolly-kit and Svelte 5",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
   },
-  "files": ["src"],
-  "keywords": ["sv-add", "svelte", "sveltekit", "claude", "skills", "llm"],
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "sv-add",
+    "svelte",
+    "sveltekit",
+    "claude",
+    "skills",
+    "llm"
+  ],
   "dependencies": {},
   "peerDependencies": {
     "sv": "^0.13.0"

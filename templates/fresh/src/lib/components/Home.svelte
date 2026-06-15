@@ -10,7 +10,7 @@
     <div class="hero-text">
       <h1>Custom Research Website</h1>
       <p>A maintainable, reusable and extensible website template to tell your stories.</p>
-      <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main/templates/simple" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>
+      <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main/templates/fresh" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>
     </div>
   </div>
 </section>
