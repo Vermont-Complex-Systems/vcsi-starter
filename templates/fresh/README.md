@@ -56,6 +56,15 @@ On top of the official CLI, VCSI provides useful adds-on to the template
 
 You can read more about these integrations on their own page.
 
+## AI setup (Claude Code + MCP)
+
+Running `npx sv add @the-vcsi/scrolly-skills` sets up an AI layer for this project:
+
+- `.claude/skills/scrolly-kit/` — a Claude Code skill so the agent knows scrolly-kit's layouts, `copy.json` schema, and component props.
+- `.mcp.json` — the `scrolly-kit` MCP server (live docs via `npx @the-vcsi/scrolly-mcp`) and the official Svelte MCP server (Svelte 5 / SvelteKit docs + autofixer).
+
+After adding it, restart Claude Code (or approve the new MCP servers) so it picks up `.mcp.json`. Full walkthrough — from scaffold to a generated story — is on the [Getting Started](https://vermont-complex-systems.github.io/vcsi-starter/getting-started) page under "Working with AI".
+
 ## Adding a Story
 
 ```bash

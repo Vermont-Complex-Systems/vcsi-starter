@@ -53,6 +53,51 @@ npx sv add @the-vcsi/scrolly-skills
 
 **scrolly-skills:** Set up the AI layer for your project -- installs a [Claude Code](https://claude.com/claude-code) skill for scrolly-kit into `.claude/skills/` and configures the scrolly-kit and Svelte MCP servers in `.mcp.json`, so coding agents know how to build stories with the library.
 
+## Working with AI: skills + MCP servers
+
+If you build with [Claude Code](https://claude.com/claude-code) (or another agent that reads `.mcp.json`), the `scrolly-skills` add-on wires up three things that make the agent fluent in this stack. Here is the full walkthrough, from an empty folder to a working story.
+
+### 1. Scaffold and install
+
+```bash
+npx degit Vermont-Complex-Systems/vcsi-starter/templates/fresh my-project
+cd my-project
+npm install
+```
+
+### 2. Add the AI layer
+
+```bash
+npx sv add @the-vcsi/scrolly-skills
+```
+
+This writes two things into your project:
+
+- **`.claude/skills/scrolly-kit/`** -- a Claude Code [skill](https://docs.claude.com/en/docs/claude-code/skills) (`SKILL.md` plus `COMPONENTS.md`, `LAYOUTS.md`, `PATTERNS.md`). Claude activates it automatically when you ask it to build a scrollytelling story, so it already knows the layouts, the `copy.json` schema, component props, and the SSR gotchas.
+- **`.mcp.json`** -- configures two [MCP](https://modelcontextprotocol.io/) servers:
+  - `scrolly-kit` -- runs `npx @the-vcsi/scrolly-mcp` (stdio). Exposes `list-sections` and `get-documentation`, which fetch the **live** docs from this site, so the agent reads the current component/layout reference rather than a stale snapshot.
+  - `svelte` -- the official Svelte server at `https://mcp.svelte.dev/mcp` (HTTP). Provides Svelte 5 / SvelteKit documentation, plus a code autofixer and Playground links.
+
+### 3. Activate the servers
+
+Restart Claude Code (or approve the newly added MCP servers when prompted) so it picks up `.mcp.json`. You can confirm they connected with `/mcp` inside Claude Code, and the scrolly-kit MCP also works as a plain CLI to sanity-check it:
+
+```bash
+npx @the-vcsi/scrolly-mcp list-sections
+```
+
+### 4. Build a story with the agent
+
+Create a story scaffold and ask Claude to fill it in:
+
+```bash
+npm run new-story my-first-story
+```
+
+> "Build a split-layout scrolly story in `my-first-story` that walks through three steps of a bar chart."
+
+Claude will pull layout and component details from the scrolly-kit skill and MCP, check Svelte 5 syntax against the Svelte MCP, and edit the story files directly. Run `npm run dev` to see it.
+
 ## Project Structure
 
 ```
