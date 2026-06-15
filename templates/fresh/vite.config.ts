@@ -16,8 +16,5 @@ export default defineConfig({
 				});
 			}
 		})
-	],
-	optimizeDeps: {
-		exclude: ['@tanstack/svelte-table']
-	}
+	]
 });
