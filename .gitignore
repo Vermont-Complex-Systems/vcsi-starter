@@ -25,7 +25,6 @@ vite.config.ts.timestamp-*
 *.db
 .playwright-mcp/
 .mcp.json
-.gitignore
 .npmrc
 .prettierignore
 CLAUDE.md
