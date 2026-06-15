@@ -4,7 +4,8 @@
      * @example { "type": "markdown", "value": "Some **bold** text" }
      */
     export interface ContentItem {
-        type: 'markdown' | 'html' | 'math' | 'code';
+        /** For `component`, `value` names a key in the `components` map passed to RenderContent */
+        type: 'markdown' | 'html' | 'math' | 'code' | 'component';
         value: string;
         /** Language hint for code blocks, e.g. "js", "python" */
         language?: string;

@@ -2,16 +2,17 @@
 @component
 Tooltip for chart.
 
-Renders an array of content steps as scrollable boxes that trigger
-index changes as they enter the viewport.
+Popover anchored to a chart element (or virtual point); renders as a
+bottom sheet on mobile.
 
 ## Props
-- `open` - Array of `ContentItem` objects with `type` and `value`
-- `anchor` - Current step index (bindable)
-- `side` - Add spacer before first step (default: true)
-- `onClose` - Add spacer after last step (default: true)
-- `children` - Custom snippet for rendering step content
-- `class` - Custom snippet for rendering step content
+- `open` - Whether the tooltip is shown (bindable)
+- `anchor` - Element or `{ x, y, width?, height? }` point to anchor to
+- `side` - Preferred side: 'top' | 'bottom' | 'left' | 'right' (default 'top')
+- `sideOffset` - Distance from anchor in pixels (default 10)
+- `onClose` - Called when the tooltip is dismissed
+- `children` - Snippet for tooltip content
+- `class` - Optional CSS class
 
 ## Usage
 ```ts

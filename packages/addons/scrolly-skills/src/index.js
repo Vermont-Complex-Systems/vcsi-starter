@@ -43,7 +43,7 @@ export default defineAddon({
 
 	nextSteps: () => [
 		'scrolly-kit skill installed — Claude will auto-detect when to use it',
-		'scrolly-kit MCP server configured in .mcp.json',
-		'For Svelte 5 docs, connect to the Svelte MCP separately (npx @sveltejs/mcp)'
+		'scrolly-kit and Svelte MCP servers configured in .mcp.json',
+		'Restart Claude Code (or approve the new MCP servers) to pick up .mcp.json'
 	]
 });

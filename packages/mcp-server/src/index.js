@@ -18,6 +18,21 @@ async function fetch_text(url) {
 	return res.text();
 }
 
+// sections.json changes only on docs deploys — cache it briefly so every
+// tool call doesn't re-fetch it.
+const SECTIONS_TTL_MS = 5 * 60 * 1000;
+let sections_cache = null;
+let sections_fetched_at = 0;
+
+async function fetch_sections() {
+	if (sections_cache && Date.now() - sections_fetched_at < SECTIONS_TTL_MS) {
+		return sections_cache;
+	}
+	sections_cache = await fetch_json(`${DOCS_BASE_URL}/sections.json`);
+	sections_fetched_at = Date.now();
+	return sections_cache;
+}
+
 // --- Server ---
 
 export const server = new McpServer(
@@ -41,7 +56,7 @@ export const server = new McpServer(
 // list-sections
 
 export async function list_sections_handler() {
-	const sections = await fetch_json(`${DOCS_BASE_URL}/sections.json`);
+	const sections = await fetch_sections();
 	return sections
 		.map((s) => `- title: ${s.title}, use_cases: ${s.use_cases}, path: ${s.slug}`)
 		.join('\n');
@@ -78,7 +93,7 @@ export async function get_documentation_handler({ section }) {
 	const slugs = Array.isArray(section) ? section : [section];
 
 	// Fetch available sections for matching
-	const available = await fetch_json(`${DOCS_BASE_URL}/sections.json`);
+	const available = await fetch_sections();
 
 	const results = await Promise.allSettled(
 		slugs.map(async (requested) => {

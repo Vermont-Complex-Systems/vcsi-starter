@@ -120,6 +120,43 @@ svg { width: 100%; height: 100%; max-height: 100%; }
 
 The panel fills the viewport; the component must fill it with `100%` and use flex centering. On mobile, constrain SVG to a square aspect ratio.
 
+## Triple Layout (`.triple-layout`)
+
+Three columns: scrolling steps + sticky code panel + sticky chart panel. For code-walkthrough stories.
+
+```html
+<section class="triple-layout">
+  <div class="scrolly-content">
+    <ScrollyContent steps={data.steps} bind:value={index} />
+  </div>
+  <div class="code-panel"><!-- sticky code, e.g. CodeExplainer --></div>
+  <div class="chart-panel"><!-- sticky visualization --></div>
+</section>
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--vcsi-layout-gap` | `1.5rem` | Gap between columns |
+| `--vcsi-panel-height` | `min(95vh, 900px)` | Height of sticky panels |
+| `--vcsi-panel-top-offset` | auto-centered | Vertical position of sticky panels |
+| `--vcsi-content-padding-inline` | `2rem` | Horizontal padding |
+
+**Tablet (< 1024px):** Two columns — code panel is hidden, steps + chart remain.
+**Mobile (< 768px):** Single column — chart becomes full-viewport sticky background, steps overlay on top (same pattern as split layout).
+
+## Full Bleed (`.full-bleed`)
+
+Escape the prose column to full viewport width. For standalone charts, images, or maps that are NOT scrolly sections:
+
+```html
+<article class="story">
+  <p>Prose stays centered...</p>
+  <div class="full-bleed"><MyWideChart /></div>
+</article>
+```
+
+Padding via `--vcsi-bleed-padding-inline` (default `2rem`).
+
 ## Dashboard Layout (`.dashboard-layout`)
 
 Sidebar + main content area. No scrolly mechanics. For interactive data explorers.

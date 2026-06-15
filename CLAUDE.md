@@ -6,18 +6,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a monorepo for VCSI scrollytelling websites. It contains:
 - **@the-vcsi/scrolly-kit** - npm package with reusable components and CSS
+- **@the-vcsi/scrolly-mcp** - MCP server serving scrolly-kit documentation
 - **Templates** - SvelteKit starters that users scaffold via `degit`
-- **sv add-ons** - Optional integrations (SharePoint, OpenAlex) via Svelte CLI
+- **sv add-ons** - Optional integrations (SharePoint, OpenAlex, AI skills) via Svelte CLI
+- **Docs site** - GitHub Pages site that also serves `sections.json` + `llms.txt` for the MCP server
 
 ```
 .
 ├── packages/
 │   ├── scrolly-kit/           # @the-vcsi/scrolly-kit npm package
-│   ├── sv-addon-msgraph/      # SharePoint integration add-on
-│   └── sv-addon-openalex/     # Academic data add-on
+│   ├── mcp-server/            # @the-vcsi/scrolly-mcp MCP server (fetches from docs site)
+│   └── addons/
+│       ├── msgraph/           # SharePoint integration add-on
+│       ├── openalex/          # Academic data add-on
+│       └── scrolly-skills/    # Claude Code skill + MCP config add-on
+├── sites/
+│   └── docs/                  # Docs site (source of truth: src/lib/docs/*.md)
 └── templates/
     ├── baked/                 # Static, pre-rendered template
-    └── fresh/                 # Dynamic, server-rendered template (coming soon)
+    ├── fresh/                 # Dynamic, server-rendered template
+    └── simple/                # Pared-down starter
 ```
 
 ## Commands
@@ -51,8 +59,9 @@ npx degit Vermont-Complex-Systems/vcsi-starter/templates/baked my-project
 
 # Add optional integrations
 cd my-project
-npx sv add @the-vcsi/msgraph      # SharePoint integration
-npx sv add @the-vcsi/openalex     # OpenAlex academic data
+npx sv add @the-vcsi/msgraph         # SharePoint integration
+npx sv add @the-vcsi/openalex        # OpenAlex academic data
+npx sv add @the-vcsi/scrolly-skills  # Claude Code skill + MCP servers
 ```
 
 ## Architecture
@@ -81,12 +90,20 @@ Templates import styles:
 @import '@the-vcsi/scrolly-kit/styles/all.css';
 ```
 
+### AI Layer (docs site → MCP server → skill)
+
+- `sites/docs/src/lib/docs/*.md` is the documentation source of truth. The site (GitHub Pages) prerenders `sections.json` and per-section `llms.txt` endpoints; `use_cases.json` provides the per-section discovery hints.
+- `packages/mcp-server` (`@the-vcsi/scrolly-mcp`) exposes `list-sections` / `get-documentation` tools that fetch from the docs site. It also works as a plain CLI: `npx @the-vcsi/scrolly-mcp list-sections`.
+- `packages/addons/scrolly-skills` installs a Claude Code skill and wires both MCP servers into a scaffolded project's `.mcp.json`.
+
+When adding a component to scrolly-kit: export it in `index.ts`, document it in `sites/docs/src/lib/docs/components/{Name}.md`, add a `use_cases.json` entry, and update the skill's `COMPONENTS.md`.
+
 ### Templates
 
 Templates customize the package defaults for their brand:
 
 ```css
-/* templates/baked/src/styles/app.css */
+/* templates/baked/src/lib/styles/app.css */
 :root {
   /* Override VCSI tokens */
   --vcsi-color-accent: #154734;  /* UVM Green */
@@ -113,20 +130,23 @@ src/routes/
 **Stories have full control** - no Nav, no Footer, just the root layout with ModeWatcher and global CSS. Stories import reusable components as needed.
 
 ### Data Flow
-- CSV files in `src/data/` (`members.csv`, `stories.csv`) define dynamic routes
+- CSV files in `src/lib/data/` (`members.csv`, `stories.csv`) define dynamic routes
 - `svelte.config.js` reads CSVs at build time to generate route entries for `/about/{memberId}` and `/{storySlug}`
-- Remote functions in `$lib/data.remote.ts` use SvelteKit's `prerender()` with Valibot validation to load data
+- Remote functions in `$lib/story.remote.ts` use SvelteKit's `prerender()` with Valibot validation to load data
+- `$lib/story-loader.ts` resolves a slug to its `Index.svelte` component via a lazy `import.meta.glob`
 
 ### Story Structure
 Each story lives in `src/lib/stories/{story-name}/`:
 - `components/Index.svelte` - Main story component
 - `components/*.svelte` - Visualization components (e.g., ScrollyPlot.svelte)
-- `data/copy.json` - Content data with `type` (markdown/html/math) and `value` fields
+- `data/copy.json` - Content data with `type` (markdown/html/math/code/component) and `value` fields
 
 ### Key Components
-- `$lib/components/helpers/MarkdownRenderer.svelte` - Renders markdown with KaTeX math and syntax highlighting
-- `$lib/components/helpers/Scrolly.svelte` - Base scrollytelling component (from The Pudding)
-- `$lib/components/helpers/ScrollySnippets.svelte` - Reusable scrolly layout snippets
+Core components (`Scrolly`, `ScrollyContent`, `MarkdownRenderer`, `RenderContent`, `StoryHeader`, `Nav`, `Footer`, ...) are imported from `@the-vcsi/scrolly-kit` — they no longer live in the templates. Templates only keep template-specific helpers like `$lib/components/helpers/BackToHome.svelte`.
+
+```js
+import { Scrolly, ScrollyContent, RenderContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
+```
 
 ### Reusable UI Components
 
@@ -135,7 +155,7 @@ Self-contained components that stories can optionally import. They work with sen
 #### Footer
 
 ```svelte
-import Footer from '$lib/components/Footer.svelte';
+import { Footer } from '@the-vcsi/scrolly-kit';
 
 <Footer />
 ```
@@ -153,7 +173,7 @@ For custom colors, set `--footer-bg` and `--footer-border` CSS variables on a pa
 #### Nav
 
 ```svelte
-import Nav from '$lib/components/Nav.svelte';
+import { Nav } from '@the-vcsi/scrolly-kit';
 
 <Nav />
 ```
@@ -174,10 +194,8 @@ import BackToHome from '$lib/components/helpers/BackToHome.svelte';
 
 Floating home button for stories. Positioned top-left, stays visible during scroll.
 
-### Path Aliases (in templates)
-- `$lib` → `src/lib`
-- `$data` → `src/data`
-- `$styles` → `src/styles`
+### Paths (in templates)
+- `$lib` → `src/lib` (data in `$lib/data`, styles in `$lib/styles`, stories in `$lib/stories`)
 
 ## Tech Stack
 - **Svelte 5** with runes (`$state`, `$derived`, `$props`, snippets)
@@ -200,7 +218,7 @@ Floating home button for stories. Positioned top-left, stays visible during scro
 
 **Templates** provide brand customization:
 ```
-src/styles/
+src/lib/styles/
 ├── fonts.css    # @font-face declarations
 └── app.css      # Brand overrides + template-specific styles
 ```
@@ -412,12 +430,26 @@ Creates:
 
 Adds npm script: `npm run db:populate-openalex`
 
+### @the-vcsi/scrolly-skills (AI Layer)
+
+Installs the AI tooling for a scaffolded project.
+
+```bash
+npx sv add @the-vcsi/scrolly-skills
+```
+
+Creates:
+- `.claude/skills/scrolly-kit/` - Claude Code skill (SKILL.md + COMPONENTS/LAYOUTS/PATTERNS references)
+- `.mcp.json` - Configures the `scrolly-kit` MCP server (`npx @the-vcsi/scrolly-mcp`) and the Svelte MCP server
+
+The skill reference files duplicate content from `sites/docs/src/lib/docs/` — when updating component or layout docs, update both.
+
 ### Creating New Add-ons
 
-Add-ons live in `packages/sv-addon-{name}/`. See existing add-ons for the pattern:
+Add-ons live in `packages/addons/{name}/`. See existing add-ons for the pattern:
 
 ```javascript
-import { defineAddon, defineAddonOptions } from 'sv/core';
+import { defineAddon, defineAddonOptions } from 'sv';
 
 const options = defineAddonOptions()
   .add('optionName', { question: 'Prompt?', type: 'string' })

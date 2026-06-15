@@ -1,6 +1,6 @@
-# Minimal CSS Framework for data-driven stories
+# Getting Started
 
-Built for scientists in a hurry who want to tell data stories without learning full web development. [@the-vcsi/scrolly-kit](https://www.npmjs.com/package/@the-vcsi/scrolly-kit) provides the engine -- CSS tokens and reusable components -- while templates give you a ready-to-customize website. Extend with `sv` add-ons for integrations like SharePoint or [OpenAlex](https://openalex.org/).
+A minimal CSS framework for data-driven stories, built for scientists in a hurry who want to tell data stories without learning full web development. [@the-vcsi/scrolly-kit](https://www.npmjs.com/package/@the-vcsi/scrolly-kit) provides the engine -- CSS tokens and reusable components -- while templates give you a ready-to-customize website. Extend with `sv` add-ons for integrations like SharePoint or [OpenAlex](https://openalex.org/).
 
 ## Quick Start
 
@@ -12,7 +12,7 @@ cd my-project
 npm install
 ```
 
-**Tip:** [degit](https://github.com/Rich-Harris/degit) copies a Git repo without its history -- like cloning, but faster and cleaner. Requires [Node.js](https://nodejs.org/en/download). We currently have a single static-site generator template (the `baked` template). It is "baked" in that content is baked-in when building, or pre-rendered. We are planning to provide a `fresh` template soon, where we showcase how dynamic websites can augment visual data-driven stories with backend capabilities.
+**Tip:** [degit](https://github.com/Rich-Harris/degit) copies a Git repo without its history -- like cloning, but faster and cleaner. Requires [Node.js](https://nodejs.org/en/download). Three templates are available: `baked` (static-site generator -- content is "baked in", or pre-rendered, at build time), `fresh` (server-rendered, showcasing how dynamic websites can augment visual data-driven stories with backend capabilities), and `simple` (a pared-down starting point).
 
 ### 2. Start the dev server
 
@@ -46,6 +46,12 @@ npx sv add @the-vcsi/openalex
 ```
 
 **openalex:** Provide a list of researcher identifiers and build a local database with metadata about their papers and co-authors from [OpenAlex](https://openalex.org/).
+
+```bash
+npx sv add @the-vcsi/scrolly-skills
+```
+
+**scrolly-skills:** Set up the AI layer for your project -- installs a [Claude Code](https://claude.com/claude-code) skill for scrolly-kit into `.claude/skills/` and configures the scrolly-kit and Svelte MCP servers in `.mcp.json`, so coding agents know how to build stories with the library.
 
 ## Project Structure
 

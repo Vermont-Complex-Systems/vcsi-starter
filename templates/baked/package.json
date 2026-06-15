@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "new-story": "node -e \"const fs=require('fs'),path=require('path'),slug=process.argv[1];if(!slug){console.error('Usage: npm run new-story <slug>');process.exit(1)}const dir='src/lib/stories/'+slug;fs.mkdirSync(dir+'/components',{recursive:true});fs.mkdirSync(dir+'/data',{recursive:true});fs.writeFileSync(dir+'/components/Index.svelte','<script lang=\\\"ts\\\">\\n\\timport { Footer } from \\'@the-vcsi/scrolly-kit\\';\\n\\timport BackToHome from \\'\\$lib/components/helpers/BackToHome.svelte\\';\\n\\tlet { story, data } = \\$props();\\n</script>\\n\\n<BackToHome />\\n\\n<article class=\\\"story\\\">\\n\\t<h1>{data.title}</h1>\\n\\t<p>{data.subtitle}</p>\\n</article>\\n\\n<Footer />\\n');fs.writeFileSync(dir+'/data/copy.json',JSON.stringify({title:slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '),subtitle:'Story subtitle',authors:[{name:'Author Name',url:''}],date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})},null,'\\t'));const csv='src/lib/data/stories.csv',today=new Date().toISOString().split('T')[0];fs.appendFileSync(csv,'\\n'+slug+','+slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ')+',Description,Author Name,'+today+',,Tags,1');console.log('Created story: '+slug)\""
+    "new-story": "node scripts/new-story.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",

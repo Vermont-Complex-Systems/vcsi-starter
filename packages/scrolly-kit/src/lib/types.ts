@@ -1,4 +1,5 @@
 import type { ComponentProps } from 'svelte';
+import type { ContentItem } from './components/ScrollySnippets.svelte';
 
 // Import components to extract their prop types
 import type Scrolly from './components/Scrolly.svelte';
@@ -92,13 +93,8 @@ export { SidebarState } from './components/bits-ui/sidebar/sidebar-state.svelte'
 // Data types used by components (not component props)
 // ============================================================================
 
-/** Content item for ScrollyContent steps */
-export interface ContentItem {
-  /** Content type */
-  type: 'html' | 'markdown' | 'math' | 'code';
-  /** Content value */
-  value: string;
-}
+/** Content item for ScrollyContent/RenderContent steps (single source of truth in ScrollySnippets) */
+export type { ContentItem } from './components/ScrollySnippets.svelte';
 
 /** Author info for StoryHeader */
 export interface Author {

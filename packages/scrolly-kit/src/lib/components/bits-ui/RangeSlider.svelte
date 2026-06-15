@@ -8,6 +8,7 @@
         step = 1
     } = $props();
 
+    /** @param {number[]} newValue */
     function handleValueChange(newValue) {
 
         // If we're in single-year mode, enforce that both values stay the same
@@ -28,7 +29,10 @@
     // Capture-phase pointerdown on the wrapper.
     // Fires BEFORE bits-ui's handlers. Lets bracket clicks pass through,
     // but captures clicks on the range bar for range dragging.
+    /** @param {PointerEvent & { currentTarget: HTMLDivElement }} e */
     function handleCapture(e) {
+        if (!(e.target instanceof Element)) return;
+
         // Let bracket handles and reset buttons through for individual thumb control
         if (e.target.closest('.bracket-handle') ||
             e.target.closest('.reset-on-bracket') ||
@@ -56,6 +60,7 @@
         const totalRange = max - min;
         const span = startHigh - startLow;
 
+        /** @param {PointerEvent} moveEvent */
         function onPointerMove(moveEvent) {
             const deltaX = moveEvent.clientX - startX;
             const deltaValue = Math.round((deltaX / trackWidth) * totalRange);

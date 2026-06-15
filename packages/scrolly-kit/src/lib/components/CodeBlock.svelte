@@ -15,9 +15,10 @@
 
   let { code, filename = '', language = 'typescript' } = $props();
 
+  /** @param {string} s */
   function dedent(s) {
     const lines = s.replace(/^\n/, '').replace(/\n\s*$/, '').split('\n');
-    const indent = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+    const indent = Math.min(...lines.filter(l => l.trim()).map(l => /^ */.exec(l)?.[0].length ?? 0));
     return lines.map(l => l.slice(indent)).join('\n');
   }
 

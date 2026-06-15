@@ -51,6 +51,7 @@ On top of the official CLI, VCSI provides useful adds-on to the template
 | :------------------------ | :----------------------------------------------- |
 | `npx sv add @the-vcsi/msgraph`       | Integrate Microsoft Sharepoint |
 | `npx sv add @the-vcsi/openalex` | Integrate OpenAlex data         |
+| `npx sv add @the-vcsi/scrolly-skills` | Claude Code skill + MCP servers for scrolly-kit |
 
 You can read more about these integrations on their own page.
 

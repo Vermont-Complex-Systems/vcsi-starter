@@ -227,6 +227,27 @@ Code with step-by-step explanations. Each step highlights specific lines.
 
 `CodeStep`: `{ lines: number[], text: string }`
 
+### DashboardShell
+
+Dashboard wrapper with collapsible sidebar (snippet-based API). Alternative to the raw `.dashboard-layout` CSS classes. For finer control, use the `Sidebar.*` compound components (`import { Sidebar } from '@the-vcsi/scrolly-kit'`).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `collapsed` | `boolean` | `false` | Sidebar collapsed state (bindable) |
+| `sidebarWidth` | `string` | `'280px'` | Width when expanded |
+| `collapsedWidth` | `string` | `'48px'` | Width when collapsed |
+| `sidebar` | `Snippet` | — | Sidebar content (required) |
+| `children` | `Snippet` | — | Main content (required) |
+
+```svelte
+<DashboardShell>
+  {#snippet sidebar()}
+    <h2>Filters</h2>
+  {/snippet}
+  <div class="chart">...</div>
+</DashboardShell>
+```
+
 ## UI Controls
 
 ### ThemeToggle
@@ -249,6 +270,30 @@ No props.
 |------|------|---------|-------------|
 | `checked` | `boolean` | `false` | Toggle state (bindable) |
 | `label` | `string` | — | Optional label |
+
+### RangeSlider
+
+Dual-thumb range slider (bits-ui based). Supports single-value mode when both thumbs coincide.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `min` | `number` | `1880` | Minimum value |
+| `max` | `number` | `2020` | Maximum value |
+| `value` | `[number, number]` | `[1950, 1959]` | Selected range (bindable) |
+| `step` | `number` | `1` | Step increment |
+
+### ChartTooltip
+
+Popover-style tooltip anchored to a chart element (renders as a bottom sheet on mobile).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether tooltip is shown (bindable) |
+| `anchor` | `Element \| { x, y, width?, height? } \| null` | `null` | Element or virtual point to anchor to |
+| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Preferred side |
+| `sideOffset` | `number` | `10` | Distance from anchor in pixels |
+| `onClose` | `() => void` | — | Called when the tooltip is dismissed |
+| `children` | `Snippet` | — | Tooltip content (required) |
 
 ### Tooltip
 
@@ -287,10 +332,21 @@ SEO meta tags for social sharing (Open Graph, Twitter cards).
 
 Animated scroll-down indicator arrow. No props.
 
+### Actions & helpers
+
+- `scrollReveal` — Svelte action; sets `data-revealed="true"` when the element enters the viewport (style the transition in your own CSS): `<section use:scrollReveal>`
+- `useIsMobile()` / `useMediaQuery(query)` — reactive media-query helpers (from `utils/media.svelte`)
+- `renderCodeHtml(code, language?, highlightLines?)` — builds highlighted code HTML for MarkdownRenderer
+
 ## Types
 
 ```typescript
-type ContentItem = { type: 'html' | 'markdown' | 'math' | 'code'; value: string; language?: string };
+type ContentItem = {
+  type: 'html' | 'markdown' | 'math' | 'code' | 'component';
+  value: string;
+  language?: string;       // code blocks only
+  highlightLines?: string; // code blocks only, e.g. "1-3,5"
+};
 type Author = { name: string; url?: string };
 type CodeStep = { lines: number[]; text: string };
 type CodeExplainerData = { code: string; language: string; steps: CodeStep[] };

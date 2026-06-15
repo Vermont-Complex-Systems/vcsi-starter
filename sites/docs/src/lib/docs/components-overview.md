@@ -1,4 +1,4 @@
-# Components
+# Components Overview
 
 Reusable Svelte components for scrollytelling and data-driven stories.
 
@@ -34,6 +34,14 @@ Interactive UI components.
 - [SimpleSelect](components/SimpleSelect) -- Dropdown select component
 - [SimpleToggle](components/SimpleToggle) -- On/off toggle switch
 - [Tooltip](components/Tooltip) -- Hover tooltip
+- [RangeSlider](components/RangeSlider) -- Dual-thumb range slider
+- [ChartTooltip](components/ChartTooltip) -- Popover tooltip anchored to chart elements
+
+## Dashboard
+
+Components for interactive data explorers.
+
+- [DashboardShell](components/DashboardShell) -- Dashboard wrapper with collapsible sidebar
 
 ## Utilities
 

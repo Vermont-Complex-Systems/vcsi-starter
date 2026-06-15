@@ -165,7 +165,7 @@ Add `.sidebar-collapsed` to the root element to collapse the sidebar.
 
 ## Visualization Component Patterns
 
-For general Svelte + D3 charting patterns (responsive sizing, reactive scales, animations, component decomposition), see the **svelte-d3-charting** skill. This section covers only the scrolly-kit-specific sizing rules.
+For general Svelte 5 + D3 charting patterns (reactive scales with `$derived`, responsive sizing with `bind:clientWidth`), use the Svelte MCP server documentation. This section covers only the scrolly-kit-specific sizing rules.
 
 ### Layout-Specific Sizing Rules
 
