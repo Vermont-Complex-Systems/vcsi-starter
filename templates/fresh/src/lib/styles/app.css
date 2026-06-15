@@ -11,13 +11,16 @@
    TEMPLATE CUSTOMIZATIONS
    Uncomment examples below to see the impact.
 
-   Full reference: https://scrolly-kit.vercel.app/reference#css-variables
+   Full reference: https://vermont-complex-systems.github.io/vcsi-starter/reference
    ============================================================================= */
 
 /* --- Try uncommenting these --- */
 
 /* Customize Nav colors */
 /* :root { --vcsi-nav-bg: #154734; --vcsi-nav-fg: white; } */
+
+/* Add padding to .page containers */
+/* :root { --vcsi-page-inline-padding: 8%; } */
 
 /* Change heading colors */
 /* h1, h2, h3 { color: #154734; } */
@@ -34,14 +37,9 @@
 /* Make links stand out */
 /* a { color: #0066cc; text-decoration: underline; } */
 
-/* Add padding to .page containers */
-/* :root { --vcsi-page-inline-padding: 8%; } */
-
 /* Customize split-layout */
-/*
-.split-layout {
-  --vcsi-panel-width: 60%;
-  --vcsi-panel-height: 80vh;
-  --vcsi-content-padding-inline: 4rem;
-}
-*/
+
+/* .split-layout {
+  --vcsi-panel-width: 20%;
+} */
+

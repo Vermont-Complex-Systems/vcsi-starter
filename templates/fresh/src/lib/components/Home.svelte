@@ -1,8 +1,5 @@
 <script>
-  import DotsToImage from '$lib/components/DotsToImage.svelte';
   import StoryGrid from '$lib/components/StoryGrid.svelte';
-  import { CopyCodeBlock } from '@the-vcsi/scrolly-kit';
-  import RemoteFunctionsSection from '$lib/components/Home.RemoteFnsExplainer.svelte';
   import { getStories } from '$lib/story.remote';
   import { ArrowRight } from '@lucide/svelte';
 </script>
@@ -13,24 +10,14 @@
     <div class="hero-text">
       <h1>Custom Research Website</h1>
       <p>A maintainable, reusable and extensible website template to tell your stories.</p>
-      <div class="code-blocks">
-        <CopyCodeBlock
-        command="npx degit Vermont-Complex-Systems/vcsi-starter/templates/baked example"
-        label="Static template"
-        />
-        <CopyCodeBlock
-        command="npx degit Vermont-Complex-Systems/vcsi-starter/templates/fresh example"
-        label="Dynamic template"
-        />
-        <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main/templates/baked" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>
-      </div>
+      <span class="github-row">For installation details, features, and more visit <a href="https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main/templates/simple" target="_blank" rel="noopener noreferrer" class="github-link">GitHub <ArrowRight size={16} /></a></span>
     </div>
-    <DotsToImage imgFilePath='/octopus-swim-right.png' />
   </div>
 </section>
 
 <!-- Stories Section -->
 <section class="stories page">
+  <h2>Stories</h2>
   {#await getStories()}
     <div class="loading">Loading stories...</div>
   {:then stories}
@@ -38,100 +25,13 @@
   {/await}
 </section>
 
-<!-- Why Svelte Section -->
-<section class="why-svelte page">
-  <h2>Why Svelte and Sveltekit?</h2>
-  <div class="reasons-grid">
-    <div class="reason">
-      <h3>Use Any JS Library Directly</h3>
-      <p>Svelte compiles to vanilla JavaScript, so you can use D3, Three.js, Observable Plot, or any library without wrappers. No React-specific ports needed.</p>
-    </div>
-    <div class="reason">
-      <h3>Perfect for Data Visualization</h3>
-      <p>Fine-grained reactivity means smooth transitions and efficient updates. Used by <a href="https://github.com/the-pudding/svelte-starter" target="_blank" rel="noopener noreferrer">The Pudding</a> and data journalism teams for interactive charts, maps, and scrollytelling, e.g. how to <a href="https://youtu.be/5IcY0biPhoQ?si=K0OobYpBgwtFcgR3" target="_blank" rel="noopener noreferrer">build a Beeswarm Chart with Svelte and D3</a>.</p>
-    </div>
-    <div class="reason">
-      <h3>Readable Code for Collaborators</h3>
-      <p>Svelte components look like HTML with superpowers. Graduate students and collaborators can contribute without deep framework knowledge.</p>
-    </div>
-    <div class="reason">
-      <h3>As Simple as Possible, but No Simpler</h3>
-      <p>The Svelte team believes in removing unnecessary complexity without sacrificing power. <a href="https://www.smashingmagazine.com/2025/01/svelte-5-future-frameworks-chat-rich-harris/" target="_blank" rel="noopener noreferrer">Read more</a> or watch <a href="https://gitnation.com/contents/svelte-5-improvements" target="_blank" rel="noopener noreferrer">Rich Harris talking about Svelte 5's North Star</a>.</p>
-    </div>
-    <div class="reason">
-      <h3>Minimal Boilerplate</h3>
-      <p>No useState, useEffect, or dependency arrays. Reactivity is built into the language. Spend time on your research, not fighting the framework.</p>
-    </div>
-    <div class="reason">
-      <h3>Progressive Enhancement</h3>
-      <p>Forms and links work without JavaScript, then get enhanced when it's available. Your app stays <a href="https://www.gov.uk/service-manual/technology/using-progressive-enhancement" target="_blank" rel="noopener noreferrer">resilient</a> while still feeling modern when JS loads.</p>
-    </div>
-  </div>
-  <p class="svelte-cta">Learn more at <a href="https://svelte.dev/" target="_blank" rel="noopener noreferrer">svelte.dev</a> or follow their <a href="https://svelte.dev/tutorial/svelte/welcome-to-svelte" target="_blank" rel="noopener noreferrer">tutorial</a></p>
-</section>
-
-<!-- Project Structure Section -->
-<section class="project-structure page">
-  <h2>Project Structure</h2>
-  <div class="structure-layout">
-    <pre class="tree-view"><code>.
-└── src
-    ├── data                    # CSV data for routes
-    ├── lib
-    │   ├── components/         # Reusable UI components
-    │   │   ├── About.svelte
-    │   │   ├── StoryGrid.svelte
-    │   │   ├── Home.svelte
-    │   │   └── ...
-    │   ├── server
-    │   ├── stories             # Your scrollytelling content
-    │   │   └── story-1
-    │   │       ├── components/Index.svelte
-    │   │       └── data/copy.json
-    │   └── story.remote.ts
-    ├── routes                   # Pages & layouts
-    │   ├── (app)
-    │   │   ├── +layout.svelte   # Non-story default layouts
-    │   │   ├── +page.svelte     # Home page
-    │   │   ├── about
-    │   │   │   ├── [name]
-    │   │   │   │   └── +page.svelte
-    │   │   │   └── +page.svelte
-    │   │   └── getting-started
-    │   │       └── +page.svelte
-    │   ├── [story]             # Dynamic story routes
-    │   │   ├── +page.svelte
-    │   │   └── +page.ts
-    │   └── +layout.svelte      # Minimal layouts
-    └── styles                  # Import @the-vcsi/scrolly-kit styling
-  </code></pre>
-    <div class="structure-explanations">
-      <div class="explanation">
-        <h3>Adding Stories</h3>
-        <p>Create a folder in <code>src/lib/stories/</code> with your story name. Add an entry to <code>src/data/stories.csv</code> and your story appears in the grid and gets its own route.</p>
-      </div>
-      <div class="explanation">
-        <h3>Story Content</h3>
-        <p>Each story has a <code>data/copy.json</code> for text content and <code>components/</code> for visualizations. The scrollytelling logic is handled by shared helpers.</p>
-      </div>
-      <div class="explanation">
-        <h3>Dynamic Routes</h3>
-        <p>SvelteKit generates routes from CSV data at build time. The <code>[story]</code> folder creates pages like <code>/geo-story-1</code> automatically.</p>
-      </div>
-      <div class="explanation">
-        <h3>Styling</h3>
-        <p>Global styles in <code>src/styles/</code> define CSS variables. Components use scoped styles. Check <code>variables.css</code> for theme customization.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<RemoteFunctionsSection />
 
 <style>
 /* ---------------- Hero Section ---------------- */
 
-
+.stories h2 {
+  margin-bottom: 2rem;
+}
 
 /*
 Centering vertically the hero
@@ -143,7 +43,6 @@ Uses padding-bottom: 0 to make the centering symmetric
   display: grid;
   place-items: center;
   min-height: 100dvh;
-  padding-bottom: var(--vcsi-nav-height);
   box-sizing: border-box;
 }
 
@@ -151,7 +50,6 @@ Uses padding-bottom: 0 to make the centering symmetric
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--vcsi-space-2xl);
   width: 100%;
   max-width: var(--vcsi-page-max-width);
 }
@@ -176,11 +74,6 @@ Uses padding-bottom: 0 to make the centering symmetric
   color: var(--vcsi-muted);
 }
 
-.code-blocks {
-  display: flex;
-  flex-direction: column;
-  gap: var(--vcsi-space-sm);
-}
 
 .github-row {
   display: inline-flex;
@@ -206,16 +99,7 @@ Uses padding-bottom: 0 to make the centering symmetric
   gap: var(--vcsi-space-sm);
 }
 
-/* Make DotsToImage grow to fill space */
-.hero-inner > :global(DotsToImage) {
-  flex: 1;
-  height: 50%;
-}
-
 /* ---------------- Stories Section ---------------- */
-.stories {
-  padding: 4rem var(--vcsi-page-inline-padding);
-}
 
 .loading {
   text-align: center;
@@ -223,137 +107,6 @@ Uses padding-bottom: 0 to make the centering symmetric
   font-size: 1.2rem;
   color: var(--vcsi-fg);
   opacity: 0.7;
-}
-
-/* ---------------- Why Svelte Section ---------------- */
-.why-svelte {
-  padding: 4rem var(--vcsi-page-inline-padding);
-  background: var(--vcsi-hover);
-}
-
-.why-svelte h2 {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-family: var(--vcsi-font-serif);
-  margin: 0 0 var(--vcsi-space-xl) 0;
-  text-align: center;
-}
-
-.reasons-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--vcsi-space-xl);
-}
-
-.reason {
-  padding: var(--vcsi-space-lg);
-  background: var(--vcsi-bg);
-  border-radius: 12px;
-  border: 1px solid var(--vcsi-border);
-}
-
-.reason h3 {
-  font-family: var(--vcsi-font-sans);
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 0.75rem 0;
-  color: var(--vcsi-fg);
-}
-
-.reason p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0;
-  color: var(--vcsi-muted);
-}
-
-.svelte-cta {
-  text-align: center;
-  margin-top: var(--vcsi-space-xl);
-  font-size: 1rem;
-  color: var(--vcsi-muted);
-}
-
-.svelte-cta a {
-  color: var(--vcsi-fg);
-  font-weight: 500;
-}
-
-/* ---------------- Project Structure Section ---------------- */
-.project-structure {
-  padding: 4rem var(--vcsi-page-inline-padding);
-}
-
-.project-structure h2 {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-family: var(--vcsi-font-serif);
-  margin: 0 0 var(--vcsi-space-xl) 0;
-  text-align: center;
-}
-
-.structure-layout {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--vcsi-space-2xl);
-  align-items: start;
-}
-
-.tree-view {
-  background: #f6f8fa;
-  border: 1px solid #d1d9e0;
-  border-radius: var(--vcsi-radius-lg);
-  padding: var(--vcsi-space-lg);
-  margin: 0;
-  overflow-x: auto;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: #1f2328;
-}
-
-:global(.dark) .tree-view {
-  background: #161b22;
-  border-color: #30363d;
-  color: #e6edf3;
-}
-
-.tree-view code {
-  background: none;
-  padding: 0;
-}
-
-.structure-explanations {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--vcsi-space-lg);
-}
-
-.explanation {
-  padding: 1.25rem;
-  background: var(--vcsi-bg);
-  border-radius: 10px;
-  border: 1px solid var(--vcsi-border);
-}
-
-.explanation h3 {
-  font-family: var(--vcsi-font-sans);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 var(--vcsi-space-sm) 0;
-  color: var(--vcsi-fg);
-}
-
-.explanation p {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 0;
-  color: var(--vcsi-muted);
-}
-
-.explanation code {
-  font-family: var(--vcsi-font-mono);
-  font-size: 0.8em;
-  background: var(--vcsi-hover);
-  padding: 0.15rem 0.35rem;
-  border-radius: var(--vcsi-radius-sm);
 }
 
 /* ---------------- Responsive ---------------- */
@@ -371,12 +124,6 @@ Uses padding-bottom: 0 to make the centering symmetric
   }
   .hero-text p {
     font-size: 1.2rem;
-  }
-  .structure-layout {
-    grid-template-columns: 1fr;
-  }
-  .structure-explanations {
-    grid-template-columns: 1fr;
   }
 }
 </style>
