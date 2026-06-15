@@ -1,31 +1,19 @@
 # AGENTS.md
 
-A scrollytelling website built on [@the-vcsi/scrolly-kit](https://www.npmjs.com/package/@the-vcsi/scrolly-kit) (SvelteKit 2 + Svelte 5 runes). This is the **simple** template: a pared-down static starter (`adapter-static`) with one example story.
+A scrollytelling site built on `@the-vcsi/scrolly-kit` (SvelteKit + Svelte 5). The **simple** template is a pared-down static starter (`adapter-static`) with one example story.
 
-## Stories
+You have access to two MCP servers (configured by `@the-vcsi/scrolly-skills`):
 
-Each story lives in `src/lib/stories/{slug}/`:
-- `components/Index.svelte` — the story component (imports from `@the-vcsi/scrolly-kit`)
-- `data/copy.json` — content; items are `{ "type", "value" }` where `type` is `markdown | html | math | code | component`
+### scrolly-kit MCP (`@the-vcsi/scrolly-mcp`)
 
-A slug resolves to its story automatically; `src/lib/data/stories.csv` lists the stories.
+Docs for scrolly-kit components, layouts, and story patterns. Call `list-sections` FIRST to discover sections, then `get-documentation` to fetch every section relevant to the task.
 
-## Workflow
+### Svelte MCP
 
-- `npm run new-story <slug>` — scaffold a new story (do NOT hand-create the folders)
-- `npm run dev` / `npm run build` — develop / build
-- `npm run check` — type-check; run this before considering work done
+Svelte 5 runes and SvelteKit docs. Run `svelte-autofixer` on any Svelte code you write, repeatedly, until it reports no issues.
 
-## Layouts & components
+## Conventions
 
-Layouts are CSS classes from scrolly-kit: `.story`, `.split-layout`, `.fullscreen-layout`, `.triple-layout`, `.dashboard-layout`. Import components (`Scrolly`, `ScrollyContent`, `RenderContent`, `StoryHeader`, `Footer`, …) from `@the-vcsi/scrolly-kit`.
-
-## SSR gotcha (static build)
-
-Every page is prerendered. Guard browser-only code (`window`/`document`/WebGL) with `{#if browser}` (`import { browser } from '$app/environment'`). Do **not** set `export const ssr = false` globally — it stops remote functions from being crawled and produces 404s at runtime.
-
-## Deeper reference
-
-- **scrolly-kit MCP** (`@the-vcsi/scrolly-mcp`): call `list-sections`, then `get-documentation` for component/layout/pattern docs.
-- **Svelte MCP**: Svelte 5 runes & SvelteKit.
-- Install the full Claude Code skill + MCP config with `npx sv add @the-vcsi/scrolly-skills`.
+- Stories live in `src/lib/stories/{slug}/` (`components/Index.svelte` + `data/copy.json`). Run `npm run new-story <slug>` to scaffold one — never hand-create the folders.
+- Run `npm run check` before considering work done.
+- Static build: guard browser-only code (`window`/`document`/WebGL) with `{#if browser}`, and never set `export const ssr = false` globally (it breaks prerendered remote functions).
