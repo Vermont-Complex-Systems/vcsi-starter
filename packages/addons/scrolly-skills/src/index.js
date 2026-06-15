@@ -6,6 +6,8 @@ import { defineAddon, defineAddonOptions } from 'sv';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const readSkill = (relativePath) =>
 	fs.readFileSync(path.join(__dirname, 'skills', relativePath), 'utf-8');
+const readAgent = (relativePath) =>
+	fs.readFileSync(path.join(__dirname, 'agents', relativePath), 'utf-8');
 
 const options = defineAddonOptions().build();
 
@@ -20,6 +22,9 @@ export default defineAddon({
 		sv.file('.claude/skills/scrolly-kit/COMPONENTS.md', () => readSkill('scrolly-kit/COMPONENTS.md'));
 		sv.file('.claude/skills/scrolly-kit/LAYOUTS.md', () => readSkill('scrolly-kit/LAYOUTS.md'));
 		sv.file('.claude/skills/scrolly-kit/PATTERNS.md', () => readSkill('scrolly-kit/PATTERNS.md'));
+
+		// --- scrolly-story-editor subagent ---
+		sv.file('.claude/agents/scrolly-story-editor.md', () => readAgent('scrolly-story-editor.md'));
 
 		// --- MCP server config ---
 		sv.file('.mcp.json', (content) => {
@@ -43,6 +48,7 @@ export default defineAddon({
 
 	nextSteps: () => [
 		'scrolly-kit skill installed — Claude will auto-detect when to use it',
+		'scrolly-story-editor subagent installed in .claude/agents/ — delegate story work to it',
 		'scrolly-kit and Svelte MCP servers configured in .mcp.json',
 		'Restart Claude Code (or approve the new MCP servers) to pick up .mcp.json'
 	]

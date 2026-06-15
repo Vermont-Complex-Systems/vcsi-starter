@@ -1,5 +1,6 @@
 {
 	"getting-started": "setup, installation, scaffolding, new project, quick start",
+	"subagent": "subagent, scrolly-story-editor, delegate story work, Claude Code agent, AI",
 	"reference": "layouts, CSS variables, split layout, fullscreen, dashboard, story theming, scrolly styling, gotchas",
 	"components-overview": "component list, categories",
 	"components/Scrolly": "scroll detection, IntersectionObserver, step tracking",

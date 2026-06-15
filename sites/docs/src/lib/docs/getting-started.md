@@ -71,9 +71,10 @@ npm install
 npx sv add @the-vcsi/scrolly-skills
 ```
 
-This writes two things into your project:
+This writes three things into your project:
 
 - **`.claude/skills/scrolly-kit/`** -- a Claude Code [skill](https://docs.claude.com/en/docs/claude-code/skills) (`SKILL.md` plus `COMPONENTS.md`, `LAYOUTS.md`, `PATTERNS.md`). Claude activates it automatically when you ask it to build a scrollytelling story, so it already knows the layouts, the `copy.json` schema, component props, and the SSR gotchas.
+- **`.claude/agents/scrolly-story-editor.md`** -- a [subagent](subagent) that handles story work in its own context window. Delegate "build/edit this story" tasks to it; see the [Subagent](subagent) page.
 - **`.mcp.json`** -- configures two [MCP](https://modelcontextprotocol.io/) servers:
   - `scrolly-kit` -- runs `npx @the-vcsi/scrolly-mcp` (stdio). Exposes `list-sections` and `get-documentation`, which fetch the **live** docs from this site, so the agent reads the current component/layout reference rather than a stale snapshot.
   - `svelte` -- the official Svelte server at `https://mcp.svelte.dev/mcp` (HTTP). Provides Svelte 5 / SvelteKit documentation, plus a code autofixer and Playground links.
