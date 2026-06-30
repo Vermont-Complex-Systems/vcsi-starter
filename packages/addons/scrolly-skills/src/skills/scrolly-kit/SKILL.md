@@ -14,7 +14,7 @@ npm run new-story <slug> --detailed  # with docs
 
 Only create files by hand if the script does not exist. Structure: `src/lib/stories/{slug}/components/Index.svelte` + `data/copy.json`.
 
-**Data location.** A story's datasets (CSV, JSON, …) live in that story's own `data/` folder — `src/lib/stories/{slug}/data/`, next to `copy.json` — and are imported relatively (`import rows from '../data/data.csv'`). When the user says they'll provide data, that is where it goes; do **not** look in or create `~/data` or a repo-root `data/`.
+**Workflow order & data.** Scaffold *first* with `npm run new-story <slug>` — that command **creates** the story's `data/` folder, which does not exist beforehand. A story's datasets (CSV, JSON, …) then live in that `src/lib/stories/{slug}/data/` folder, next to `copy.json`, imported relatively (`import rows from '../data/data.csv'`). So when the user has data to provide, scaffold first and they drop the file into the new folder — do **not** hunt the filesystem (`~/data`, repo root, …) for it before scaffolding.
 
 ### Layouts
 

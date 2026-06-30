@@ -15,6 +15,6 @@ Svelte 5 runes and SvelteKit docs. Run `svelte-autofixer` on any Svelte code you
 ## Conventions
 
 - Stories live in `src/lib/stories/{slug}/` (`components/Index.svelte` + `data/copy.json`). Run `npm run new-story <slug>` to scaffold one — never hand-create the folders.
-- A story's data (CSV/JSON the user provides) goes in that story's own `data/` folder (`src/lib/stories/{slug}/data/`), next to `copy.json` — not `~/data` or a repo-root `data/`.
+- **Workflow order:** scaffold *first* (`npm run new-story <slug>`) — that command *creates* the story's `data/` folder. Datasets (yours or the user's) then go into that new `src/lib/stories/{slug}/data/`, next to `copy.json`. The folder doesn't exist before scaffolding, so don't hunt the filesystem (`~/data`, repo root, …) for data — scaffold, then drop the file in, then build.
 - Run `npm run check` before considering work done.
 - Static build: guard browser-only code (`window`/`document`/WebGL) with `{#if browser}`, and never set `export const ssr = false` globally (it breaks prerendered remote functions).
