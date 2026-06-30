@@ -15,5 +15,6 @@ Svelte 5 runes and SvelteKit docs. Run `svelte-autofixer` on any Svelte code you
 ## Conventions
 
 - Stories live in `src/lib/stories/{slug}/` (`components/Index.svelte` + `data/copy.json`). Run `npm run new-story <slug>` to scaffold one — never hand-create the folders.
+- A story's data (CSV/JSON the user provides) goes in that story's own `data/` folder (`src/lib/stories/{slug}/data/`), next to `copy.json` — not `~/data` or a repo-root `data/`.
 - Run `npm run check` before considering work done.
 - Server-rendered: remote functions in `$lib/story.remote.ts` use `query()`. `export const ssr = false` is safe here if a route needs it.
