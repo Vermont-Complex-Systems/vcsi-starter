@@ -469,7 +469,28 @@ Avoid `document.querySelector('.chart')` in visualization components. In a multi
 
 ## Global CSS Variables
 
-Design tokens available throughout your project. See [tokens.css](https://github.com/Vermont-Complex-Systems/vcsi-starter/blob/main/packages/scrolly-kit/src/lib/styles/tokens.css) for the full source.
+The complete `--vcsi-*` design-token catalog — the reference for styling any custom UI. Consume these in custom CSS (below) and override them on a scope to customize; never hardcode a value a token already covers.
+
+### Using tokens in custom CSS
+
+**When you write custom CSS — a home page, a card, a nav, a legend — consume these tokens instead of hardcoding values.** Hardcoded colors, fonts, and spacing drift from the brand and break dark mode: the semantic colors below auto-switch with the theme, but a hardcoded `#fff` will not.
+
+```css
+/* ❌ hardcoded — drifts from the theme, ignores dark mode */
+.card { background: #fff; color: #333; padding: 20px; border-radius: 8px; font-family: system-ui; }
+
+/* ✅ consume the tokens */
+.card {
+  background: var(--vcsi-bg);
+  color: var(--vcsi-fg);
+  padding: var(--vcsi-space-lg);
+  border: 1px solid var(--vcsi-border);
+  border-radius: var(--vcsi-radius-md);
+  font-family: var(--vcsi-font-sans);
+}
+```
+
+To customize, override a token on a scope (see [CSS Variable Scoping](#css-variable-scoping)) rather than writing a competing rule.
 
 ### Colors
 

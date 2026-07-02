@@ -17,11 +17,11 @@ export default defineAddon({
 	options,
 
 	run: ({ sv }) => {
-		// --- scrolly-kit skill (core + reference files) ---
+		// --- scrolly-kit skill (principles + reference deep-dives) ---
 		sv.file('.claude/skills/scrolly-kit/SKILL.md', () => readSkill('scrolly-kit/SKILL.md'));
-		sv.file('.claude/skills/scrolly-kit/COMPONENTS.md', () => readSkill('scrolly-kit/COMPONENTS.md'));
-		sv.file('.claude/skills/scrolly-kit/LAYOUTS.md', () => readSkill('scrolly-kit/LAYOUTS.md'));
-		sv.file('.claude/skills/scrolly-kit/PATTERNS.md', () => readSkill('scrolly-kit/PATTERNS.md'));
+		sv.file('.claude/skills/scrolly-kit/references/reactive-index.md', () => readSkill('scrolly-kit/references/reactive-index.md'));
+		sv.file('.claude/skills/scrolly-kit/references/copy-json.md', () => readSkill('scrolly-kit/references/copy-json.md'));
+		sv.file('.claude/skills/scrolly-kit/references/layouts.md', () => readSkill('scrolly-kit/references/layouts.md'));
 
 		// --- scrolly-story-editor subagent ---
 		sv.file('.claude/agents/scrolly-story-editor.md', () => readAgent('scrolly-story-editor.md'));
