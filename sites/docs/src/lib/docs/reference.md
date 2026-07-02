@@ -2,9 +2,18 @@
 
 Layout patterns and CSS variables for scrollytelling stories.
 
-## Page Layout
+Everything you build renders inside one of two containers:
+
+- **`.page`** — a centered, width-constrained column for standard content pages (docs, about, home). One fixed layout, typically paired with `Nav` and `Footer`.
+- **`.story`** — the scrollytelling container. Centered prose by default, but its layouts break out to full width. This is where the scrolly layouts, step styling, and multi-section patterns below apply.
+
+Pick your container, then style within it. The [scoping rules](#css-variable-scoping) and [token catalog](#global-css-variables) at the end apply to both.
+
+## Page
 
 The `.page` class provides a centered, width-constrained container for standard content pages. It's typically used with `Nav` and `Footer` components.
+
+![Page layout: a body flex-column stacks Nav, a flex:1 main holding the centered .page — 5% side padding, max-width 1200px, 5.5rem top padding and 7.5rem bottom margin — then Footer. Nav, Footer, and .page share --vcsi-page-inline-padding and --vcsi-page-max-width, so their content edges align.](/diagrams/page-layout.svg "The .page container, with Nav and Footer sharing the same width tokens")
 
 ```svelte
 <script>
@@ -21,9 +30,7 @@ The `.page` class provides a centered, width-constrained container for standard 
 <Footer />
 ```
 
-### CSS Variables
-
-Nav, Footer, and `.page` all use the same width/padding variables for consistent alignment:
+`Nav`, `Footer`, and `.page` all use the same width/padding variables for consistent alignment:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -32,18 +39,21 @@ Nav, Footer, and `.page` all use the same width/padding variables for consistent
 | `--vcsi-nav-height` | 4.5rem | Nav height (.page has padding-top to clear it) |
 | `--vcsi-bottom-padding` | 7.5rem | Bottom padding for pages and stories |
 
-### When to Use
+`Nav` and `Footer` are customizable components with their own props and tokens — see their component docs.
 
-- **.page** -- Standard content pages (docs, about, home)
-- **.story** -- Scrollytelling articles with layouts that break out
-
-## Story Container
+## Stories
 
 The `.story` class is the main container for scrollytelling content. It provides:
 
 - Centered prose by default (max-width 600px)
 - Light theme isolation from global dark mode
 - Padding and spacing for readability
+
+Its layouts break out of that prose column to full width. Everything in this section — the story container, each layout, and step styling — is customized with `--vcsi-*` variables (see [Variable Scoping](#css-variable-scoping) for *where* to set them).
+
+### The .story container
+
+![The .story container: prose is centered at max-width 600px with 5.5rem top padding and 7.5rem bottom padding; layout sections break out to full width while keeping the story's 2rem inline padding, then content returns to the centered prose column.](/diagrams/story-container.svg "The .story container — centered prose with full-width layout breakouts")
 
 ```svelte
 <article class="story">
@@ -58,15 +68,11 @@ The `.story` class is the main container for scrollytelling content. It provides
 </article>
 ```
 
-### CSS Variables
-
 | Variable | Default (Light) | Default (Dark) | Description |
 |----------|----------------|----------------|-------------|
 | `--vcsi-story-bg` | #f4efea | #353839 | Story background color |
 | `--vcsi-story-fg` | rgb(55, 55, 55) | white | Story text color |
 | `--vcsi-story-max-width` | 600px | 600px | Max width for prose content |
-
-### Dark Theme
 
 Add `data-theme="dark"` for dark stories:
 
@@ -76,9 +82,11 @@ Add `data-theme="dark"` for dark stories:
 </article>
 ```
 
-## Split Layout
+### Split Layout
 
 Two-column layout with a sticky visualization panel and scrolling content. While it breaks out of the prose max-width, it maintains its own side padding (2rem by default) rather than going edge-to-edge like `.fullscreen-layout`.
+
+![Split layout: inside a .story, a full-width split-layout section keeps 2rem side padding and forms two columns — a scrolly-content column (1fr) with stacked steps and top/bottom spacers, a 2rem gap, and a sticky-panel column (minmax(450px, 45%)) whose visualization stays pinned while the steps scroll. Add .reversed to swap the columns.](/diagrams/split-layout.svg "Split layout: scrolly-content scrolls past a pinned sticky-panel")
 
 ```svelte
 <section class="split-layout">
@@ -96,8 +104,6 @@ Two-column layout with a sticky visualization panel and scrolling content. While
 </section>
 ```
 
-### CSS Variables
-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `--vcsi-panel-width` | 45% | Width of sticky panel |
@@ -109,13 +115,9 @@ Two-column layout with a sticky visualization panel and scrolling content. While
 | `--vcsi-step-height` | 90vh | Vertical space between steps |
 | `--vcsi-spacer-height` | 65vh | Height of top/bottom spacers |
 
-### Mobile Behavior
-
 On screens &lt;768px, the layout stacks with the sticky panel as a full-screen background and content overlaying it.
 
-### Cookbook
-
-#### Customizing Panel Size
+#### Customizing panel size
 
 To give the visualization more space while capping its absolute width:
 
@@ -132,9 +134,11 @@ To give the visualization more space while capping its absolute width:
 
 The grid uses `minmax(min-width, width)`, so the panel scales between the min and percentage values. Adding `max-width` on `.sticky-panel` caps the absolute size on wide screens.
 
-## Fullscreen Layout
+### Fullscreen Layout
 
 Full-viewport immersive layout for dramatic visualizations.
+
+![Fullscreen layout: spans 100vw edge-to-edge; the sticky-panel fills the viewport (100vh) with the visualization, and width-constrained step boxes (max-width 500px) are overlaid centered near the bottom. It escapes the prose container with margin-left: calc(-50vw + 50%).](/diagrams/fullscreen-layout.svg "Fullscreen layout — a viewport-filling panel with overlaid steps")
 
 ```svelte
 <section class="fullscreen-layout">
@@ -147,19 +151,17 @@ Full-viewport immersive layout for dramatic visualizations.
 </section>
 ```
 
-### CSS Variables
-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `--vcsi-step-max-width` | 500px | Max width of step boxes |
 | `--vcsi-step-padding` | 2rem | Padding inside steps |
 | `--vcsi-step-pointer-events` | none | Allows clicks to pass through to panel |
 
-### Cookbook
-
-#### Repositioning Step Boxes
+#### Repositioning step boxes
 
 By default, step boxes are horizontally centered via `margin: 0 auto` on `.scrolly-content`. Override to position them differently:
+
+![Step positioning: two fullscreen viewports side by side — on the left the overlaid step box is pushed to the left edge with margin-left; on the right it is centered with margin: 0 auto, the default. The overlaid step is positioned by the .scrolly-content margins.](/diagrams/step-positions.svg "Left-aligned vs centered overlaid step boxes")
 
 ```css
 /* Left-aligned steps */
@@ -171,11 +173,15 @@ By default, step boxes are horizontally centered via `margin: 0 auto` on `.scrol
 
 The `margin-left: auto` / `margin-right: auto` pattern pushes the content to the opposite side. Add a fixed margin on the aligned side for padding from the edge.
 
-### Examples in the Wild
+#### Examples in the Wild
 
-Inspiring fullscreen scrollytelling stories from around the web.
+Fullscreen scrollytelling stories from around the web:
 
-## Triple Layout
+[![Hello Stranger — an immersive scrollytelling piece by The Pudding](/hello-stranger.jpg "Hello Stranger · The Pudding")](https://pudding.cool/2025/06/hello-stranger/)
+[![Visualizing Neglect — a scrollytelling story by Nadieh Bremer](/visualizing-neglect.jpg "Visualizing Neglect · Nadieh Bremer")](https://endfund.org/visualizing-neglect/)
+[![A Guide to the Circular Deals Underpinning the AI Boom — Bloomberg](/2026-ai-circular-deals.jpg "Circular Deals in the AI Boom · Bloomberg")](https://www.bloomberg.com/graphics/2026-ai-circular-deals/)
+
+### Triple Layout
 
 Three columns — scrolling steps, a sticky code panel, and a sticky chart panel — for code-walkthrough stories.
 
@@ -193,8 +199,6 @@ Three columns — scrolling steps, a sticky code panel, and a sticky chart panel
 </section>
 ```
 
-### CSS Variables
-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `--vcsi-layout-gap` | 1.5rem | Gap between columns |
@@ -202,11 +206,9 @@ Three columns — scrolling steps, a sticky code panel, and a sticky chart panel
 | `--vcsi-panel-top-offset` | auto-centered | Vertical position of the sticky panels |
 | `--vcsi-content-padding-inline` | 2rem | Horizontal padding for the layout |
 
-### Mobile Behavior
-
 On tablets (&lt;1024px) the code panel is hidden, leaving steps + chart. On phones (&lt;768px) it collapses to a single column with the chart as a full-viewport sticky background and the steps overlaid.
 
-## Full Bleed
+### Full Bleed
 
 Escape the prose column to full viewport width — for a standalone chart, image, or map that is *not* a scrolly section. Use it as a direct child of `.story`.
 
@@ -219,15 +221,15 @@ Escape the prose column to full viewport width — for a standalone chart, image
 </article>
 ```
 
-### CSS Variables
-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `--vcsi-bleed-padding-inline` | 2rem | Horizontal padding inside the full-bleed area |
 
-## Dashboard Layout
+### Dashboard Layout
 
 Sidebar + main content for interactive data dashboards.
+
+![Dashboard layout: a two-column grid with a fixed-width dashboard-sidebar (280px) of filters and controls beside a dashboard-main column (1fr) holding the chart. The sidebar collapses to 48px and becomes a slide-down drawer on mobile.](/diagrams/dashboard-layout.svg "Dashboard layout — a sidebar of controls beside the main chart")
 
 ```svelte
 <article class="dashboard-layout">
@@ -243,8 +245,6 @@ Sidebar + main content for interactive data dashboards.
 </article>
 ```
 
-### CSS Variables
-
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `--vcsi-sidebar-width` | 280px | Sidebar width when open |
@@ -253,19 +253,13 @@ Sidebar + main content for interactive data dashboards.
 | `--vcsi-sidebar-transition` | 300ms ease | Animation timing for collapse/expand |
 | `--vcsi-z-overlay` | 1000 | Z-index for mobile overlay |
 
-### Collapsible Sidebar
+Toggle the `.sidebar-collapsed` class on `.dashboard-layout` to collapse/expand. On mobile, the sidebar becomes a slide-down drawer — toggle `.sidebar-open` to show it.
 
-Toggle `.sidebar-collapsed` class on `.dashboard-layout` to collapse/expand.
+### Step Styling
 
-### Mobile Behavior
+Step boxes work the same across every layout. These variables control their colors and sizing (they apply to `.split-layout`, `.fullscreen-layout`, and any layout using `ScrollyContent`).
 
-On mobile, sidebar becomes a slide-down drawer. Toggle `.sidebar-open` class to show.
-
-## Step Styling
-
-Step boxes in scrolly layouts use these CSS variables for colors and sizing. These apply to both `.split-layout` and `.fullscreen-layout`.
-
-### CSS Variables
+![Step theme states: the same step box in the light theme and the dark theme, each with an active state (bright background, soft shadow) and an inactive, dimmed state. Active uses --vcsi-story-step-bg and -fg; inactive uses --vcsi-story-step-bg-inactive and -fg-inactive.](/diagrams/step-themes.svg "Active vs inactive step boxes in light and dark themes")
 
 | Variable | Light | Dark | Description |
 |----------|-------|------|-------------|
@@ -279,9 +273,7 @@ Step boxes in scrolly layouts use these CSS variables for colors and sizing. The
 | `--vcsi-step-border-radius` | 5px | 5px | Step box corner radius |
 | `--vcsi-step-text-align` | center | center | Text alignment in steps |
 
-All step variables use the `--vcsi-` prefix and are defined in `tokens.css`. Override them on any parent element to customize per-section.
-
-### Example Override
+All step variables use the `--vcsi-` prefix and are defined in `tokens.css`. Override them on any parent element to customize per-section:
 
 ```css
 .split-layout {
@@ -302,11 +294,11 @@ For a minimal look where only text floats over the visualization:
 
 ## CSS Variable Scoping
 
-Two rules to keep in mind when overriding `--vcsi-*` variables in your story's `<style>` block.
+Two rules govern *where* you set `--vcsi-*` variables. Getting them wrong is the single most common styling mistake — a variable set on the wrong element silently does nothing.
 
 ### Rule 1: Set variables on the element that reads them
 
-CSS custom properties cascade **downward** to children. A variable must be set on the element that consumes it, or on an ancestor -- not on a descendant.
+CSS custom properties cascade **downward** to children. A variable must be set on the element that consumes it, or on an ancestor — never on a descendant.
 
 ```css
 /* Layout vars → set on .split-layout (the element that reads them) */
@@ -340,7 +332,7 @@ CSS custom properties cascade **downward** to children. A variable must be set o
 
 ### Rule 2: Scoped styles vs global classes
 
-Svelte scopes `<style>` rules to elements in your component's template. Classes like `.split-layout` and `.scrolly-content` that appear directly in your markup work fine with scoped styles -- Svelte adds its hash to both the element and the rule.
+Svelte scopes `<style>` rules to elements in your component's template. Classes like `.split-layout` and `.scrolly-content` that appear directly in your markup work fine with scoped styles — Svelte adds its hash to both the element and the rule.
 
 ```css
 /* Your Index.svelte has <section class="split-layout"> in its markup */
@@ -354,7 +346,7 @@ Svelte scopes `<style>` rules to elements in your component's template. Classes 
 }
 ```
 
-Use `:global()` only when targeting classes on elements **inside imported components** -- elements you don't control in your own template:
+Use `:global()` only when targeting classes on elements **inside imported components** — elements you don't control in your own template:
 
 ```css
 /* .step-box is rendered by ScrollyContent, not your template */
@@ -365,12 +357,14 @@ Use `:global()` only when targeting classes on elements **inside imported compon
 
 ## Multi-Section Stories
 
-Stories can combine multiple scrolly sections with text interludes. The recommended pattern uses two approaches side by side:
+Most stories are **single-section**: one `ScrollyContent` bound to one `scrollyIndex`, driving one visualization. More complex stories combine **multiple scrolly sections** with text interludes — the main thing to get right there is that each section needs its own index.
+
+The recommended multi-section pattern uses two approaches side by side:
 
 | Pattern | Controlled by | Best for |
 |---------|--------------|----------|
-| **JSON-driven** | `copy.json` via `renderContent` | Text sections, inline components -- author-friendly |
-| **Svelte-explicit** | Markup in `Index.svelte` | Scrolly layouts, component props, theming -- developer-controlled |
+| **JSON-driven** | `copy.json` via `renderContent` | Text sections, inline components — author-friendly |
+| **Svelte-explicit** | Markup in `Index.svelte` | Scrolly layouts, component props, theming — developer-controlled |
 
 ### The renderContent snippet
 
@@ -428,24 +422,9 @@ Place a component marker anywhere in a content array. The `renderContent` snippe
 
 This pairs with the `@the-vcsi/msgraph` add-on for teams where non-technical contributors author content in a shared Excel spreadsheet (section | key | value format).
 
-### Multiple scroll indices
+### One index per section
 
-Each scrolly section needs its own state variable. Don't share a single `scrollyIndex` across sections:
-
-```js
-let barIndex = $state(0);
-let scatterIndex = $state(0);
-```
-
-See `scrolly-story-1` in the baked template for a complete example with two scrolly sections, text interludes, and inline components.
-
-## Gotchas
-
-Common pitfalls when building stories.
-
-### Shared scrollyIndex across sections
-
-Each scrolly section must have its **own state variable**. If two `ScrollyContent` components bind to the same `scrollyIndex`, scrolling in one section overwrites the other's value -- causing both visualizations to react to the wrong section.
+Each scrolly section must have its **own state variable**. If two `ScrollyContent` components bind to the same `scrollyIndex`, scrolling in one section overwrites the other's value — both visualizations then react to the wrong section.
 
 ```svelte
 <!-- Wrong — shared state -->
@@ -474,52 +453,13 @@ Each scrolly section must have its **own state variable**. If two `ScrollyConten
 <ScrollyContent steps={data.steps2} bind:value={scatterIndex} />
 ```
 
-This also means you can reuse the same visualization component in multiple sections -- just pass it a different index prop.
+This also means you can reuse the same visualization component in multiple sections — just pass it a different index prop.
 
-### CSS variables set on the wrong element
-
-CSS custom properties cascade **downward**. Setting a variable on a child has no effect on a parent that reads it. See [Variable Scoping](#css-variable-scoping) for the full rule.
-
-```css
-/* Wrong — child can't set parent's variable */
-.scrolly-content {
-  --vcsi-panel-width: 65%;  /* .split-layout reads this, not .scrolly-content */
-}
-```
-
-```css
-/* Correct — set on the element that reads it */
-.split-layout {
-  --vcsi-panel-width: 65%;
-}
-```
-
-### Global DOM selectors in plot components
-
-Avoid `document.querySelector('.chart')` in visualization components. In a multi-section story, it may grab the wrong element from a different section. Instead, use Svelte's `bind:this` to reference your own DOM:
-
-```svelte
-<!-- Wrong -->
-<script>
-  // Could grab the chart from a different section!
-  const el = document.querySelector('.chart');
-</script>
-```
-
-```svelte
-<!-- Correct -->
-<script>
-  let chartEl = $state();
-</script>
-
-<div class="chart" bind:this={chartEl}>
-  <!-- chartEl always refers to THIS component's div -->
-</div>
-```
+See `scrolly-story-1` in the baked template for a complete example with two scrolly sections, text interludes, and inline components.
 
 ## Global CSS Variables
 
-The complete `--vcsi-*` design-token catalog — the reference for styling any custom UI. Consume these in custom CSS (below) and override them on a scope to customize; never hardcode a value a token already covers.
+The complete `--vcsi-*` design-token catalog — the reference for styling any custom UI. Consume these in custom CSS and override them on a scope to customize; never hardcode a value a token already covers.
 
 ### Using tokens in custom CSS
 
@@ -627,3 +567,5 @@ To customize, override a token on a scope (see [CSS Variable Scoping](#css-varia
 | `--vcsi-transition-fast` | 150ms ease |
 | `--vcsi-transition-base` | 200ms ease |
 | `--vcsi-transition-slow` | 300ms ease |
+</content>
+</invoke>

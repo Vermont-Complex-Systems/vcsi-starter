@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 332" width="640" height="332"
+     role="img" aria-labelledby="sc-title sc-desc"
+     font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="currentColor">
+  <title id="sc-title">Story container structure</title>
+  <desc id="sc-desc">The .story container centers prose at max-width 600px with padding-top 5.5rem and a bottom
+    padding of 7.5rem. Layout sections break out of the prose column to full width while keeping the story's 2rem
+    inline padding, then content returns to the centered prose column.</desc>
+
+  <text x="16" y="20" fill-opacity="0.55">.story</text>
+  <rect x="14" y="28" width="612" height="268" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.32" stroke-dasharray="5 4"/>
+
+  <rect x="26" y="40" width="588" height="20" fill-opacity="0.09"/>
+  <text x="320" y="54" text-anchor="middle" font-size="9" fill-opacity="0.5">padding-top: 5.5rem</text>
+
+  <rect x="190" y="68" width="260" height="30" rx="4" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="320" y="87" text-anchor="middle" fill-opacity="0.55">centered prose · max-width 600px</text>
+
+  <rect x="26" y="108" width="30" height="96" fill-opacity="0.09"/>
+  <rect x="584" y="108" width="30" height="96" fill-opacity="0.09"/>
+  <text x="41" y="156" text-anchor="middle" font-size="9" fill-opacity="0.5" transform="rotate(-90 41 156)">2rem</text>
+  <text x="599" y="156" text-anchor="middle" font-size="9" fill-opacity="0.5" transform="rotate(-90 599 156)">2rem</text>
+  <rect x="62" y="108" width="522" height="96" rx="4" fill-opacity="0.05" stroke="#e0843c" stroke-width="2"/>
+  <text x="70" y="124" fill-opacity="0.55">layout section</text>
+  <text x="323" y="162" text-anchor="middle" fill-opacity="0.55">breaks the prose column · keeps the story's inline padding</text>
+
+  <rect x="190" y="216" width="260" height="26" rx="4" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="320" y="233" text-anchor="middle" fill-opacity="0.55">…more centered prose…</text>
+
+  <rect x="26" y="254" width="588" height="22" fill-opacity="0.09"/>
+  <text x="320" y="269" text-anchor="middle" font-size="9" fill-opacity="0.5">--vcsi-bottom-padding: 7.5rem</text>
+
+  <text x="320" y="320" text-anchor="middle" fill-opacity="0.55">prose stays centered at 600px · layouts break to full width but keep the story's inline padding</text>
+</svg>

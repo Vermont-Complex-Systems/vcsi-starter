@@ -22,6 +22,7 @@
     "@humanspeak/svelte-markdown": "^1.6.0",
     "@lucide/svelte": "^0.564.0",
     "@the-vcsi/scrolly-kit": "*",
+    "highlight.js": "^11.11.1",
     "mode-watcher": "^1.1.0",
     "valibot": "^1.4.1"
   }

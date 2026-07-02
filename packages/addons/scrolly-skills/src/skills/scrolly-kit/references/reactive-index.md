@@ -10,6 +10,16 @@ $state (Index.svelte) → bind:value (ScrollyContent) → prop → $derived (vis
 
 One `$state` per scrolly section. Initialize to `undefined` when the visual should sit in a neutral state until the reader arrives, or `0` to start active. The component receives it as a read-only prop and **always guards** the `undefined` case (`step ?? 0`).
 
+**Reference your own DOM with `bind:this`, never `document.querySelector`.** A global selector like `document.querySelector('.chart')` grabs the *first* match on the page — in a multi-section story that is very likely a different section's element. Bind the node you own instead:
+
+```svelte
+<script>
+  let chartEl = $state();  // always THIS component's node
+</script>
+
+<div class="chart" bind:this={chartEl}>…</div>
+```
+
 ## Which technique?
 
 | The visual changes by… | Use |

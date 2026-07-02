@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 214" width="640" height="214"
+     role="img" aria-labelledby="sp-title sp-desc"
+     font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="currentColor">
+  <title id="sp-title">Step positioning in a fullscreen layout</title>
+  <desc id="sp-desc">In a fullscreen layout the overlaid step box is positioned by the .scrolly-content margins.
+    On the left, margin-left with margin-right:auto pushes the step to the left edge; on the right, margin: 0 auto
+    centers the step, which is the default.</desc>
+
+  <rect x="20" y="40" width="290" height="118" rx="6" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.28"/>
+  <rect x="34" y="118" width="96" height="30" rx="4" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="82" y="137" text-anchor="middle">Step</text>
+  <text x="165" y="180" text-anchor="middle" fill-opacity="0.55">margin-left: 2rem · left</text>
+
+  <rect x="330" y="40" width="290" height="118" rx="6" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.28"/>
+  <rect x="427" y="118" width="96" height="30" rx="4" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="475" y="137" text-anchor="middle">Step</text>
+  <text x="475" y="180" text-anchor="middle" fill="#e0843c" font-weight="600">margin: 0 auto · center (default)</text>
+
+  <text x="320" y="204" text-anchor="middle" fill-opacity="0.55">the overlaid step is positioned by .scrolly-content margins</text>
+</svg>

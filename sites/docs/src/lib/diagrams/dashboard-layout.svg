@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="640" height="300"
+     role="img" aria-labelledby="db-title db-desc"
+     font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="currentColor">
+  <title id="db-title">Dashboard layout structure</title>
+  <desc id="db-desc">A dashboard-layout is a two-column grid: a fixed-width dashboard-sidebar (280px) holding
+    filters and controls, and a dashboard-main column (1fr) holding the chart or visualization. The sidebar
+    collapses to --vcsi-sidebar-collapsed-width (48px), and becomes a slide-down drawer on mobile.</desc>
+
+  <text x="16" y="20" fill-opacity="0.55">.dashboard-layout</text>
+  <rect x="14" y="28" width="612" height="240" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.32" stroke-dasharray="5 4"/>
+
+  <rect x="26" y="40" width="150" height="216" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="5 4"/>
+  <text x="34" y="56" fill-opacity="0.55">dashboard-sidebar</text>
+  <text x="166" y="57" text-anchor="end" fill="#e0843c" font-size="11" font-weight="600">&#8249;</text>
+  <text x="34" y="70" font-size="9" fill-opacity="0.5">width: 280px</text>
+  <rect x="34" y="78" width="134" height="170" rx="4" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.28"/>
+  <rect x="44" y="90" width="114" height="14" rx="3" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <rect x="44" y="112" width="114" height="14" rx="3" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <rect x="44" y="134" width="114" height="14" rx="3" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="101" y="170" text-anchor="middle" font-size="9" fill-opacity="0.5">filters · controls</text>
+
+  <rect x="186" y="40" width="428" height="216" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="5 4"/>
+  <text x="194" y="56" fill-opacity="0.55">dashboard-main · 1fr</text>
+  <rect x="194" y="66" width="412" height="182" rx="4" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.28"/>
+  <text x="400" y="160" text-anchor="middle" font-size="11" font-weight="600">Chart / Visualization</text>
+
+  <text x="320" y="288" text-anchor="middle" fill-opacity="0.55">collapses to --vcsi-sidebar-collapsed-width (48px) · slide-down drawer on mobile</text>
+</svg>

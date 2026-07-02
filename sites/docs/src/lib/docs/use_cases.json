@@ -1,7 +1,7 @@
 {
 	"getting-started": "setup, installation, scaffolding, new project, quick start",
 	"subagent": "subagent, scrolly-story-editor, delegate story work, Claude Code agent, AI",
-	"reference": "layouts, CSS variables, design tokens, split layout, fullscreen, triple layout, full bleed, dashboard, story theming, scrolly styling, gotchas",
+	"reference": "page vs story containers, story layouts, split layout, fullscreen, triple layout, full bleed, dashboard, step styling, CSS variable scoping, multi-section stories, one index per section, design tokens, --vcsi variables, story theming, scrolly styling",
 	"utilities": "scrollReveal action, scroll reveal animation, useIsMobile, useMediaQuery, responsive helpers, renderCodeHtml, actions, helpers",
 	"components-overview": "component list, categories",
 	"components/Scrolly": "scroll detection, IntersectionObserver, step tracking",
