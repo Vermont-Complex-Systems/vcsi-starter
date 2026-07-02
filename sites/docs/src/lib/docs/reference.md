@@ -175,6 +175,56 @@ The `margin-left: auto` / `margin-right: auto` pattern pushes the content to the
 
 Inspiring fullscreen scrollytelling stories from around the web.
 
+## Triple Layout
+
+Three columns — scrolling steps, a sticky code panel, and a sticky chart panel — for code-walkthrough stories.
+
+```svelte
+<section class="triple-layout">
+  <div class="scrolly-content">
+    <!-- ScrollyContent steps -->
+  </div>
+  <div class="code-panel">
+    <!-- Sticky code, e.g. CodeExplainer -->
+  </div>
+  <div class="chart-panel">
+    <!-- Sticky visualization -->
+  </div>
+</section>
+```
+
+### CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--vcsi-layout-gap` | 1.5rem | Gap between columns |
+| `--vcsi-panel-height` | min(95vh, 900px) | Height of the sticky code/chart panels |
+| `--vcsi-panel-top-offset` | auto-centered | Vertical position of the sticky panels |
+| `--vcsi-content-padding-inline` | 2rem | Horizontal padding for the layout |
+
+### Mobile Behavior
+
+On tablets (&lt;1024px) the code panel is hidden, leaving steps + chart. On phones (&lt;768px) it collapses to a single column with the chart as a full-viewport sticky background and the steps overlaid.
+
+## Full Bleed
+
+Escape the prose column to full viewport width — for a standalone chart, image, or map that is *not* a scrolly section. Use it as a direct child of `.story`.
+
+```svelte
+<article class="story">
+  <p>Prose stays centered…</p>
+  <div class="full-bleed">
+    <!-- Full-width chart / image / map -->
+  </div>
+</article>
+```
+
+### CSS Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `--vcsi-bleed-padding-inline` | 2rem | Horizontal padding inside the full-bleed area |
+
 ## Dashboard Layout
 
 Sidebar + main content for interactive data dashboards.

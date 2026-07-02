@@ -22,9 +22,10 @@ Structural components for page layout.
 Components for rendering text, markdown, and code.
 
 - [MarkdownRenderer](components/MarkdownRenderer) -- Renders markdown with KaTeX math support
-- [RenderContent](components/RenderContent) -- Renders content items by type
-- [CopyCodeBlock](components/CopyCodeBlock) -- Copyable code block with clipboard support
+- [RenderContent](components/RenderContent) -- Renders content items (markdown/html/math/code/component), single or array
 - [CodeBlock](components/CodeBlock) -- Syntax-highlighted code display
+- [CopyCodeBlock](components/CopyCodeBlock) -- Copyable code block with clipboard support
+- [CodeExplainer](components/CodeExplainer) -- Scroll-driven code walkthrough with per-step line highlighting
 
 ## UI Controls
 
@@ -50,3 +51,11 @@ Helper components for common patterns.
 - [Meta](components/Meta) -- SEO meta tags for social sharing
 - [Spinner](components/Spinner) -- Loading indicator
 - [ScrollIndicator](components/ScrollIndicator) -- Animated scroll-down arrow
+
+## Non-component exports
+
+Actions and helpers that aren't components — see [Utilities & actions](utilities).
+
+- `scrollReveal` -- Svelte action that reveals elements on scroll
+- `useIsMobile` / `useMediaQuery` -- reactive media-query helpers
+- `renderCodeHtml` -- build highlighted code HTML for MarkdownRenderer

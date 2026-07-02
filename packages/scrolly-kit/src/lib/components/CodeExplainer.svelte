@@ -1,14 +1,8 @@
 <script lang="ts">
     import Md from './MarkdownRenderer.svelte';
     import ScrollyContent from './ScrollyContent.svelte';
-    import { renderCodeHtml, type ContentItem } from './ScrollySnippets.svelte';
-
-    interface CodeExplainerData {
-        code: string;
-        language?: string;
-        filename?: string;
-        steps: (ContentItem & { highlightLines?: string })[];
-    }
+    import { renderCodeHtml } from './ScrollySnippets.svelte';
+    import type { CodeExplainerData } from '../types';
 
     interface Props {
         data: CodeExplainerData;

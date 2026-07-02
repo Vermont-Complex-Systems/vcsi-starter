@@ -104,20 +104,20 @@ export interface Author {
   url?: string;
 }
 
-/** Code step for CodeExplainer */
-export interface CodeStep {
-  /** Step content (markdown) */
-  content: ContentItem;
-  /** Lines to highlight (e.g., "1-3,5") */
+/** A CodeExplainer step: a content item plus the lines it highlights for that step */
+export type CodeStep = ContentItem & {
+  /** Lines to highlight for this step, e.g. "1-3,5" */
   highlightLines?: string;
-}
+};
 
-/** Data for CodeExplainer component */
+/** Data for the CodeExplainer component */
 export interface CodeExplainerData {
   /** Code to display */
   code: string;
-  /** Syntax highlighting language */
+  /** Syntax highlighting language, e.g. "svelte", "js" */
   language?: string;
-  /** Array of explanation steps */
+  /** Optional filename shown as a tab above the code */
+  filename?: string;
+  /** Explanation steps; each highlights its lines as the reader reaches it */
   steps: CodeStep[];
 }
