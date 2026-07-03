@@ -23,13 +23,16 @@
     "package": "svelte-kit sync && svelte-package -o dist",
     "package:watch": "svelte-kit sync && svelte-package -o dist --watch",
     "prepublishOnly": "npm run package",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0",
     "svelte": "^5.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@sveltejs/kit": "^2.65.1",
     "@sveltejs/package": "^2.3.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",

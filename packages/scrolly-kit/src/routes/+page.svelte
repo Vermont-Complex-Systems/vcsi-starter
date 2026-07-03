@@ -1,3 +1,21 @@
+<script>
+	import { Nav } from '$lib';
+</script>
+
+<!-- The package Nav with built-in ThemeToggle, and on mobile the hamburger +
+     NavMenu (test the focus containment: open it, Tab around). The wordmark
+     logo is wide, so we size it via the nav-logo-height token. -->
+<div style="--vcsi-nav-logo-height: 2.25rem; --vcsi-nav-logo-height-mobile: 1.5rem;">
+	<Nav
+		logoSrc="/scrolly-kit-logo.svg"
+		logoAlt="scrolly-kit"
+		links={[
+			{ href: '/', label: 'Kitchen sink' },
+			{ href: '/story', label: 'Story' }
+		]}
+	/>
+</div>
+
 <!-- Kitchen sink: every element markdown can emit, with zero classes beyond
      .page. If this page looks decent, the "untweaked default" contract holds. -->
 <article class="page">

@@ -30,3 +30,7 @@ vite.config.ts.timestamp-*
 CLAUDE.md
 .prettierrc
 node_modules
+
+# Playwright artifacts (baselines in *-snapshots/ ARE committed)
+test-results/
+playwright-report/
