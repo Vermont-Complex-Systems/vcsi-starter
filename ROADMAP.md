@@ -14,10 +14,10 @@ against frozen docs.
 - [ ] Accessibility pass
   - [ ] `prefers-reduced-motion`: gate transitions/tweens (step reveals, sidebar, theme fade)
   - [ ] Contrast audit: step boxes over visuals; inactive step text (`#ccc` on `#f5f5f5` likely fails WCAG)
-  - [ ] Keyboard + screen-reader check on interactive components (ThemeToggle, SimpleSelect, RangeSlider, sidebar toggle)
+  - [x] Keyboard + screen-reader check on the *hand-rolled* interactive components. Outcome: ThemeToggle announces state (dynamic label); NavMenu uses `inert` on `<main>` so Tab can't escape the open menu; Tooltip is a chart annotation box, not an interactive widget (its a11y note: hover-only chart data needs a text alternative — honest-limits page); the vanilla `.sidebar-toggle` gets `aria-expanded` in docs examples. (bits-ui builds — SimpleToggle/SimpleSelect/RangeSlider/ChartTooltip/Sidebar — inherit WAI-ARIA behavior.)
   - [ ] Write down honest limits (feeds the a11y page in Phase 2)
 - [ ] `CHANGELOG.md`: record the 0.0.x → 0.1.0 changes (p unpinning, table defaults, body-layout split, new tokens) and adopt semver discipline from here on
-- [ ] Playwright smoke screenshots over the playground (kitchen sink, story, story @ mobile width)
+- [x] Playwright smoke screenshots over the playground: 7 baselines (kitchen sink desktop light/dark + mobile, story desktop light/dark + mobile) plus a theme-isolation leak detector (story must render identically under global light and dark). `npm run test:visual` / `test:visual:update` in `packages/scrolly-kit`; baselines are Linux-specific.
 - [ ] Release 0.1.0 (publish: Jonathan)
 
 ## Phase 2: Docs at 0.1.0 quality
@@ -52,3 +52,4 @@ against frozen docs.
 - Svelte Playground "try online" links (needs a published 0.1.0 anyway)
 - `--vcsi-*` prefix rename (breaking, not worth it)
 - Any new components or layouts
+- Rebuild NavMenu on bits-ui Dialog (focus trap for free; precedent: dashboard drawer). Post-0.1.0 — the `inert` patch covers the gap for now.
