@@ -1,6 +1,6 @@
 # CodeBlock
 
-Syntax-highlighted code display with optional line numbers and language badge.
+Syntax-highlighted code display with an optional filename badge.
 
 **Category:** Content
 
@@ -9,8 +9,8 @@ Syntax-highlighted code display with optional line numbers and language badge.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | code | string | — | Code content to display |
-| language | string | — | Language for syntax highlighting |
-| showLineNumbers | boolean | false | Show line numbers |
+| language | string | 'typescript' | Language for syntax highlighting |
+| filename | string | '' | Filename rendered as a badge tab above the code |
 
 ## Usage
 
@@ -22,6 +22,6 @@ Syntax-highlighted code display with optional line numbers and language badge.
 <CodeBlock
   code="const x = 1;"
   language="javascript"
-  showLineNumbers
+  filename="example.js"
 />
 ```

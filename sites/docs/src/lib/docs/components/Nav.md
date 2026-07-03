@@ -8,10 +8,14 @@ Responsive navigation bar with logo, links, and mobile hamburger menu. Includes 
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| logoSrc | string | VCSI logo | Logo image source |
-| logoAlt | string | 'VCSI Logo' | Logo alt text |
-| links | NavLink[] | — | Array of { href, label } |
+| logoSrc | string | '/waxSealSmall.png' | Logo image source (the templates ship this asset) |
+| logoAlt | string | 'Site logo' | Logo alt text |
+| homeHref | string | '/' | Where the logo links |
+| links | NavLink[] | `[{ href: '/about', label: 'About' }]` | Array of `{ href, label, external? }` |
+| githubUrl | string | vcsi-starter repo | GitHub icon link; set to your repo (or `''` to hide) |
 | showThemeToggle | boolean | true | Show dark mode toggle |
+| theme | 'light' or 'dark' | — | Force a theme, ignoring global mode |
+| position | 'fixed' \| 'sticky' \| 'relative' | 'fixed' | Header positioning |
 
 ## CSS Variables
 

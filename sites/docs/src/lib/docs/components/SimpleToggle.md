@@ -1,6 +1,6 @@
 # SimpleToggle
 
-Simple on/off toggle switch with label support.
+On/off toggle switch with a text state label, built on [bits-ui](https://bits-ui.com/docs/components/toggle).
 
 **Category:** UI Controls
 
@@ -8,16 +8,18 @@ Simple on/off toggle switch with label support.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| checked | boolean | false | Toggle state (bindable) |
-| label | string | — | Optional label |
+| isTrue | boolean | — | Toggle state (bindable) |
+| onText | string | 'Yes' | Label shown when on |
+| offText | string | 'No' | Label shown when off |
 
 ## Usage
 
 ```svelte
 <script>
   import { SimpleToggle } from '@the-vcsi/scrolly-kit';
-  let enabled = $state(false);
+
+  let showRaw = $state(false);
 </script>
 
-<SimpleToggle bind:checked={enabled} label="Enable feature" />
+<SimpleToggle bind:isTrue={showRaw} onText="Raw counts" offText="Normalized" />
 ```

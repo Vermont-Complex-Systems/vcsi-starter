@@ -14,7 +14,8 @@ Core components for scroll-driven storytelling.
 Structural components for page layout.
 
 - [StoryHeader](components/StoryHeader) -- Story header with title, authors, date
-- [Nav](components/Nav) -- Responsive navigation bar
+- [Nav](components/Nav) -- Responsive navigation bar (renders NavMenu on mobile)
+- NavMenu -- Full-screen mobile menu overlay; used by Nav, importable standalone for custom navbars
 - [Footer](components/Footer) -- Site footer with social links
 
 ## Content
@@ -34,7 +35,7 @@ Interactive UI components.
 - [ThemeToggle](components/ThemeToggle) -- Dark/light mode toggle
 - [SimpleSelect](components/SimpleSelect) -- Dropdown select component
 - [SimpleToggle](components/SimpleToggle) -- On/off toggle switch
-- [Tooltip](components/Tooltip) -- Hover tooltip
+- [Tooltip](components/Tooltip) -- Positioned chart annotation box (parent-driven, no hover behavior)
 - [RangeSlider](components/RangeSlider) -- Dual-thumb range slider
 - [ChartTooltip](components/ChartTooltip) -- Popover tooltip anchored to chart elements
 
@@ -43,6 +44,7 @@ Interactive UI components.
 Components for interactive data explorers.
 
 - [DashboardShell](components/DashboardShell) -- Dashboard wrapper with collapsible sidebar
+- `Sidebar.*` -- Compound sidebar components (Root/Trigger/Content, bits-ui Dialog drawer on mobile); see [DashboardShell](components/DashboardShell)
 
 ## Utilities
 

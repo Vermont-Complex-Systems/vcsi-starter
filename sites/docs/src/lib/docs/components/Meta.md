@@ -1,6 +1,6 @@
 # Meta
 
-SEO meta tags for social sharing (Open Graph, Twitter cards).
+SEO meta tags for social sharing (Open Graph, Twitter cards). The canonical/OG URL is derived from the current page path; pass `baseUrl` to make it absolute. SvelteKit-only (reads page state).
 
 **Category:** Utilities
 
@@ -10,8 +10,11 @@ SEO meta tags for social sharing (Open Graph, Twitter cards).
 |------|------|---------|-------------|
 | title | string | — | Page title |
 | description | string | — | Page description |
-| image | string | — | Social sharing image URL |
-| url | string | — | Canonical URL |
+| baseUrl | string | '' | Site origin prepended to the current path for canonical/OG URLs |
+| siteName | string | '' | Open Graph site name |
+| image | string | '/default-og-image.jpg' | Social sharing image URL |
+| keywords | string | '' | Meta keywords |
+| author | string | '' | Author meta tag |
 
 ## Usage
 
@@ -24,6 +27,7 @@ SEO meta tags for social sharing (Open Graph, Twitter cards).
   title="My Story"
   description="An interactive exploration of data"
   image="/og-image.png"
-  url="https://example.com/story"
+  baseUrl="https://example.com"
+  siteName="Complex Stories"
 />
 ```

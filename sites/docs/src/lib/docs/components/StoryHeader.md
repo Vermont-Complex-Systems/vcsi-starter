@@ -12,6 +12,7 @@ Story header with title, subtitle, authors, and date. Provides consistent stylin
 | subtitle | string | — | Optional subtitle |
 | authors | Author[] | — | Array of { name, url? } |
 | date | string | — | Publication date string |
+| warning | string | — | Warning/disclaimer banner rendered after the author names |
 | class | string | '' | Additional CSS classes |
 
 ## Usage

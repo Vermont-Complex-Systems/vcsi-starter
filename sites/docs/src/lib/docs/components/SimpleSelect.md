@@ -1,6 +1,6 @@
 # SimpleSelect
 
-Minimal dropdown select component with clean styling.
+Accessible dropdown select built on [bits-ui](https://bits-ui.com/docs/components/select). Keyboard navigation and ARIA come from the primitive.
 
 **Category:** UI Controls
 
@@ -8,21 +8,24 @@ Minimal dropdown select component with clean styling.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| options | string[] | — | Array of option values |
+| items | `{ value, label, disabled? }[]` | — | Options to choose from (required) |
 | value | string | — | Selected value (bindable) |
-| label | string | — | Optional label |
+| placeholder | string | — | Text shown before a selection is made |
+| disabled | boolean | false | Disable the whole control |
 
 ## Usage
 
 ```svelte
 <script>
   import { SimpleSelect } from '@the-vcsi/scrolly-kit';
-  let selected = $state('option1');
+
+  let metric = $state('papers');
+  const items = [
+    { value: 'papers', label: 'Papers' },
+    { value: 'citations', label: 'Citations' },
+    { value: 'coauthors', label: 'Co-authors', disabled: true }
+  ];
 </script>
 
-<SimpleSelect
-  options={['option1', 'option2', 'option3']}
-  bind:value={selected}
-  label="Choose an option"
-/>
+<SimpleSelect {items} bind:value={metric} placeholder="Pick a metric" />
 ```

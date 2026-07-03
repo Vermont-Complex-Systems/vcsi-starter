@@ -10,8 +10,9 @@ Site footer with logo, social links, and copyright. Supports light/dark theme fo
 |------|------|---------|-------------|
 | theme | 'light' or 'dark' | — | Force light (UVM green) or dark theme |
 | logoSrc | string | UVM logo | Logo image source |
+| logoAlt | string | 'Logo' | Logo alt text |
 | socialLinks | SocialLink[] | VCSI socials | Social media links |
-| bottomLinks | BottomLink[] | — | Footer bottom row links |
+| bottomLinks | BottomLink[] | UVM accessibility + privacy links | Footer bottom row links |
 | copyright | string | VCSI copyright | Copyright text |
 
 ## Usage

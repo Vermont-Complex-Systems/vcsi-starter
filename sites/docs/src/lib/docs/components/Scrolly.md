@@ -9,6 +9,7 @@ Base scroll detection using IntersectionObserver. Tracks which child element is 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `value` | `number` | — | Index of most visible child (bindable) |
+| `scrollProgress` | `number` | `0` | Progress through the active step, 0 to 1 (bindable) |
 | `root` | `Element \| null` | `null` | IntersectionObserver root element |
 | `top` | `number` | `0` | Top margin offset in pixels |
 | `bottom` | `number` | `0` | Bottom margin offset in pixels |

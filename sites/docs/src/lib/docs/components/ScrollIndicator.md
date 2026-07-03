@@ -6,7 +6,9 @@ Animated scroll-down indicator arrow for prompting users to scroll.
 
 ## Props
 
-This component has no props.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| threshold | number | 100 | Scroll depth (px) past which the indicator hides |
 
 ## Usage
 

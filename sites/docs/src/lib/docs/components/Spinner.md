@@ -1,6 +1,6 @@
 # Spinner
 
-Loading spinner indicator for async operations.
+Loading indicator with a text label. Size is fixed (40px); the color comes from `--vcsi-color-accent`.
 
 **Category:** Utilities
 
@@ -8,8 +8,7 @@ Loading spinner indicator for async operations.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| size | number | 24 | Spinner size in pixels |
-| color | string | 'currentColor' | Spinner color |
+| text | string | 'Loading...' | Label rendered under the spinner |
 
 ## Usage
 
@@ -19,6 +18,8 @@ Loading spinner indicator for async operations.
 </script>
 
 {#if loading}
-  <Spinner size={32} />
+  <Spinner text="Fetching papers..." />
 {/if}
 ```
+
+To recolor, override the accent token on a parent: `--vcsi-color-accent: #2c5aa0;`

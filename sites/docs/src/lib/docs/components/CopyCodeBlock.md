@@ -10,6 +10,7 @@ Copyable code block with one-click clipboard support. Shows a checkmark when suc
 |------|------|---------|-------------|
 | command | string | — | The text to display and copy (required) |
 | label | string | '' | Optional label above the code block |
+| language | string | '' | Enables syntax highlighting when set |
 
 ## Usage
 
