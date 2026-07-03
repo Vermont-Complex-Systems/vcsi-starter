@@ -12,13 +12,13 @@ against frozen docs.
 
 - [ ] Feature freeze: bugfixes and accessibility only
 - [ ] Accessibility pass
-  - [ ] `prefers-reduced-motion`: gate transitions/tweens (step reveals, sidebar, theme fade)
-  - [ ] Contrast audit: step boxes over visuals; inactive step text (`#ccc` on `#f5f5f5` likely fails WCAG)
+  - [x] `prefers-reduced-motion`: transition tokens collapse to 0ms + global reset rule
+  - [x] Contrast audit: all token pairs measured; inactive steps fixed (light 4.75:1, dark palette reworked), `--vcsi-muted` dark flip added
   - [x] Keyboard + screen-reader check on the *hand-rolled* interactive components. Outcome: ThemeToggle announces state (dynamic label); NavMenu uses `inert` on `<main>` so Tab can't escape the open menu; Tooltip is a chart annotation box, not an interactive widget (its a11y note: hover-only chart data needs a text alternative — honest-limits page); the vanilla `.sidebar-toggle` gets `aria-expanded` in docs examples. (bits-ui builds — SimpleToggle/SimpleSelect/RangeSlider/ChartTooltip/Sidebar — inherit WAI-ARIA behavior.)
   - [ ] Write down honest limits (feeds the a11y page in Phase 2)
-- [ ] `CHANGELOG.md`: record the 0.0.x → 0.1.0 changes (p unpinning, table defaults, body-layout split, new tokens) and adopt semver discipline from here on
+- [x] `CHANGELOG.md`: 0.1.0 fully recorded; semver from here on
 - [x] Playwright smoke screenshots over the playground: 7 baselines (kitchen sink desktop light/dark + mobile, story desktop light/dark + mobile) plus a theme-isolation leak detector (story must render identically under global light and dark). `npm run test:visual` / `test:visual:update` in `packages/scrolly-kit`; baselines are Linux-specific.
-- [ ] Release 0.1.0 (publish: Jonathan)
+- [x] Release 0.1.0 (published 2026-07-03)
 
 ## Phase 2: Docs at 0.1.0 quality
 
