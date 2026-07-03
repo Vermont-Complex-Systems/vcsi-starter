@@ -3,7 +3,12 @@
   import { Sun, Moon } from '@lucide/svelte';
 </script>
 
-<button onclick={toggleMode} class="theme-toggle" aria-label="Toggle dark mode">
+<!-- Dynamic label announces the current state to screen readers on each toggle -->
+<button
+  onclick={toggleMode}
+  class="theme-toggle"
+  aria-label={mode.current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+>
   {#if mode.current === 'dark'}
     <Sun size={20} />
   {:else}

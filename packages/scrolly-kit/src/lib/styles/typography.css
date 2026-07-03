@@ -102,11 +102,15 @@ blockquote {
 blockquote p { margin: 0; }
 
 /* Tables — minimal GitHub-ish defaults so markdown tables render decently
-   with zero classes. Text size inherits (set it on any container to resize);
-   borders and header shading ride the theme via semantic tokens. */
+   with zero classes. Sized in relative em (like pre/blockquote) so container
+   font-size still cascades; borders and header shading ride the theme via
+   semantic tokens. max-width keeps wide tables inside their container's
+   padding instead of overflowing to the right. */
 table {
   border-collapse: collapse;
   margin-block: var(--vcsi-space-lg);
+  font-size: 0.875em;
+  max-width: 100%;
 }
 
 th, td {

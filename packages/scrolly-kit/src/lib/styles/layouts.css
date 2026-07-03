@@ -53,11 +53,16 @@ main {
 .story,
 .dashboard-layout {
   color-scheme: light;
-  /* Isolate from global dark mode - force light semantic tokens */
+  /* Isolate from global dark mode - force light semantic tokens.
+     IMPORTANT: every theme-flipping semantic token in tokens.css must appear
+     here AND in the [data-theme="dark"] block below, or the global toggle
+     leaks into stories through the missing token. */
   --vcsi-bg: var(--vcsi-bg-light);
   --vcsi-fg: var(--vcsi-fg-light);
   --vcsi-hover: var(--vcsi-hover-light);
   --vcsi-border: var(--vcsi-border-light);
+  --vcsi-link: var(--vcsi-link-light);
+  --vcsi-muted: var(--vcsi-gray-600);
 
   /* Code tokens - isolate from global dark mode */
   --vcsi-code-bg: var(--vcsi-code-bg-light);
@@ -66,6 +71,7 @@ main {
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
   --vcsi-blockquote: var(--vcsi-blockquote-light);
   --vcsi-code-highlight: var(--vcsi-code-highlight-light);
+  --vcsi-code-line-number: var(--vcsi-code-line-number-light);
 }
 
 /* =============================================================================
@@ -125,6 +131,16 @@ main {
 }
 
 
+/* Tables with border-collapse ignore their own padding (per spec), so the
+   prose rule's padding-inline gutter above silently does nothing on them —
+   they'd run edge-to-edge on mobile and overshoot the text column on desktop.
+   Carve the same gutter out of the width instead. */
+.story > table {
+  padding-inline: 0;
+  width: calc(100% - 2 * var(--vcsi-space-md));
+  max-width: calc(var(--vcsi-story-max-width) - 2 * var(--vcsi-space-md));
+}
+
 /* Layout classes break out of the prose max-width AND win specificity
    against the .story > section prose rule above. Each layout routes through
    its own CSS var so authors can override from .story or any ancestor. */
@@ -160,11 +176,13 @@ main {
 .dashboard-layout[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Dark semantic tokens */
+  /* Dark semantic tokens (keep in sync with the isolation block above) */
   --vcsi-bg: var(--vcsi-bg-dark);
   --vcsi-fg: var(--vcsi-fg-dark);
   --vcsi-hover: var(--vcsi-hover-dark);
   --vcsi-border: var(--vcsi-border-dark);
+  --vcsi-link: var(--vcsi-link-dark);
+  --vcsi-muted: var(--vcsi-gray-400);
 
   /* Code tokens for dark theme */
   --vcsi-code-bg: var(--vcsi-code-bg-dark);
@@ -173,17 +191,22 @@ main {
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
   --vcsi-blockquote: var(--vcsi-blockquote-dark);
   --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
+  --vcsi-code-line-number: var(--vcsi-code-line-number-dark);
 }
 
 .story[data-theme="dark"] {
   --vcsi-story-bg: #353839;
   --vcsi-story-fg: white;
 
-  /* ScrollyContent step colors for dark theme */
-  --vcsi-story-step-bg: #2a2a2a;
-  --vcsi-story-step-fg: #e8e8e8;
-  --vcsi-story-step-bg-inactive: #222;
-  --vcsi-story-step-fg-inactive: #666;
+  /* ScrollyContent step colors for dark theme.
+     Box shadows are invisible on dark, so the active/inactive cue comes from
+     background direction: active is LIGHTER than the story bg (#353839, pops
+     forward), inactive is DARKER (recedes). Both text pairs pass WCAG AA
+     (active 8.3:1, inactive 5.7:1). */
+  --vcsi-story-step-bg: #43484c;
+  --vcsi-story-step-fg: #f2f2f2;
+  --vcsi-story-step-bg-inactive: #24262a;
+  --vcsi-story-step-fg-inactive: #9aa0a4;
 }
 
 /* Ensure all text in dark stories uses the story foreground color */

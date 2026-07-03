@@ -257,7 +257,8 @@ Sidebar + main content for interactive data dashboards.
 ```svelte
 <article class="dashboard-layout">
   <aside class="dashboard-sidebar">
-    <button class="sidebar-toggle">...</button>
+    <!-- keep aria-expanded in sync with the collapsed state -->
+    <button class="sidebar-toggle" aria-expanded="true" aria-label="Toggle sidebar">...</button>
     <div class="sidebar-content">
       <!-- Filters, controls -->
     </div>
@@ -389,7 +390,7 @@ Inheritable text properties (`font-family`, `font-size`, `line-height`, `color`)
 }
 ```
 
-Only a few elements carry their own sizes, so a container's `font-size` won't resize them: headings (`--vcsi-font-h1`…`--vcsi-font-h6` tokens), code (`pre` and inline `code`, sized in relative `em`), and blockquotes (`1.1em`). Everything else inherits.
+Only a few elements carry their own sizes: headings (`--vcsi-font-h1`…`--vcsi-font-h6` tokens), code (`pre` and inline `code`, sized in relative `em`), blockquotes (`1.1em`), and tables (`0.875em`). The `em`-sized ones still scale with a container's `font-size`; only the token-sized headings ignore it. Everything else inherits directly.
 
 ## Multi-Section Stories
 

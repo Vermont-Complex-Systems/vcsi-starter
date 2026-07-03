@@ -20,12 +20,14 @@ let closeBtnEl: HTMLButtonElement | undefined;
 
 export const open = () => {
 	closeBtnEl?.focus();
-	mainEl?.setAttribute("aria-hidden", "true");
+	// `inert` blocks focus AND assistive tech; aria-hidden alone still let
+	// keyboard users Tab out of the open menu into the page underneath.
+	if (mainEl) mainEl.inert = true;
 };
 
 const onClose = (e?: Event | string) => {
 	if (e && typeof e !== "string" && e instanceof KeyboardEvent && e.type === "keyup" && e.key !== "Escape") return;
-	mainEl?.removeAttribute("aria-hidden");
+	if (mainEl) mainEl.inert = false;
 	close(e === "skip");
 };
 

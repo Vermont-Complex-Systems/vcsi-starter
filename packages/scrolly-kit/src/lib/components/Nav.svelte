@@ -184,7 +184,9 @@ function closeMenu(skipFocus: boolean | string = false) {
 }
 
 .site-logo {
-	height: 5rem;
+	/* Default suits squarish icon logos; wide wordmarks should override
+	   --vcsi-nav-logo-height (e.g. 2.25rem) on any ancestor. */
+	height: var(--vcsi-nav-logo-height, 5rem);
 	width: auto;
 	display: block;
 	object-fit: contain;
@@ -284,8 +286,10 @@ function closeMenu(skipFocus: boolean | string = false) {
 	}
 
 	.site-logo {
-		width: 3.5rem;
-		height: 3.5rem;
+		/* Height-only sizing so wide wordmark logos aren't letterboxed into a
+		   square; icon logos render the same as the old 3.5rem box. */
+		width: auto;
+		height: var(--vcsi-nav-logo-height-mobile, 3.5rem);
 	}
 
 	.header-left {

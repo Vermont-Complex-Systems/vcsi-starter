@@ -57,3 +57,16 @@ h1, h2, h3, h4, h5, h6 {
 #root, #__next {
   isolation: isolate;
 }
+
+/* 11. Respect reduced-motion: collapse animations and transitions to a single
+   frame. Covers component keyframes (spinner, scroll indicator), Svelte
+   fly/fade transitions, and smooth scrolling. Token-driven transitions are
+   also zeroed in tokens.css. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

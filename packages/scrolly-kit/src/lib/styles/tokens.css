@@ -156,6 +156,9 @@
   /* =============================================================================
      GLOBAL TOKENS - SEMANTIC (auto-switch with theme)
      These are the primary tokens to use in components.
+     ADDING ONE? It must be flipped in 5 places or the theme system leaks:
+     the three theme blocks at the end of this file, plus the story isolation
+     and [data-theme="dark"] blocks in layouts.css.
      ============================================================================= */
 
   --vcsi-bg: var(--vcsi-bg-light);
@@ -202,11 +205,28 @@
   --vcsi-step-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
   --vcsi-step-text-align: center;
 
-  /* Step colors (light theme) — dark overrides in layouts.css */
+  /* Step colors (light theme) — dark overrides in layouts.css.
+     Inactive text is dimmed but must stay readable: gray-600 on #f5f5f5 is
+     4.75:1 (WCAG AA), still clearly quieter than the 12.6:1 active state. */
   --vcsi-story-step-bg: #fff;
   --vcsi-story-step-fg: #333;
   --vcsi-story-step-bg-inactive: #f5f5f5;
-  --vcsi-story-step-fg-inactive: #ccc;
+  --vcsi-story-step-fg-inactive: var(--vcsi-gray-600);
+}
+
+/* =============================================================================
+   REDUCED MOTION
+   All package transitions route through these tokens, so zeroing them
+   disables theme fades, sidebar slides, and step transitions in one place.
+   (Component keyframes are handled by the global rule in reset.css.)
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --vcsi-transition-fast: 0ms;
+    --vcsi-transition-base: 0ms;
+    --vcsi-transition-slow: 0ms;
+  }
 }
 
 /* =============================================================================
@@ -221,6 +241,7 @@
     --vcsi-hover: var(--vcsi-hover-dark);
     --vcsi-border: var(--vcsi-border-dark);
     --vcsi-link: var(--vcsi-link-dark);
+    --vcsi-muted: var(--vcsi-gray-400);
 
     /* Code tokens */
     --vcsi-code-bg: var(--vcsi-code-bg-dark);
@@ -245,6 +266,7 @@
   --vcsi-hover: var(--vcsi-hover-dark);
   --vcsi-border: var(--vcsi-border-dark);
   --vcsi-link: var(--vcsi-link-dark);
+  --vcsi-muted: var(--vcsi-gray-400);
 
   /* Code tokens */
   --vcsi-code-bg: var(--vcsi-code-bg-dark);
@@ -268,6 +290,7 @@
   --vcsi-hover: var(--vcsi-hover-light);
   --vcsi-border: var(--vcsi-border-light);
   --vcsi-link: var(--vcsi-link-light);
+  --vcsi-muted: var(--vcsi-gray-600);
 
   /* Code tokens */
   --vcsi-code-bg: var(--vcsi-code-bg-light);
