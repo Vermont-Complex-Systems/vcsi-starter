@@ -17,6 +17,7 @@
 
   const navLinks = [
     { href: `${base}/docs/reference`, label: 'Styling' },
+    { href: `${base}/docs/tokens`, label: 'Tokens' },
     { href: `${base}/docs/components-overview`, label: 'Components' },
     { href: `${base}/extensions`, label: 'Extensions' },
     { href: 'https://vcsi.cmplxsys.w3.uvm.edu/', label: 'Examples', external: true },
@@ -41,8 +42,9 @@
       <span class="docs-nav-version">v0.0.7</span>
     </div>
     <ul class="docs-nav-links">
-      <li class="nav-link-item"><a href="{base}/docs/reference" aria-current={$page.url.pathname === base + '/reference' ? 'page' : undefined}>Styling</a></li>
-      <li class="nav-link-item"><a href="{base}/docs/components-overview" aria-current={$page.url.pathname === base + '/components' ? 'page' : undefined}>Components</a></li>
+      <li class="nav-link-item"><a href="{base}/docs/reference" aria-current={$page.url.pathname === base + '/docs/reference' ? 'page' : undefined}>Styling</a></li>
+      <li class="nav-link-item"><a href="{base}/docs/tokens" aria-current={$page.url.pathname === base + '/docs/tokens' ? 'page' : undefined}>Tokens</a></li>
+      <li class="nav-link-item"><a href="{base}/docs/components-overview" aria-current={$page.url.pathname === base + '/docs/components-overview' ? 'page' : undefined}>Components</a></li>
       <li class="nav-link-item"><a href="{base}/extensions" aria-current={$page.url.pathname === base + '/extensions' ? 'page' : undefined}>Extensions</a></li>
       <li class="nav-link-item"><a href="https://vcsi.cmplxsys.w3.uvm.edu/" target="_blank" rel="noopener">Examples</a></li>
       <li class="nav-link-item">

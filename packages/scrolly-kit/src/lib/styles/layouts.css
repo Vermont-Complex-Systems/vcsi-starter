@@ -4,6 +4,23 @@
    ============================================================================= */
 
 /* =============================================================================
+   LAYOUT: APP SHELL
+   Body is a flex column so the footer stays at the bottom even when content
+   is short. Assumes one <main> as a direct child of <body> (the templates'
+   structure). Text/theme defaults for body live in typography.css.
+   ============================================================================= */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1; /* expands to fill available space from body */
+}
+
+/* =============================================================================
    LAYOUT: PAGE
    Centered container for app pages (Home, About, etc).
    Provides consistent max-width and padding for non-story content.
@@ -99,7 +116,8 @@
 .story > ul,
 .story > ol,
 .story > blockquote,
-.story > pre {
+.story > pre,
+.story > table {
   width: 100%;
   max-width: var(--vcsi-story-max-width);
   margin-inline: auto;

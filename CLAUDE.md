@@ -96,7 +96,7 @@ Templates import styles:
 - `packages/mcp-server` (`@the-vcsi/scrolly-mcp`) exposes `list-sections` / `get-documentation` tools that fetch from the docs site. It also works as a plain CLI: `npx @the-vcsi/scrolly-mcp list-sections`.
 - `packages/addons/scrolly-skills` installs a Claude Code skill and wires both MCP servers into a scaffolded project's `.mcp.json`.
 
-When adding a component to scrolly-kit: export it in `index.ts`, document it in `sites/docs/src/lib/docs/components/{Name}.md`, add a `use_cases.json` entry, and update the skill's `COMPONENTS.md`.
+When adding a component to scrolly-kit: export it in `index.ts`, document it in `sites/docs/src/lib/docs/components/{Name}.md`, and add a `use_cases.json` entry — the MCP serves these live, so the skill needs no per-component edits.
 
 ### Templates
 
@@ -135,7 +135,7 @@ Core components (`Scrolly`, `ScrollyContent`, `MarkdownRenderer`, `RenderContent
 import { Scrolly, ScrollyContent, RenderContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
 ```
 
-> **Component usage (props, theming, CSS vars) lives in the AI layer, not here.** See the `scrolly-kit` skill's `COMPONENTS.md` or query the scrolly-kit MCP (`list-sections` → `get-documentation`). `BackToHome` is the one template-local helper: `$lib/components/helpers/BackToHome.svelte` (floating home button for stories; `colored` prop for light backgrounds).
+> **Component usage (props, theming, CSS vars) lives in the AI layer, not here.** Query the scrolly-kit MCP (`list-sections` → `get-documentation`). `BackToHome` is the one template-local helper: `$lib/components/helpers/BackToHome.svelte` (floating home button for stories; `colored` prop for light backgrounds).
 
 ### Paths (in templates)
 - `$lib` → `src/lib` (data in `$lib/data`, styles in `$lib/styles`, stories in `$lib/stories`)
@@ -168,7 +168,7 @@ src/lib/styles/
 
 Templates override `--vcsi-*` tokens in `app.css` (e.g. `--vcsi-color-accent`, `--vcsi-font-sans`). The token architecture follows GCDS patterns with semantic naming: `--vcsi-[category]-[property]`.
 
-> **Story-authoring CSS reference lives in the AI layer, not here.** Token lists, story theming (`data-theme`, `.story` isolation), the scrolly layout system (`.split-layout` / `.fullscreen-layout` / `.triple-layout` / `.dashboard-layout`), CSS variable scoping, and containment rules are documented in the docs site (`sites/docs/src/lib/docs/reference.md`), served via the scrolly-kit MCP, and mirrored in the `scrolly-kit` skill's `LAYOUTS.md` / `PATTERNS.md`. Query the MCP (`list-sections` → `get-documentation`) when building a story.
+> **Story-authoring CSS reference lives in the AI layer, not here.** Token lists, story theming (`data-theme`, `.story` isolation), the scrolly layout system (`.split-layout` / `.fullscreen-layout` / `.triple-layout` / `.dashboard-layout`), CSS variable scoping, and containment rules are documented in the docs site (`sites/docs/src/lib/docs/reference.md` and `tokens.md`), served via the scrolly-kit MCP, with the durable craft mirrored in the skill's `references/layouts.md`. Query the MCP (`list-sections` → `get-documentation`) when building a story.
 
 ## Code Conventions
 - Mobile-first responsive design (breakpoint: 768px)
@@ -178,7 +178,7 @@ Templates override `--vcsi-*` tokens in `app.css` (e.g. `--vcsi-color-accent`, `
 
 ### Browser-only code in stories (SSR)
 
-The `baked/` template uses `adapter-static` — stories are prerendered, so modules touching `window`/`document`/WebGL at import time crash `npm run build`. Guard them with `{#if browser}` (from `$app/environment`); never set `export const ssr = false` globally under `adapter-static`. Full explanation and the `inputs: () => [...]` workaround are in the `scrolly-kit` skill's `PATTERNS.md` ("SSR / Build Gotchas").
+The `baked/` template uses `adapter-static` — stories are prerendered, so modules touching `window`/`document`/WebGL at import time crash `npm run build`. Guard them with `{#if browser}` (from `$app/environment`); never set `export const ssr = false` globally under `adapter-static`. Full explanation is in the `scrolly-kit` skill's `SKILL.md` ("Guard browser-only code on static builds").
 
 ## sv Add-ons
 

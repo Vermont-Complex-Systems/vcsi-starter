@@ -13,6 +13,11 @@
   --vcsi-bg-light: #fff;
   --vcsi-page-max-width: 850px;
 
+  /* Docs use sans throughout (the brand serif isn't loaded and would fall back to
+     a heavy system serif). Headings swap to sans via the heading token; body prose
+     is set to sans in the `body` rule below. */
+  --vcsi-font-heading: var(--vcsi-font-sans);
+
   /* Matisse Blue-Orange Palette (Bohemian Garden) - default */
   --matisse-blue: oklch(45% 0.18 255);       /* Deep ultramarine */
   --matisse-orange: oklch(70% 0.18 55);      /* Warm terracotta orange */
@@ -49,7 +54,8 @@ body {
   min-height: 100vh;
   background: var(--vcsi-bg);
   color: var(--vcsi-fg);
-  
+  /* Docs prose is sans (scrolly-kit defaults body to serif for long-form stories). */
+  font-family: var(--vcsi-font-sans);
 }
 
 main {
@@ -203,31 +209,16 @@ main {
   }
 }
 
-/* Markdown tables (rendered from GFM) — simple, GitHub-like.
-   Uses adaptive --vcsi-border / --vcsi-hover, so no separate dark-mode rules. */
+/* Markdown tables — borders/padding/header come from scrolly-kit's typography.css.
+   Docs-site extras only: content-width with horizontal scroll, compact sans text, zebra. */
 .page table {
-  border-collapse: collapse;
   display: block;
   width: max-content;
   max-width: 100%;
   overflow-x: auto;
-  margin: 1.5rem 0;
   font-family: var(--vcsi-font-sans);
   font-size: 0.875rem;
   line-height: 1.5;
-}
-
-.page table th,
-.page table td {
-  padding: 0.4rem 0.85rem;
-  border: 1px solid var(--vcsi-border);
-  text-align: left;
-  vertical-align: top;
-}
-
-.page table th {
-  font-weight: 600;
-  background: var(--vcsi-hover);
 }
 
 .page table tbody tr:nth-child(2n) {
@@ -367,6 +358,50 @@ main {
   color: var(--vcsi-muted);
 }
 
+/* Collapsible sections (<details>/<summary> authored in markdown) */
+.page details {
+  border: 1px solid var(--vcsi-border);
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  padding: 0 1rem;
+  background: color-mix(in oklch, var(--vcsi-fg) 2%, transparent);
+}
+
+.page summary {
+  cursor: pointer;
+  margin: 0 -1rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  color: var(--vcsi-fg);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page summary::-webkit-details-marker {
+  display: none;
+}
+
+.page summary::before {
+  content: '▸';
+  color: var(--vcsi-muted);
+  transition: transform 0.15s ease;
+}
+
+.page details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.page details[open] > summary {
+  border-bottom: 1px solid var(--vcsi-border);
+  margin-bottom: 1rem;
+}
+
+.page details[open] {
+  padding-bottom: 1rem;
+}
+
 /* =============================================================================
    DARK MODE OVERRIDES
    Override static gray tokens for docs-specific elements
@@ -426,6 +461,18 @@ main {
   border-radius: 0 8px 8px 0;
   margin: 1rem 0;
   font-size: 0.875rem;
+}
+
+/* Trim the tip's edge margins so the callout hugs its padding.
+   (font-size cascades from the .tip container itself.) */
+.page .tip > :first-child,
+.component-page .tip > :first-child {
+  margin-top: 0;
+}
+
+.page .tip > :last-child,
+.component-page .tip > :last-child {
+  margin-bottom: 0;
 }
 
 .page .tip strong,

@@ -1,5 +1,8 @@
 /* Typography styles for scrollytelling */
 
+/* The one place inheritable text properties are set — everything below body
+   inherits them, so overriding font-size/color/line-height on any container
+   cascades as expected. (Page-level flex layout lives in layouts.css.) */
 body {
   font-family: var(--vcsi-font-serif, Georgia, serif);
   font-size: var(--vcsi-font-text, 1.125rem);
@@ -7,16 +10,6 @@ body {
   background: var(--vcsi-bg);
   color: var(--vcsi-fg);
   transition: background-color var(--vcsi-transition-base), color var(--vcsi-transition-base);
-
-  /* Layout: flex column for footer positioning */
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
-}
-
-/* Ensures the footer stays at the bottom even when content is short. */
-main {
-  flex: 1; /* expands to fill available space from body */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -60,9 +53,10 @@ h6 {
   margin: 1rem 0 0.5rem;
 }
 
+/* Paragraphs inherit font-size/line-height from body (or any container you
+   set them on) — only spacing is element-level. Don't pin inheritable text
+   properties here; that breaks "style the container, children follow". */
 p {
-  font-size: var(--vcsi-font-text, 1.125rem);
-  line-height: var(--vcsi-line-height-relaxed, 1.6);
   margin-bottom: 1rem;
 }
 
@@ -107,6 +101,26 @@ blockquote {
 
 blockquote p { margin: 0; }
 
+/* Tables — minimal GitHub-ish defaults so markdown tables render decently
+   with zero classes. Text size inherits (set it on any container to resize);
+   borders and header shading ride the theme via semantic tokens. */
+table {
+  border-collapse: collapse;
+  margin-block: var(--vcsi-space-lg);
+}
+
+th, td {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--vcsi-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-weight: var(--vcsi-font-weight-semibold, 600);
+  background: var(--vcsi-hover);
+}
+
 /* Links */
 a {
   color: var(--vcsi-link, var(--vcsi-fg));
@@ -139,11 +153,11 @@ pre code .numbered-code-line::before {
   width: 2rem;
   margin-right: var(--vcsi-space-md);
   text-align: right;
-  color: #6e7781;
+  color: var(--vcsi-code-line-number, #6e7781);
   user-select: none;
 }
 
 pre code .highlighted-code-line {
   background: var(--vcsi-code-highlight);
-  border-left-color: #f0c000;
+  border-left-color: var(--vcsi-code-highlight-border, #f0c000);
 }

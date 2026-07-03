@@ -7,7 +7,30 @@ Everything you build renders inside one of two containers:
 - **`.page`** — a centered, width-constrained column for standard content pages (docs, about, home). One fixed layout, typically paired with `Nav` and `Footer`.
 - **`.story`** — the scrollytelling container. Centered prose by default, but its layouts break out to full width. This is where the scrolly layouts, step styling, and multi-section patterns below apply.
 
-Pick your container, then style within it. The [scoping rules](#css-variable-scoping) and [token catalog](#global-css-variables) at the end apply to both.
+Pick your container, then style within it. The [scoping rules](#css-variable-scoping) below apply to either container, and the full [design-token catalog](tokens) (colors, spacing, fonts, radius) lives on its own page.
+
+## How the Styles Are Organized
+
+The package ships four CSS files. Each has one job, and knowing the split tells you where any styling behavior comes from:
+
+```css
+/* your app.css imports them all, in this order */
+@import '@the-vcsi/scrolly-kit/styles/all.css';
+```
+
+| File | Job |
+|------|-----|
+| `reset.css` | Neutral baseline: [Josh Comeau's custom reset](https://www.joshwcomeau.com/css/custom-css-reset/). Sane box-sizing, no default margins, responsive media. No opinions. |
+| `tokens.css` | The vocabulary: every global `--vcsi-*` variable with a good default. Nothing renders from this file; it only defines values that the other files, the components, and your own CSS consume. Full catalog on the [Tokens](tokens) page. |
+| `typography.css` | Text defaults for bare HTML elements: everything markdown emits (headings, paragraphs, code, blockquotes, links, tables) renders decently with zero classes. |
+| `layouts.css` | The scrollytelling vocabulary: `.page`, `.story` with its prose column and breakouts, the scrolly layouts (`.split-layout`, `.fullscreen-layout`, `.triple-layout`, `.dashboard-layout`), and story theme isolation. This is the part you won't find in other frameworks. |
+
+Four contracts fall out of that split:
+
+- **Tokens are the styling API.** They are responsive by construction (sizes use `clamp()`, so `--vcsi-font-size-giant` scales from phone to desktop with no media queries) and theme-aware (semantic tokens like `--vcsi-bg` flip with dark mode). The `--vcsi-` prefix is a namespace for autocomplete and collision-avoidance, not branding. Customizing means overriding a token, not writing a competing rule.
+- **The untweaked default is decent.** Scaffold a template, change nothing, and you still get readable type, sensible spacing, and working dark mode. Inspired by [pico.css](https://picocss.com/) and the [GC](https://design-system.canada.ca/) / [GOV.UK](https://frontend.design-system.service.gov.uk/) design systems.
+- **Typography stops at markdown.** If a markdown renderer can emit it, typography.css styles it, classlessly. Anything that needs a class is either structure (layouts.css) or yours (your `app.css`). Text properties are set once on `body` and inherit, so styling a container just works: see [how text styling cascades](#how-text-styling-cascades).
+- **Layouts own space; your components fill it.** The layout classes set dimensions with `vh`/`vw`/`%`; what you put inside fills with `100%` and bound sizes. Each layout documents its own tokens in the sections below.
 
 ## Page
 
@@ -355,6 +378,19 @@ Use `:global()` only when targeting classes on elements **inside imported compon
 }
 ```
 
+### How text styling cascades
+
+Inheritable text properties (`font-family`, `font-size`, `line-height`, `color`) are set **once on `body`**, and everything inherits them. So styling a container works the way you'd expect:
+
+```css
+/* every <p>, <li>, and inline text inside follows */
+.my-callout {
+  font-size: 0.875rem;
+}
+```
+
+Only a few elements carry their own sizes, so a container's `font-size` won't resize them: headings (`--vcsi-font-h1`…`--vcsi-font-h6` tokens), code (`pre` and inline `code`, sized in relative `em`), and blockquotes (`1.1em`). Everything else inherits.
+
 ## Multi-Section Stories
 
 Most stories are **single-section**: one `ScrollyContent` bound to one `scrollyIndex`, driving one visualization. More complex stories combine **multiple scrolly sections** with text interludes — the main thing to get right there is that each section needs its own index.
@@ -456,116 +492,3 @@ Each scrolly section must have its **own state variable**. If two `ScrollyConten
 This also means you can reuse the same visualization component in multiple sections — just pass it a different index prop.
 
 See `scrolly-story-1` in the baked template for a complete example with two scrolly sections, text interludes, and inline components.
-
-## Global CSS Variables
-
-The complete `--vcsi-*` design-token catalog — the reference for styling any custom UI. Consume these in custom CSS and override them on a scope to customize; never hardcode a value a token already covers.
-
-### Using tokens in custom CSS
-
-**When you write custom CSS — a home page, a card, a nav, a legend — consume these tokens instead of hardcoding values.** Hardcoded colors, fonts, and spacing drift from the brand and break dark mode: the semantic colors below auto-switch with the theme, but a hardcoded `#fff` will not.
-
-```css
-/* ❌ hardcoded — drifts from the theme, ignores dark mode */
-.card { background: #fff; color: #333; padding: 20px; border-radius: 8px; font-family: system-ui; }
-
-/* ✅ consume the tokens */
-.card {
-  background: var(--vcsi-bg);
-  color: var(--vcsi-fg);
-  padding: var(--vcsi-space-lg);
-  border: 1px solid var(--vcsi-border);
-  border-radius: var(--vcsi-radius-md);
-  font-family: var(--vcsi-font-sans);
-}
-```
-
-To customize, override a token on a scope (see [CSS Variable Scoping](#css-variable-scoping)) rather than writing a competing rule.
-
-### Colors
-
-| Variable | Value | Description |
-|----------|-------|-------------|
-| `--vcsi-color-accent` | #154734 | Brand accent (UVM Green) |
-| `--vcsi-color-uvm-green` | #154734 | UVM Green |
-| `--vcsi-color-uvm-gold` | rgb(255, 209, 0) | UVM Gold |
-| `--vcsi-color-beige` | #f4efea | Warm beige |
-| `--vcsi-gray-100` to `900` | scale | Gray scale (100, 200, 300, 400, 600, 700, 800, 900) |
-
-#### Semantic Colors (auto-switch with dark mode)
-
-| Variable | Description |
-|----------|-------------|
-| `--vcsi-bg` | Background color |
-| `--vcsi-fg` | Text color |
-| `--vcsi-border` | Border color |
-| `--vcsi-hover` | Hover state |
-| `--vcsi-link` | Link color |
-| `--vcsi-muted` | Muted/secondary text |
-| `--vcsi-code-bg` | Code block background |
-| `--vcsi-code-fg` | Code text color |
-
-### Typography
-
-| Variable | Default |
-|----------|---------|
-| `--vcsi-font-sans` | "Atlas Grotesk", system-ui, sans-serif |
-| `--vcsi-font-serif` | "Baskerville", Georgia, serif |
-| `--vcsi-font-mono` | "Atlas Typewriter", "SF Mono", monospace |
-| `--vcsi-font-heading` | var(--vcsi-font-serif) |
-
-#### Font Sizes (responsive clamp)
-
-| Variable | Range |
-|----------|-------|
-| `--vcsi-font-size-giant` | 3rem &rarr; 4rem |
-| `--vcsi-font-size-xl` | 1.8rem &rarr; 3rem |
-| `--vcsi-font-size-lg` | 1.5rem &rarr; 2.5rem |
-| `--vcsi-font-size-md` | 1.25rem &rarr; 1.75rem |
-| `--vcsi-font-size-base` | 1.125rem &rarr; 1.25rem |
-| `--vcsi-font-size-small` | 1rem &rarr; 1.125rem |
-| `--vcsi-font-size-xs` | 0.875rem &rarr; 1rem |
-
-#### Font Weights & Line Heights
-
-| Variable | Value |
-|----------|-------|
-| `--vcsi-font-weight-light` | 300 |
-| `--vcsi-font-weight-regular` | 400 |
-| `--vcsi-font-weight-medium` | 500 |
-| `--vcsi-font-weight-semibold` | 600 |
-| `--vcsi-font-weight-bold` | 700 |
-| `--vcsi-line-height-tight` | 1.17 (headings) |
-| `--vcsi-line-height-snug` | 1.33 (subheadings) |
-| `--vcsi-line-height-normal` | 1.5 (body) |
-| `--vcsi-line-height-relaxed` | 1.6 (long-form) |
-
-### Spacing
-
-| Variable | Value |
-|----------|-------|
-| `--vcsi-space-xs` | 0.25rem |
-| `--vcsi-space-sm` | 0.5rem |
-| `--vcsi-space-md` | 1rem |
-| `--vcsi-space-lg` | 1.5rem |
-| `--vcsi-space-xl` | 2rem |
-| `--vcsi-space-2xl` | 3rem |
-
-### Border Radius
-
-| Variable | Value |
-|----------|-------|
-| `--vcsi-radius-sm` | 3px |
-| `--vcsi-radius-md` | 6px |
-| `--vcsi-radius-lg` | 8px |
-| `--vcsi-radius-full` | 9999px |
-
-### Transitions
-
-| Variable | Value |
-|----------|-------|
-| `--vcsi-transition-fast` | 150ms ease |
-| `--vcsi-transition-base` | 200ms ease |
-| `--vcsi-transition-slow` | 300ms ease |
-</content>
-</invoke>

@@ -147,6 +147,11 @@
   /* Code highlighting */
   --vcsi-code-highlight-light: rgba(255, 220, 100, 0.3);
   --vcsi-code-highlight-dark: rgba(255, 220, 100, 0.15);
+  --vcsi-code-highlight-border: #f0c000;
+
+  /* Code line numbers */
+  --vcsi-code-line-number-light: #6e7781;
+  --vcsi-code-line-number-dark: #8b949e;
 
   /* =============================================================================
      GLOBAL TOKENS - SEMANTIC (auto-switch with theme)
@@ -167,6 +172,7 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
   --vcsi-blockquote: var(--vcsi-blockquote-light);
   --vcsi-code-highlight: var(--vcsi-code-highlight-light);
+  --vcsi-code-line-number: var(--vcsi-code-line-number-light);
 
   /* =============================================================================
      LAYOUT TOKENS
@@ -223,6 +229,7 @@
     --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
     --vcsi-blockquote: var(--vcsi-blockquote-dark);
     --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
+    --vcsi-code-line-number: var(--vcsi-code-line-number-dark);
   }
 }
 
@@ -246,6 +253,7 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-dark);
   --vcsi-blockquote: var(--vcsi-blockquote-dark);
   --vcsi-code-highlight: var(--vcsi-code-highlight-dark);
+  --vcsi-code-line-number: var(--vcsi-code-line-number-dark);
 }
 
 /* =============================================================================
@@ -268,4 +276,5 @@
   --vcsi-code-inline-bg: var(--vcsi-code-inline-bg-light);
   --vcsi-blockquote: var(--vcsi-blockquote-light);
   --vcsi-code-highlight: var(--vcsi-code-highlight-light);
+  --vcsi-code-line-number: var(--vcsi-code-line-number-light);
 }

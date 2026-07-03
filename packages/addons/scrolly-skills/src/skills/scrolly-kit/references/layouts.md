@@ -1,6 +1,6 @@
 # Layouts
 
-Layouts are CSS classes from `@the-vcsi/scrolly-kit`. **They own the dimensions; your components fill them.** Tune a layout by overriding its `--vcsi-*` tokens — the full variable list and defaults are in the MCP.
+Layouts are CSS classes from `@the-vcsi/scrolly-kit`. **They own the dimensions; your components fill them.** Tune a layout by overriding its `--vcsi-*` tokens — the full variable list and defaults are in the MCP's `reference` section (the global design tokens are in `tokens`).
 
 ## The story container (`.story`)
 
