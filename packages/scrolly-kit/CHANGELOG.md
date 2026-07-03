@@ -2,7 +2,7 @@
 
 All notable changes to `@the-vcsi/scrolly-kit`. Follows [Keep a Changelog](https://keepachangelog.com/) and, from 0.1.0 on, semver.
 
-## [Unreleased] — targeting 0.1.0
+## [0.1.0] - 2026-07-03
 
 ### Changed (may affect existing sites)
 
