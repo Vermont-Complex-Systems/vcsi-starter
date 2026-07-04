@@ -22,7 +22,10 @@ against frozen docs.
 
 ## Phase 2: Docs at 0.1.0 quality
 
-- [ ] Sweep `components/*.md` against component source: props, defaults, CSS vars (drift check)
+- [x] Sweep `components/*.md` against source: 13 files had drift, 5 documented nonexistent APIs; all fixed (agent-audited, verified)
+- [x] Project-structure page: live at /docs/project-structure with MCP section (template anatomy, story contract, data flow, standalone usage)
+- [x] "Outside the templates": done the strong way in 0.2.0 — package is fully SvelteKit-free (Meta moved template-local over svelte-meta-tags, MarkdownRenderer takes a `base` prop, scrollReveal uses `typeof window`; verified with a plain Vite build). Documented in project-structure
+- [x] Template examples: all three templates check + build (prerender) on 0.1.0/0.2.0; tanstack pinned to the alpha the dashboard story targets. (Visual spot-check of docs claims: ongoing as docs pages are touched)
 - [ ] "Why SvelteKit" manifesto: honest positioning vs Quarto/Closeread, Observable, and React stacks; lead with ownership + the agent-era thesis (craft encoded so agents inherit it)
 - [ ] Accessibility page: what is handled, what is not, what scrollytelling can't fix
 - [ ] `use_cases.json` audit: keywords match the final section list
@@ -37,7 +40,7 @@ against frozen docs.
 
 ## Phase 4: Templates + add-ons alignment
 
-- [ ] `baked` / `simple` / `fresh`: bump to 0.1.0, verify every example story renders, READMEs current
+- [ ] `baked` / `simple` / `fresh`: pin `@the-vcsi/scrolly-kit` to `^0.2.0` (currently `"*"`, which hands degit users every future breaking release automatically), READMEs current (example verification moved to Phase 2)
 - [ ] Template `AGENTS.md` consistent with the final skill/MCP split
 - [ ] Re-test `msgraph` / `openalex` / `scrolly-skills` add-ons on a fresh scaffold
 

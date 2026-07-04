@@ -135,7 +135,7 @@ Core components (`Scrolly`, `ScrollyContent`, `MarkdownRenderer`, `RenderContent
 import { Scrolly, ScrollyContent, RenderContent, StoryHeader, Footer } from '@the-vcsi/scrolly-kit';
 ```
 
-> **Component usage (props, theming, CSS vars) lives in the AI layer, not here.** Query the scrolly-kit MCP (`list-sections` → `get-documentation`). `BackToHome` is the one template-local helper: `$lib/components/helpers/BackToHome.svelte` (floating home button for stories; `colored` prop for light backgrounds).
+> **Component usage (props, theming, CSS vars) lives in the AI layer, not here.** Query the scrolly-kit MCP (`list-sections` → `get-documentation`). Two components are template-local (site-specific, not in the package): `$lib/components/Meta.svelte` (the site's SEO tags — the package is SvelteKit-free and Meta needs `$app/state`) and `$lib/components/helpers/BackToHome.svelte` (floating home button for stories; `colored` prop for light backgrounds).
 
 ### Paths (in templates)
 - `$lib` → `src/lib` (data in `$lib/data`, styles in `$lib/styles`, stories in `$lib/stories`)

@@ -18,7 +18,7 @@ my-project/
         │   ├── stories.csv  # one row per story: slug, title, author, date, tags...
         │   └── members.csv  # drives /about pages
         ├── stories/         # one folder per story (see below)
-        ├── components/      # shared components (template helpers like BackToHome)
+        ├── components/      # template-local components: Meta (your site's SEO tags), BackToHome
         ├── styles/          # app.css: your brand's --vcsi-* token overrides
         ├── story.remote.ts  # loads a story's metadata + copy.json
         └── story-loader.ts  # resolves a slug to its Index.svelte
@@ -51,3 +51,31 @@ scrolly-story-1/
 3. **`story.remote.ts`** (a SvelteKit remote function, prerendered) hands the `[slug]` page its metadata row and `copy.json`; `story-loader.ts` hands it the component. The page renders whatever the pair returns.
 
 So publishing a story is: `npm run new-story my-slug`, fill in `Index.svelte` and `copy.json`, add the row to `stories.csv`. Everything else follows by convention.
+
+## Using scrolly-kit Without the Templates
+
+The engine doesn't require the templates, or SvelteKit. `@the-vcsi/scrolly-kit` is a plain Svelte 5 library (its only peer dependency is `svelte`), so a minimal [Vite](https://vite.dev/) app works:
+
+```bash
+npm create vite@latest my-app -- --template svelte
+cd my-app && npm install @the-vcsi/scrolly-kit
+```
+
+```svelte
+<script>
+  import '@the-vcsi/scrolly-kit/styles/all.css';
+  import { ScrollyContent } from '@the-vcsi/scrolly-kit';
+
+  let step = $state(0);
+  const steps = [{ type: 'markdown', value: 'It works.' }];
+</script>
+
+<article class="story">
+  <section class="split-layout">
+    <div class="sticky-panel"><!-- your visualization, driven by {step} --></div>
+    <div class="scrolly-content"><ScrollyContent {steps} bind:value={step} /></div>
+  </section>
+</article>
+```
+
+What the templates add on top is the publishing machinery: prerendered routes, the story registry, SEO tags (the template-local `Meta` component), and the AI layer. Two SvelteKit-specific notes if you go standalone: deploying under a subpath means passing `base` to `MarkdownRenderer` yourself, and there's no prerendering unless your bundler provides it.

@@ -50,7 +50,6 @@ Components for interactive data explorers.
 
 Helper components for common patterns.
 
-- [Meta](components/Meta) -- SEO meta tags for social sharing
 - [Spinner](components/Spinner) -- Loading indicator
 - [ScrollIndicator](components/ScrollIndicator) -- Animated scroll-down arrow
 

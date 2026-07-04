@@ -69,13 +69,16 @@ raw HTML in markdown, and code blocks with syntax highlighting.
     import Markdown from 'svelte-exmarkdown';
     import 'katex/dist/katex.min.css';
     import 'highlight.js/styles/github.css';
-    import { base } from '$app/paths';
 
     interface Props {
         text: string;
+        /** Base path prepended to absolute /links and /images in the markdown.
+         *  Only needed on subpath deploys (e.g. GitHub Pages under /repo):
+         *  pass SvelteKit's `base` from `$app/paths`. */
+        base?: string;
     }
 
-    let { text }: Props = $props();
+    let { text, base = '' }: Props = $props();
 
     function processContent(content: string): string {
         if (!content) return '';

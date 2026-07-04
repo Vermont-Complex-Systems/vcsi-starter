@@ -54,7 +54,7 @@ Import the styles you need:
 @import '@the-vcsi/scrolly-kit/styles/layouts.css';
 ```
 
-### Cuurent Layouts
+### Current Layouts
 
 - `.story` - Story container with theme isolation
 - `.split-layout` - Two-column with sticky panel (add `.reversed` to flip)
@@ -76,7 +76,12 @@ Override CSS variables in your `app.css`:
 
 ## Documentation
 
-Full documentation coming soon.
+Visit: https://vermont-complex-systems.github.io/vcsi-starter/
+
+## Downstream Projects
+- [complexstories](https://github.com/Vermont-Complex-Systems/complexstories) (`simple` template)
+- [complexforms](https://github.com/Vermont-Complex-Systems/complexforms) (`fresh` template)
+- [cel-website](https://github.com/Vermont-Complex-Systems/cel-website) (`simple` template)
 
 ## License
 

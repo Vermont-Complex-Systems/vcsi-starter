@@ -1,6 +1,6 @@
 {
   "name": "@the-vcsi/scrolly-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scrollytelling components and layouts for SvelteKit",
   "type": "module",
   "svelte": "./dist/index.js",
@@ -28,7 +28,6 @@
     "test:visual:update": "playwright test --update-snapshots"
   },
   "peerDependencies": {
-    "@sveltejs/kit": "^2.0.0",
     "svelte": "^5.0.0"
   },
   "devDependencies": {

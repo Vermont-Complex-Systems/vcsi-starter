@@ -1,5 +1,3 @@
-import { browser } from '$app/environment';
-
 interface ScrollRevealOptions {
 	threshold?: number;
 	rootMargin?: string;
@@ -43,8 +41,8 @@ export function scrollReveal(node: HTMLElement, options: ScrollRevealOptions = {
 	// Use data attribute instead of class for scoping
 	node.dataset.animate = 'true';
 
-	// SSR: reveal immediately
-	if (!browser) {
+	// SSR: reveal immediately (no $app/environment — works outside SvelteKit)
+	if (typeof window === 'undefined') {
 		node.dataset.revealed = 'true';
 		return;
 	}

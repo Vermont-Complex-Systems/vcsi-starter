@@ -12,7 +12,6 @@ import type ScrollIndicator from './components/ScrollIndicator.svelte';
 import type CopyCodeBlock from './components/CopyCodeBlock.svelte';
 import type CodeExplainer from './components/CodeExplainer.svelte';
 import type Spinner from './components/Spinner.svelte';
-import type Meta from './components/Meta.svelte';
 import type StoryHeader from './components/StoryHeader.svelte';
 import type RenderContent from './components/RenderContent.svelte';
 import type Nav from './components/Nav.svelte';
@@ -56,8 +55,6 @@ export type CodeExplainerProps = ComponentProps<typeof CodeExplainer>;
 /** Props for Spinner component */
 export type SpinnerProps = ComponentProps<typeof Spinner>;
 
-/** Props for Meta component */
-export type MetaProps = ComponentProps<typeof Meta>;
 
 /** Props for StoryHeader component */
 export type StoryHeaderProps = ComponentProps<typeof StoryHeader>;

@@ -2,6 +2,20 @@
 
 All notable changes to `@the-vcsi/scrolly-kit`. Follows [Keep a Changelog](https://keepachangelog.com/) and, from 0.1.0 on, semver.
 
+## [0.2.0] - 2026-07-03
+
+The package is now **SvelteKit-free**: nothing imports `$app/*`, the only peer dependency is `svelte ^5`, and the library works in a plain Vite + Svelte app (verified). The templates remain SvelteKit apps; the engine no longer assumes it.
+
+### Breaking
+
+- **`Meta` removed from the package.** SEO tags are site-specific by nature, so `Meta` is template-local now (the templates ship a wrapper over [svelte-meta-tags](https://github.com/oekazuma/svelte-meta-tags) with their site defaults). Migration: replace `import { Meta } from '@the-vcsi/scrolly-kit'` with a local component — copy `src/lib/components/Meta.svelte` from any template. `MetaProps` is gone too.
+- **`MarkdownRenderer` no longer auto-prefixes SvelteKit's base path.** Absolute `/links` and `/images` in markdown are left as-is unless you pass the new `base` prop (`<MarkdownRenderer {text} base={base} />` with `base` from `$app/paths`). Only affects subpath deploys (GitHub Pages under `/repo`); no known consumer sets a base path today.
+
+### Changed
+
+- `scrollReveal` uses a `typeof window` check instead of `$app/environment`.
+- `@sveltejs/kit` removed from peer dependencies.
+
 ## [0.1.0] - 2026-07-03
 
 ### Changed (may affect existing sites)

@@ -23,7 +23,6 @@
 	"components/RangeSlider": "range slider, numeric range, year selection",
 	"components/ChartTooltip": "chart tooltip, popover, hover details, mobile bottom sheet",
 	"components/DashboardShell": "dashboard, collapsible sidebar, data explorer",
-	"components/Meta": "SEO, meta tags, Open Graph, Twitter cards",
 	"components/Spinner": "loading indicator, spinner",
 	"components/ScrollIndicator": "scroll down arrow, animated indicator",
 	"extensions/msgraph": "SharePoint, Excel, content sync, Microsoft Graph",
