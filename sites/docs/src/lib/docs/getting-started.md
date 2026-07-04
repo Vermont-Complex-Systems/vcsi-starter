@@ -120,6 +120,7 @@ See the [Tokens](tokens) page for the full `--vcsi-*` catalog, and the [Styling]
 
 ## Next Steps
 
+- [Project Structure](project-structure) -- What degit hands you and how a story gets published
 - [Styling](reference) -- Layout patterns and CSS-variable scoping
 - [Tokens](tokens) -- The `--vcsi-*` design tokens: colors, spacing, fonts, radius
 - [Components](components-overview) -- Reusable components used across templates
