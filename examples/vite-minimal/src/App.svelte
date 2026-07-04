@@ -39,7 +39,14 @@
     }
   });
 
-  const W = 300, H = 260, barW = 48;
+  // 4. Responsive by binding, not by ResizeObserver: the container reports its
+  //    real width, and everything below derives from it — the chart reflows on
+  //    resize for free. (Canonical pattern: bind clientWidth, viewBox scales.)
+  let width = $state(300);
+  const H = 260;
+  const gap = 10;
+  let barW = $derived((width - gap * (data.length + 1)) / data.length);
+  let yScale = $derived((H - 50) / Math.max(...data.map((d) => d.value)));
 
   // Second section: its own steps, its own tiny visual, its own index.
   const steps2 = [
@@ -65,23 +72,25 @@
 
   <section class="split-layout">
     <div class="sticky-panel">
-      <svg viewBox="0 0 {W} {H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-        <!-- 4. Data -> SVG, declaratively. Keyed each-block + CSS transitions:
-             bars slide to their sorted positions on step change. -->
-        {#each view.bars as d, i (d.name)}
-          <g style="transform: translateX({i * (barW + 10) + 10}px); transition: transform 0.6s ease;">
-            <rect
-              y={H - 30 - d.value * 2}
-              width={barW}
-              height={d.value * 2}
-              rx="4"
-              fill={view.highlight === d.name ? '#e0843c' : '#154734'}
-              style="transition: all 0.6s ease;"
-            />
-            <text x={barW / 2} y={H - 10} text-anchor="middle" font-size="13" fill="currentColor">{d.name}</text>
-          </g>
-        {/each}
-      </svg>
+      <div style="width: 100%; height: auto;" bind:clientWidth={width}>
+        <svg viewBox="0 0 {width} {H}" style="width: 100%; height: auto; display: block;">
+          <!-- 5. Data -> SVG, declaratively. Keyed each-block + CSS transitions:
+               bars slide to their sorted positions on step change. -->
+          {#each view.bars as d, i (d.name)}
+            <g style="transform: translateX({i * (barW + gap) + gap}px); transition: transform 0.6s ease;">
+              <rect
+                y={H - 30 - d.value * yScale}
+                width={barW}
+                height={d.value * yScale}
+                rx="4"
+                fill={view.highlight === d.name ? '#e0843c' : '#154734'}
+                style="transition: all 0.6s ease;"
+              />
+              <text x={barW / 2} y={H - 10} text-anchor="middle" font-size="13" fill="currentColor">{d.name}</text>
+            </g>
+          {/each}
+        </svg>
+      </div>
     </div>
     <div class="scrolly-content">
       <ScrollyContent {steps} bind:value={step} />
