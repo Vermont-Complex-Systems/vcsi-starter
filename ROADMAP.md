@@ -52,7 +52,7 @@ against frozen docs.
 
 ## Deliberately deferred
 
-- Svelte Playground "try online" links (needs a published 0.1.0 anyway)
+- Svelte Playground "try online" links. Tried on 0.2.1: bundling works (and found the undeclared-lucide bug), but runtime dies in the sandboxed iframe because mode-watcher reads localStorage unguarded at module init via the barrel. Unblock post-share: subpath exports (import Scrolly without the barrel) or an upstream mode-watcher PR guarding localStorage. `examples/vite-minimal` is the canonical no-SvelteKit proof meanwhile.
 - `--vcsi-*` prefix rename (breaking, not worth it)
 - Any new components or layouts
 - Rebuild NavMenu on bits-ui Dialog (focus trap for free; precedent: dashboard drawer). Post-0.1.0 — the `inert` patch covers the gap for now.

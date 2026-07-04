@@ -3,9 +3,9 @@ import { error } from '@sveltejs/kit';
 
 // Glob at build time to discover all doc slugs for prerendering
 const docs = import.meta.glob('/src/lib/docs/**/*.md', { query: '?raw' });
-const slugs = Object.keys(docs).map((path) =>
-	path.replace('/src/lib/docs/', '').replace('.md', '')
-);
+const slugs = Object.keys(docs)
+	.map((path) => path.replace('/src/lib/docs/', '').replace('.md', ''))
+	.concat('changelog'); // served from the package CHANGELOG via docs.remote
 
 export function entries() {
 	return slugs.map((slug) => ({ slug }));

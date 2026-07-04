@@ -1,4 +1,6 @@
 import use_cases from '$lib/docs/use_cases.json';
+// The package changelog rides along as its own section, from its single source of truth.
+import changelog from '../../../../../packages/scrolly-kit/CHANGELOG.md?raw';
 
 // All docs live in src/lib/docs/ as pure markdown
 const all_docs = import.meta.glob('/src/lib/docs/**/*.md', {
@@ -11,6 +13,7 @@ const content_map: Record<string, string> = {};
 for (const [path, mod] of Object.entries(all_docs)) {
 	content_map[path.replace('/src/lib/docs/', '').replace('.md', '')] = mod.default;
 }
+content_map['changelog'] = changelog;
 
 // Extract title from first # heading
 function get_title(content: string): string {

@@ -1,5 +1,6 @@
 {
 	"getting-started": "setup, installation, scaffolding, new project, quick start",
+	"changelog": "changelog, release notes, versions, breaking changes, what changed, migration, 0.1.0, 0.2.0",
 	"project-structure": "project structure, folder layout, routes, app group vs slug route, where stories live, stories.csv, copy.json location, story anatomy, data flow, new-story, prerender entries, story-loader, remote functions",
 	"subagent": "subagent, scrolly-story-editor, delegate story work, Claude Code agent, AI",
 	"reference": "page vs story containers, story layouts, split layout, fullscreen, triple layout, full bleed, dashboard, step styling, layout CSS variables, panel width, step colors, sidebar width, CSS variable scoping, text cascade, multi-section stories, one index per section, story theming, scrolly styling, styles architecture, reset tokens typography layouts files",
