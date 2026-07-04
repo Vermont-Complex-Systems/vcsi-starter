@@ -79,3 +79,5 @@ cd my-app && npm install @the-vcsi/scrolly-kit
 ```
 
 What the templates add on top is the publishing machinery: prerendered routes, the story registry, SEO tags (the template-local `Meta` component), and the AI layer. Two SvelteKit-specific notes if you go standalone: deploying under a subpath means passing `base` to `MarkdownRenderer` yourself, and there's no prerendering unless your bundler provides it.
+
+A complete runnable version of this setup lives in the repo at [`examples/vite-minimal`](https://github.com/Vermont-Complex-Systems/vcsi-starter/tree/main/examples/vite-minimal) — it installs scrolly-kit from npm exactly like an external project would.
