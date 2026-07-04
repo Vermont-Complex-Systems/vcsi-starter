@@ -3,9 +3,12 @@
   import '@the-vcsi/scrolly-kit/styles/all.css';
   import { ScrollyContent } from '@the-vcsi/scrolly-kit';
 
-  // 1. The scroll gives you ONE reactive number: the active step.
+  // 1. The scroll gives you ONE reactive number per scrolly section.
   //    (In vanilla JS this is IntersectionObserver bookkeeping you'd hand-roll.)
+  //    The rule for multi-section stories: each section gets its OWN index.
+  //    If two sections shared `step`, scrolling one would drive the other.
   let step = $state(0);
+  let step2 = $state(0);
 
   // 2. Content is data, not markup. In the real templates this array lives in
   //    a copy.json file so non-coders can edit it. Markdown and math ($...$,
@@ -37,6 +40,19 @@
   });
 
   const W = 300, H = 260, barW = 48;
+
+  // Second section: its own steps, its own tiny visual, its own index.
+  const steps2 = [
+    { type: 'markdown', value: 'A **second scrolly section** — note the panel is on the *left* now (`.reversed`).' },
+    { type: 'markdown', value: 'It has its own `$state` index: scrolling here never disturbs the bar chart above.' },
+    { type: 'markdown', value: 'Text interludes between sections are just prose in the story column.' }
+  ];
+  const looks = [
+    { r: 40, fill: '#154734' },
+    { r: 80, fill: '#2c5aa0' },
+    { r: 120, fill: '#e0843c' }
+  ];
+  let look = $derived(looks[step2 ?? 0] ?? looks[0]);
 </script>
 
 <article class="story">
@@ -73,11 +89,27 @@
   </section>
 
   <p>
-    Prose returns to its centered column after the layout. One more thing the
-    package did silently: <strong>resize this window below 768px</strong> — the
-    chart becomes a full-screen background and the steps float over it. That
-    mobile collapse is the hardest part of hand-rolled scrollytelling, and here
-    it is CSS you didn't write.
+    Prose returns to its centered column between sections — this is how
+    multi-section stories interleave text and scrolly parts. Below: a second
+    section with the panel on the other side.
+  </p>
+
+  <section class="split-layout reversed">
+    <div class="sticky-panel">
+      <svg viewBox="0 0 300 300" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+        <circle cx="150" cy="150" r={look.r} fill={look.fill} style="transition: all 0.5s ease;" />
+      </svg>
+    </div>
+    <div class="scrolly-content">
+      <ScrollyContent steps={steps2} bind:value={step2} />
+    </div>
+  </section>
+
+  <p>
+    One more thing the package did silently: <strong>resize this window below
+    768px</strong> — each chart becomes a full-screen background and its steps
+    float over it. That mobile collapse is the hardest part of hand-rolled
+    scrollytelling, and here it is CSS you didn't write.
   </p>
   <p>
     What the real templates add on top: prerendered routes, a story registry,
