@@ -1,7 +1,9 @@
 <script>
   // Everything below comes from the npm package — no SvelteKit anywhere.
   import '@the-vcsi/scrolly-kit/styles/all.css';
-  import { ScrollyContent } from '@the-vcsi/scrolly-kit';
+
+  // We export helper components
+  import { ScrollyContent, ScrollIndicator } from '@the-vcsi/scrolly-kit';
 
   // Visualization components live in their own files and receive the step
   // index as a prop — the same shape as the templates' stories, where this
@@ -9,29 +11,21 @@
   import BarChart from './BarChart.svelte';
   import PulseDot from './PulseDot.svelte';
 
-  // 1. The scroll gives you ONE reactive number per scrolly section.
+  // 1. Content is data, not markup: the prose lives in narrative.json, so a
+  //    non-coder can edit the words without touching this file. Markdown and
+  //    math ($...$, rendered by KaTeX) work out of the box. (The templates
+  //    call this file copy.json and can even sync it from SharePoint.)
+  import narrative from './narrative.json';
+
+  // 2. The scroll gives you ONE reactive number per scrolly section.
   //    (In vanilla JS this is IntersectionObserver bookkeeping you'd hand-roll.)
   //    The rule for multi-section stories: each section gets its OWN index.
   //    If two sections shared `step`, scrolling one would drive the other.
   let step = $state(0);
   let step2 = $state(0);
-
-  // 2. Content is data, not markup. In the real templates these arrays live in
-  //    a copy.json file so non-coders can edit them. Markdown and math ($...$,
-  //    rendered by KaTeX) work out of the box.
-  const steps = [
-    { type: 'markdown', value: 'Five values, five bars. The panel on the right is **pinned** while these steps scroll.' },
-    { type: 'markdown', value: 'This step *sorted the bars*. No DOM surgery: the chart re-renders from a `$derived` array.' },
-    { type: 'markdown', value: 'And this one highlights the peak. Each step maps to a **view config** — the pattern scales to real stories.' },
-    { type: 'math', value: 'Math is content too: $\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$' }
-  ];
-
-  const steps2 = [
-    { type: 'markdown', value: 'A **second scrolly section** — note the panel is on the *left* now (`.reversed`).' },
-    { type: 'markdown', value: 'It has its own `$state` index: scrolling here never disturbs the bar chart above.' },
-    { type: 'markdown', value: 'Text interludes between sections are just prose in the story column.' }
-  ];
 </script>
+
+<ScrollIndicator/>
 
 <article class="story">
   <h1>scrolly-kit without SvelteKit</h1>
@@ -46,7 +40,7 @@
       <BarChart {step} />
     </div>
     <div class="scrolly-content">
-      <ScrollyContent {steps} bind:value={step} />
+      <ScrollyContent steps={narrative.barSteps} bind:value={step} />
     </div>
   </section>
 
@@ -61,7 +55,7 @@
       <PulseDot step={step2} />
     </div>
     <div class="scrolly-content">
-      <ScrollyContent steps={steps2} bind:value={step2} />
+      <ScrollyContent steps={narrative.dotSteps} bind:value={step2} />
     </div>
   </section>
 

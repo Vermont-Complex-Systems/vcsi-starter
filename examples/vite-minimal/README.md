@@ -21,7 +21,8 @@ resolves scrolly-kit from the registry exactly like an external user would.
 
 ```
 src/
-├── App.svelte        # the "story": layout sections, step content, one index per section
+├── App.svelte        # the "story": layout sections, scroll state, one index per section
+├── narrative.json    # the prose: {type, value} steps a non-coder can edit (copy.json in templates)
 ├── BarChart.svelte   # visualization component: receives `step` as a read-only prop
 └── PulseDot.svelte   # same contract, simplest possible visual
 ```

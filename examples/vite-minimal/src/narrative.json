@@ -1,0 +1,13 @@
+{
+  "barSteps": [
+    { "type": "markdown", "value": "Five values, five bars. The panel on the right is **pinned** while these steps scroll." },
+    { "type": "markdown", "value": "This step *sorted the bars*. No DOM surgery: the chart re-renders from a `$derived` array." },
+    { "type": "markdown", "value": "And this one highlights the peak. Each step maps to a **view config** — the pattern scales to real stories." },
+    { "type": "math", "value": "Math is content too: $\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i$" }
+  ],
+  "dotSteps": [
+    { "type": "markdown", "value": "A **second scrolly section** — note the panel is on the *left* now (`.reversed`)." },
+    { "type": "markdown", "value": "It has its own `$state` index: scrolling here never disturbs the bar chart above." },
+    { "type": "markdown", "value": "Text interludes between sections are just prose in the story column." }
+  ]
+}
