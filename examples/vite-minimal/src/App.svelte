@@ -2,6 +2,8 @@
   // Everything below comes from the npm package — no SvelteKit anywhere.
   import '@the-vcsi/scrolly-kit/styles/all.css';
   import { ScrollyContent } from '@the-vcsi/scrolly-kit';
+  // The classic split: d3 does the math (scales), Svelte does the DOM.
+  import { scaleBand, scaleLinear, max } from 'd3';
 
   // 1. The scroll gives you ONE reactive number per scrolly section.
   //    (In vanilla JS this is IntersectionObserver bookkeeping you'd hand-roll.)
@@ -30,23 +32,34 @@
 
   // 3. The step index derives a complete "view config" (see the scrolly-kit
   //    docs: reactive index techniques). Adding a step = adding a case.
+  //    Note: the config describes an ORDER, it doesn't reorder the markup.
   let view = $derived.by(() => {
     const sorted = [...data].sort((a, b) => b.value - a.value);
     switch (step ?? 0) {
-      case 0:  return { bars: data,   highlight: null };
-      case 1:  return { bars: sorted, highlight: null };
-      default: return { bars: sorted, highlight: 'D' };
+      case 0:  return { order: data,   highlight: null };
+      case 1:  return { order: sorted, highlight: null };
+      default: return { order: sorted, highlight: 'D' };
     }
   });
 
   // 4. Responsive by binding, not by ResizeObserver: the container reports its
-  //    real width, and everything below derives from it — the chart reflows on
+  //    real width, and the d3 scales derive from it — the chart reflows on
   //    resize for free. (Canonical pattern: bind clientWidth, viewBox scales.)
   let width = $state(300);
   const H = 260;
-  const gap = 10;
-  let barW = $derived((width - gap * (data.length + 1)) / data.length);
-  let yScale = $derived((H - 50) / Math.max(...data.map((d) => d.value)));
+
+  let xScale = $derived(
+    scaleBand()
+      .domain(view.order.map((d) => d.name))
+      .range([0, width])
+      .padding(0.15)
+  );
+  
+  let yScale = $derived(
+    scaleLinear()
+      .domain([0, max(data, (d) => d.value)])
+      .range([H - 30, 20])
+  );
 
   // Second section: its own steps, its own tiny visual, its own index.
   const steps2 = [
@@ -72,21 +85,22 @@
 
   <section class="split-layout">
     <div class="sticky-panel">
-      <div style="width: 100%; height: auto;" bind:clientWidth={width}>
-        <svg viewBox="0 0 {width} {H}" style="width: 100%; height: auto; display: block;">
-          <!-- 5. Data -> SVG, declaratively. Keyed each-block + CSS transitions:
-               bars slide to their sorted positions on step change. -->
-          {#each view.bars as d, i (d.name)}
-            <g style="transform: translateX({i * (barW + gap) + gap}px); transition: transform 0.6s ease;">
+      <div class="chart-container" bind:clientWidth={width}>
+        <svg viewBox="0 0 {width} {H}">
+          <!-- 5. Data -> SVG, declaratively. The each-block iterates the STABLE
+               data array, so no DOM node ever moves (a moved node has its CSS
+               transition canceled — bars would snap). Sorting happens in the
+               xScale domain instead: positions change, transitions run. -->
+          {#each data as d (d.name)}
+            <g class="bar" style:transform="translateX({xScale(d.name)}px)">
               <rect
-                y={H - 30 - d.value * yScale}
-                width={barW}
-                height={d.value * yScale}
+                y={yScale(d.value)}
+                width={xScale.bandwidth()}
+                height={H - 30 - yScale(d.value)}
                 rx="4"
                 fill={view.highlight === d.name ? '#e0843c' : '#154734'}
-                style="transition: all 0.6s ease;"
               />
-              <text x={barW / 2} y={H - 10} text-anchor="middle" font-size="13" fill="currentColor">{d.name}</text>
+              <text x={xScale.bandwidth() / 2} y={H - 10} text-anchor="middle">{d.name}</text>
             </g>
           {/each}
         </svg>
@@ -106,7 +120,7 @@
   <section class="split-layout reversed">
     <div class="sticky-panel">
       <svg viewBox="0 0 300 300" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-        <circle cx="150" cy="150" r={look.r} fill={look.fill} style="transition: all 0.5s ease;" />
+        <circle class="dot" cx="150" cy="150" r={look.r} fill={look.fill} />
       </svg>
     </div>
     <div class="scrolly-content">
@@ -126,3 +140,35 @@
     <a href="https://vermont-complex-systems.github.io/vcsi-starter/docs/getting-started">docs</a>.
   </p>
 </article>
+
+<style>
+  /* The layout owns the panel's size; the chart fills it and binds its width. */
+  .chart-container {
+    width: 100%;
+    height: auto;
+  }
+
+  .chart-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Positions come from the xScale; the transition makes re-sorts glide. */
+  .bar {
+    transition: transform 0.6s ease;
+  }
+
+  .bar rect {
+    transition: all 0.6s ease;
+  }
+
+  .bar text {
+    font-size: 13px;
+    fill: currentColor;
+  }
+
+  .dot {
+    transition: all 0.5s ease;
+  }
+</style>
