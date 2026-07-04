@@ -56,3 +56,4 @@ against frozen docs.
 - `--vcsi-*` prefix rename (breaking, not worth it)
 - Any new components or layouts
 - Rebuild NavMenu on bits-ui Dialog (focus trap for free; precedent: dashboard drawer). Post-0.1.0 — the `inert` patch covers the gap for now.
+- Replace lucide brand icons in Footer (Youtube/Github/…) with inline SVGs: lucide 1.x removed them, which pins our `@lucide/svelte` range below 1.0.

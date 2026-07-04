@@ -2,6 +2,16 @@
 
 All notable changes to `@the-vcsi/scrolly-kit`. Follows [Keep a Changelog](https://keepachangelog.com/) and, from 0.1.0 on, semver.
 
+## [0.2.1] - 2026-07-03
+
+### Fixed
+
+- **`@lucide/svelte` is now a declared dependency.** It was resolving through monorepo hoisting only, so truly external consumers (and the Svelte Playground, which found the bug) could fail to resolve the icons used by Nav, Footer, ThemeToggle, and the dashboard controls. Pinned `^0.562.0`: lucide 1.x removed the brand icons Footer uses.
+
+### Removed
+
+- `@the-vcsi/scrolly-skills` dropped from dependencies. Nothing in the library imports it (the AI add-on is installed via `npx sv add`); it was shipping the whole add-on into every consumer's node_modules.
+
 ## [0.2.0] - 2026-07-03
 
 The package is now **SvelteKit-free**: nothing imports `$app/*`, the only peer dependency is `svelte ^5`, and the library works in a plain Vite + Svelte app (verified). The templates remain SvelteKit apps; the engine no longer assumes it.
