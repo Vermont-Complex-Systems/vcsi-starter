@@ -26,10 +26,10 @@ against frozen docs.
 - [x] Project-structure page: live at /docs/project-structure with MCP section (template anatomy, story contract, data flow, standalone usage)
 - [x] "Outside the templates": done the strong way in 0.2.0 — package is fully SvelteKit-free (Meta moved template-local over svelte-meta-tags, MarkdownRenderer takes a `base` prop, scrollReveal uses `typeof window`; verified with a plain Vite build). Documented in project-structure
 - [x] Template examples: all three templates check + build (prerender) on 0.1.0/0.2.0; tanstack pinned to the alpha the dashboard story targets. (Visual spot-check of docs claims: ongoing as docs pages are touched)
-- [ ] "Why SvelteKit" manifesto: honest positioning vs Quarto/Closeread, Observable, and React stacks; lead with ownership + the agent-era thesis (craft encoded so agents inherit it)
+- [ ] "Why SvelteKit" manifesto: DRAFT live at /docs/why-sveltekit (positioning vs Quarto/Closeread/Observable/React, ownership + agent-era thesis, honest when-not-to-use). Remaining: Jonathan's voice pass
 - [ ] Accessibility page: what is handled, what is not, what scrollytelling can't fix
-- [ ] `use_cases.json` audit: keywords match the final section list
-- [ ] Surface the changelog on the docs site
+- [x] `use_cases.json` audit: bidirectional coverage verified clean; kept current with every section change
+- [x] Changelog surfaced: /docs/changelog imports the package CHANGELOG (single source), MCP section + llms.txt, nav version badge links to it
 
 ## Phase 3: AI layer, rebuilt on stable docs
 
@@ -55,5 +55,6 @@ against frozen docs.
 - Svelte Playground "try online" links. Tried on 0.2.1: bundling works (and found the undeclared-lucide bug), but runtime dies in the sandboxed iframe because mode-watcher reads localStorage unguarded at module init via the barrel. Unblock post-share: subpath exports (import Scrolly without the barrel) or an upstream mode-watcher PR guarding localStorage. `examples/vite-minimal` is the canonical no-SvelteKit proof meanwhile.
 - `--vcsi-*` prefix rename (breaking, not worth it)
 - Any new components or layouts
-- Rebuild NavMenu on bits-ui Dialog (focus trap for free; precedent: dashboard drawer). Post-0.1.0 — the `inert` patch covers the gap for now.
+- 0.3.0 "engine vs chrome" audit: decide Nav/NavMenu/Footer/ThemeToggle as a family (engine or template-local, precedent: Meta). Their VCSI-specific defaults and the barrel pulling mode-watcher all point the same way; do it as one coherent decision, not piecemeal. (Includes: rebuild NavMenu on bits-ui Dialog; subpath exports so demos can import without the barrel.)
+- Upstream mode-watcher PR: guard its localStorage reads (throws in any sandboxed iframe, e.g. the Svelte Playground preview). This is the actual playground blocker.
 - Replace lucide brand icons in Footer (Youtube/Github/…) with inline SVGs: lucide 1.x removed them, which pins our `@lucide/svelte` range below 1.0.
