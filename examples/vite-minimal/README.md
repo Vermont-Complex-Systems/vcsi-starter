@@ -16,3 +16,16 @@ the [Project Structure docs](https://vermont-complex-systems.github.io/vcsi-star
 
 It is intentionally *outside* the monorepo's npm workspaces, so `npm install` here
 resolves scrolly-kit from the registry exactly like an external user would.
+
+## Structure
+
+```
+src/
+├── App.svelte        # the "story": layout sections, step content, one index per section
+├── BarChart.svelte   # visualization component: receives `step` as a read-only prop
+└── PulseDot.svelte   # same contract, simplest possible visual
+```
+
+The same shape as a template story (`components/Index.svelte` + visualization
+components): the story owns the scroll state, visuals derive everything from
+the step index they're handed.
