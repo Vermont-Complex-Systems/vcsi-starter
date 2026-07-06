@@ -52,6 +52,26 @@ scrolly-story-1/
 
 So publishing a story is: `npm run new-story my-slug`, fill in `Index.svelte` and `copy.json`, add the row to `stories.csv`. Everything else follows by convention.
 
+## Pages and Listings
+
+Pages (home, about, and whatever the site grows) are template-local Svelte the user owns, styled with the `.page` container and tokens. The home page is `src/routes/(app)/+page.svelte`, delegating to components in `$lib/components/` (`Home.svelte`, `StoryGrid.svelte`): customizing it is ordinary editing, no new patterns.
+
+For pages that list *things* — team members, publications, datasets — the templates model one reusable shape, twice (`stories.csv` drives the home page's story cards; `members.csv` drives the about page and its per-member routes):
+
+```
+$lib/data/things.csv             the registry: one row per thing, first column is the id
+      │
+$lib/story.remote.ts             a remote function imports the CSV (vite's dsv plugin) and returns rows
+      │
+(app)/things/+page.svelte        a grid of cards, {#each} over the rows
+      │
+(app)/things/[id]/+page.svelte   optional detail page per row
+      │
+svelte.config.js                 reads the CSV at build time and adds /things/{id} to prerender entries
+```
+
+To add a new listing, copy the members chain (`members.csv` → about grid → `/about/{name}`) and rename. The craft is keeping the CSV the single source of truth: edit a row, the site follows. Two traps: CSV fields containing commas must be double-quoted, and every new `[param]` route needs its prerender entries wired in `svelte.config.js`, or the static build won't know those pages exist.
+
 ## Using scrolly-kit Without the Templates
 
 The engine doesn't require the templates, or SvelteKit. `@the-vcsi/scrolly-kit` is a plain Svelte 5 library (its only peer dependency is `svelte`), so a minimal [Vite](https://vite.dev/) app works:
