@@ -1,6 +1,6 @@
 {
 	"getting-started": "setup, installation, scaffolding, new project, quick start",
-	"why-sveltekit": "why sveltekit, why svelte, positioning, comparison, Quarto, Closeread, Observable, React, alternatives, ownership, when not to use, philosophy, manifesto",
+	"why-scrollykit": "manifesto, why scrolly-kit, why svelte, positioning, comparison, Quarto, Closeread, Observable, React, alternatives, ownership, when not to use, philosophy, VERSO",
 	"changelog": "changelog, release notes, versions, breaking changes, what changed, migration, 0.1.0, 0.2.0",
 	"project-structure": "project structure, folder layout, routes, app group vs slug route, where stories live, stories.csv, copy.json location, story anatomy, data flow, new-story, prerender entries, story-loader, remote functions",
 	"subagent": "subagent, scrolly-story-editor, delegate story work, Claude Code agent, AI",

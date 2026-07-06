@@ -120,21 +120,10 @@ See the [Tokens](tokens) page for the full `--vcsi-*` catalog, and the [Styling]
 
 ## Next Steps
 
-- [Why SvelteKit?](why-sveltekit) -- Honest positioning vs Quarto/Closeread, Observable, and React
+- [Manifesto](why-scrollykit) 
 - [Project Structure](project-structure) -- What degit hands you and how a story gets published
 - [Styling](reference) -- Layout patterns and CSS-variable scoping
 - [Tokens](tokens) -- The `--vcsi-*` design tokens: colors, spacing, fonts, radius
 - [Components](components-overview) -- Reusable components used across templates
 - [Examples](https://vcsi.cmplxsys.w3.uvm.edu/) -- See pedagogical stories built with scrolly-kit
 
-## P.S. Who is this library for?
-
-As of today (2026-02-18), LLMs like `Claude Sonnet 4.6` can write you professionally-looking static websites using only vanilla HTML/CSS/JS in no time. So why bother with this library?
-
-`Scrolly-kit` has been designed to help you understand the choices you are making when building data-driven stories. These choices are reflected in the code and documentation, built and curated to be understood by people with as little technical knowledge of web design as we find possible with today's tools.
-
-We favor [Svelte](https://svelte.dev/) over [React](https://react.dev/) because we believe Svelte's design is closer to the fundamental tools of the web (HTML/CSS). Svelte has been shown to be more approachable to newcomers, and does not require learning a whole ecosystem to get going.
-
-The design choices that went into `scrolly-kit` and accompanying templates include making it possible for motivated users to learn why we style the website the way we do. Inspired by talks like Josh Comeau's [How to teach CSS](https://youtu.be/ZPTVr2pS0XE?si=A1vymxJE4Dsc336p), the goal is to nurture a growing mindset where styling is fun. We acknowledge that [Vibe Coding is somewhat boring](https://cassidoo.co/post/vibe-coding-yawn/), and that keeping the craft alive is vital.
-
-So although you can use this library to just keep building cool data-driven stories, know that if you just want to show off a scrolly story, you can vibe code it with minimal effort. This library is meant to **learn and nurture a web platform that can host tailored data stories you own**; where you can learn and improve yourself to have a space to tell your stories.

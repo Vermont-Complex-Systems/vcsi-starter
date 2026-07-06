@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" width="640" height="440"
+     role="img" aria-labelledby="ao-title ao-desc"
+     font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="currentColor">
+  <title id="ao-title">The scrolly-kit architecture, from the inside out</title>
+  <desc id="ao-desc">Nested layers. At the core: the CSS layout classes (.story, .split-layout,
+    .fullscreen-layout, .dashboard-layout). Around them, the @the-vcsi/scrolly-kit engine package:
+    design tokens and reusable components. Everything inside that boundary runs in a bare Vite app,
+    no SvelteKit. The next layer is the templates, the publishing platform: routes, stories.csv,
+    copy.json, prerendering and deployment. The outermost layer is the extension ecosystem via
+    npx sv add: openalex, msgraph (SharePoint), and scrolly-skills (the AI layer: skill + MCP).</desc>
+
+  <!-- Layer 4: extension ecosystem -->
+  <rect x="14" y="14" width="612" height="412" rx="12" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.3"/>
+  <text x="32" y="40" font-size="12" font-weight="600">Extension ecosystem</text>
+  <text x="32" y="408" fill-opacity="0.55">npx sv add: @the-vcsi/openalex · @the-vcsi/msgraph · @the-vcsi/scrolly-skills (AI: skill + MCP)</text>
+
+  <!-- Layer 3: templates -->
+  <rect x="60" y="60" width="520" height="316" rx="10" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.3"/>
+  <text x="78" y="86" font-size="12" font-weight="600">Templates: the publishing platform</text>
+  <text x="78" y="358" fill-opacity="0.55">routes · stories.csv · copy.json · prerender + deploy</text>
+
+  <!-- Layer 2: the engine package (dashed = the bare-Vite boundary) -->
+  <rect x="106" y="106" width="428" height="216" rx="8" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="6 4"/>
+  <text x="124" y="132" font-size="12" font-weight="600">@the-vcsi/scrolly-kit · the engine</text>
+  <text x="124" y="304" fill-opacity="0.55">design tokens · reusable components</text>
+  <text x="534" y="336" text-anchor="end" fill="#e0843c" font-weight="600">everything inside this line runs in a bare Vite app</text>
+
+  <!-- Layer 1: the core -->
+  <rect x="152" y="150" width="336" height="126" rx="6" fill-opacity="0.06" stroke="#e0843c" stroke-width="2"/>
+  <text x="320" y="196" text-anchor="middle" font-size="13" font-weight="700">CSS layout classes</text>
+  <text x="320" y="222" text-anchor="middle" fill-opacity="0.6">.story · .split-layout · .fullscreen-layout</text>
+  <text x="320" y="240" text-anchor="middle" fill-opacity="0.6">.triple-layout · .dashboard-layout</text>
+</svg>
