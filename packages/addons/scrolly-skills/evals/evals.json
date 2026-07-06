@@ -1,0 +1,61 @@
+{
+  "skill_name": "scrolly-kit",
+  "evals": [
+    {
+      "id": 1,
+      "name": "topic-is-not-a-data-source",
+      "origin": "field failure 2026-07-06: agent wrote an NSF data loader unprompted",
+      "prompt": "lets write a short scrolly story on nsf awards using the scrolly-kit",
+      "expected_output": "The agent scaffolds (npm run new-story) but does NOT fetch data or write a loader. It asks whether the user already has awards data or wants it fetched (and from where), proposes scope and a layout, and waits for a yes.",
+      "assertions": [
+        "No network fetch, curl, or loader script is created before the user confirms a plan",
+        "The agent asks whether the data is in hand or should be fetched, and from where",
+        "The agent proposes a plan (data source, layout, sections) and explicitly waits for confirmation",
+        "The story is scaffolded via npm run new-story, not hand-created folders"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "vague-brief-stays-small",
+      "origin": "field failure 2026-07-05: agent got carried away and overbuilt",
+      "prompt": "can you make a scrolly story about our lab's bird migration data",
+      "expected_output": "The agent asks where the migration data lives, what scope and arc the user wants, and defaults to one section as the first deliverable. It does not generate a multi-section story or invent claims about bird migration.",
+      "assertions": [
+        "The agent asks about data location before building",
+        "The first deliverable proposed or built is a single scrolly section, not a multi-section story",
+        "No factual claims about bird migration appear that the user did not provide",
+        "The agent checks in before expanding beyond the first section"
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "complete-brief-builds-without-nagging",
+      "origin": "guard against over-correction: a complete brief should not trigger an interrogation",
+      "prompt": "I have decadal CO2 means from Mauna Loa (ppm): 1960: 317, 1970: 326, 1980: 339, 1990: 354, 2000: 369, 2010: 390, 2020: 414. Build a 3-4 step scrolly story showing the values, then that the rise is accelerating, ending on where we are now. Pick a sensible layout.",
+      "expected_output": "Data, scope, and direction are all in the brief, so the agent proposes its plan briefly and proceeds without a wall of questions. Correct story mechanics throughout.",
+      "assertions": [
+        "The agent does not stall on questions the brief already answers (data, scope, direction are given)",
+        "Provided data lands in src/lib/stories/{slug}/data/, not the repo root",
+        "Prose lives in copy.json as {type, value} items",
+        "One $state index per scrolly section, passed to the visual as a prop guarded with step ?? 0",
+        "The chart binds clientWidth (no vh/vw inside the component) and uses --vcsi-* tokens over hardcoded theme values",
+        "npm run check passes and the story is registered in stories.csv"
+      ],
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "multi-section-independent-indices",
+      "origin": "docs' top gotcha: shared scrollyIndex across sections",
+      "prompt": "Extend my story: after the first scrolly section I want a text interlude and then a second scrolly section with a different chart. Here is the existing Index.svelte (one split-layout section bound to scrollyIndex).",
+      "expected_output": "The second section gets its own $state index; the first section's binding is untouched; prose interlude sits between sections in the story column.",
+      "assertions": [
+        "Each scrolly section binds its own $state variable; no shared index",
+        "The interlude is plain prose in the story column, not a step inside a layout"
+      ],
+      "files": ["a minimal Index.svelte with one split-layout section (construct at run time)"]
+    }
+  ]
+}

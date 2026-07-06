@@ -73,7 +73,7 @@ This borrows the way [Svelte](https://svelte.dev/) itself stays legible to codin
   - `scrolly-kit` -- runs `npx @the-vcsi/scrolly-mcp` (stdio). Exposes `list-sections` and `get-documentation`, which fetch the **live** docs from this site, so the agent reads the current component/layout reference rather than a stale snapshot.
   - `svelte` -- the official Svelte server at `https://mcp.svelte.dev/mcp` (HTTP). Provides Svelte 5 / SvelteKit documentation, plus a code autofixer and Playground links.
 
-Restart Claude Code (or approve the newly added MCP servers when prompted) so it picks up `.mcp.json`. You can confirm they connected with `/mcp` inside Claude Code, and the scrolly-kit MCP also works as a plain CLI to sanity-check it:
+The installed skill files are a snapshot: `npm update` never touches `.claude/`. To refresh them after the add-on is updated, re-run `npx sv add @the-vcsi/scrolly-skills` (it asks before overwriting). Restart Claude Code (or approve the newly added MCP servers when prompted) so it picks up `.mcp.json`. You can confirm they connected with `/mcp` inside Claude Code, and the scrolly-kit MCP also works as a plain CLI to sanity-check it:
 
 ```bash
 npx @the-vcsi/scrolly-mcp list-sections
