@@ -22,6 +22,7 @@ export default defineAddon({
 		sv.file('.claude/skills/scrolly-kit/references/reactive-index.md', () => readSkill('scrolly-kit/references/reactive-index.md'));
 		sv.file('.claude/skills/scrolly-kit/references/copy-json.md', () => readSkill('scrolly-kit/references/copy-json.md'));
 		sv.file('.claude/skills/scrolly-kit/references/layouts.md', () => readSkill('scrolly-kit/references/layouts.md'));
+		sv.file('.claude/skills/scrolly-kit/references/pages.md', () => readSkill('scrolly-kit/references/pages.md'));
 
 		// --- scrolly-story-editor subagent ---
 		sv.file('.claude/agents/scrolly-story-editor.md', () => readAgent('scrolly-story-editor.md'));

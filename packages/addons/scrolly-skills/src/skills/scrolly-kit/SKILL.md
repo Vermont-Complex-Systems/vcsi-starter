@@ -1,6 +1,6 @@
 ---
 name: scrolly-kit
-description: Core craft for building good scrollytelling stories with @the-vcsi/scrolly-kit — the token system, scroll-index reactivity, mobile-first sizing, story theming, and SSR safety. Load this whenever writing or editing a story, a step visualization, or copy.json in a scrolly-kit project, even if the user doesn't name scrolly-kit. (Scaffolding/workflow lives in AGENTS.md; exact props and full CSS-variable lists live in the scrolly-kit MCP.)
+description: Core craft for building good scrollytelling stories and site pages with @the-vcsi/scrolly-kit — the token system, scroll-index reactivity, mobile-first sizing, story theming, SSR safety, and the CSV-registry page pattern. Load this whenever writing or editing a story, a step visualization, copy.json, or non-story pages (home, about, member/publication listings) in a scrolly-kit project, even if the user doesn't name scrolly-kit. (Scaffolding/workflow lives in AGENTS.md; exact props and full CSS-variable lists live in the scrolly-kit MCP.)
 ---
 
 ## Start with a conversation
@@ -105,6 +105,10 @@ Stories are isolated from the site's dark-mode toggle by default. Opt into dark 
 ```
 
 For custom colors, set `--vcsi-story-bg` / `--vcsi-story-fg` rather than restyling.
+
+## Pages are the other half
+
+Home, about, and other Nav-and-Footer pages are ordinary Svelte the user owns, styled with the `.page` container and tokens. For listing pages (members, publications, datasets) the templates model one reusable shape: a CSV registry driving a grid of cards, with optional prerendered detail routes. The pattern, the wiring, and the keep-the-user-in-the-loop rules: see [pages.md](references/pages.md).
 
 ## Guard browser-only code on static builds
 
