@@ -2,6 +2,12 @@
 
 All notable changes to `@the-vcsi/scrolly-kit`. Follows [Keep a Changelog](https://keepachangelog.com/) and, from 0.1.0 on, semver.
 
+## [Unreleased]
+
+### Fixed
+
+- **StoryHeader mobile title size.** A `max-width: 768px` media query forced the title to a fixed `4rem` (64px), making phone titles larger than desktop; removed so the responsive heading tokens apply everywhere (~29px on a 375px phone). Subtitle override removed for the same reason, and the component's unprefixed phantom variables (`--font-size-medium`/`--font-size-small`) replaced with real `--vcsi-font-size-*` tokens.
+
 ## [0.2.1] - 2026-07-03
 
 ### Fixed

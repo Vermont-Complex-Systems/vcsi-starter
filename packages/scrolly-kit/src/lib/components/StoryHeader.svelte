@@ -92,7 +92,7 @@ Story header with title, subtitle, authors, and date.
 }
 
 .story-header h2 {
-  font-size: var(--font-size-medium);
+  font-size: var(--vcsi-font-size-md, 1.5rem);
   font-weight: 400;
 }
 
@@ -107,7 +107,7 @@ Story header with title, subtitle, authors, and date.
 }
 
 .article-meta .date {
-  font-size: var(--font-size-small);
+  font-size: var(--vcsi-font-size-small, 1rem);
   opacity: 0.7;
 }
 
@@ -115,21 +115,14 @@ Story header with title, subtitle, authors, and date.
   display: inline-block;
   margin: 0;
   padding: 0.25rem 0.6rem;
-  font-size: var(--font-size-small, 0.85rem);
+  font-size: var(--vcsi-font-size-xs, 0.85rem);
   color: #000000ff;
   background: #fff3cd;
   border: 1px solid #ffc107;
   border-radius: 4px;
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .story-header h1 {
-    font-size: 4rem;
-  }
-
-  .story-header h2 {
-    font-size: 2rem;
-  }
-}
+/* No mobile font-size overrides: the heading tokens (--vcsi-font-h1/h2)
+   are responsive clamp()s and already scale down on phones. A fixed 4rem
+   here once made mobile titles LARGER than desktop. */
 </style>
