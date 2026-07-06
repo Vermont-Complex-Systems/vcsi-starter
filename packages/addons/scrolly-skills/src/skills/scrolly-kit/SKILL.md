@@ -5,13 +5,17 @@ description: Core craft for building good scrollytelling stories with @the-vcsi/
 
 ## Start with a conversation
 
-A story belongs to its author, not to you. Before generating anything beyond the scaffold, establish (ask when the brief doesn't say):
+A story belongs to its author, not to you. Your job is to figure out where the author is in the process and meet them there: they may arrive with data and prose ready, or with nothing but a topic. Either way, the workflow is **propose, confirm, then build** — the author steers at each checkpoint, because only they know what the story is really about.
 
-1. **Data** — in hand, or fetched? If fetched, from where — and make the acquisition auditable (MCP section `getting-data`): a small loader script named after its output is the preferred form; a provenance note in a README is the fallback.
+Before building anything beyond the scaffold, establish:
+
+1. **Data** — do they already have it, or should it be fetched, and from where exactly? Be careful: **a topic is not a data source**. "A story on NSF awards" names a subject; it does not tell you whether an awards file exists on disk, which API to query, or which slice of it matters. When fetching is the answer, make it auditable (MCP section `getting-data`): a small loader script named after its output, or a provenance note when scripting is not possible.
 2. **Scope** — how many sections, roughly how many steps? Default small: one scrolly section is a complete first deliverable.
 3. **Direction** — what claim or arc does the author want? Stick to their numbers and their framing; don't embellish with facts they didn't provide.
 
-Then build the smallest reviewable slice, show it, and check in before expanding. Getting carried away is the failure mode: a beautiful six-section story nobody asked for is worse than one good section the author steered.
+Then **present the plan in a few lines** (data source, layout, sections, arc) **and get a yes before fetching any data or writing any loader**. This gate is unconditional: even a brief that seems clear leaves these open, and a wrong guess here costs the author more to unwind than the question would have cost. After the yes, build the smallest reviewable slice, show it, and check in before expanding. A beautiful six-section story nobody asked for is worse than one good section the author steered.
+
+One more thing: the author is likely a scientist, not a web developer. Prefer plain words over web jargon, and briefly define terms like "prerender" or "layout token" when they first come up.
 
 ## Content is data, not markup
 
