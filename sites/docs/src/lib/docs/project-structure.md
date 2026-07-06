@@ -42,7 +42,7 @@ scrolly-story-1/
     └── ...                  # anything that produced the data (even a Python pipeline)
 ```
 
-`Index.svelte` is the contract: the `[slug]` route finds it by convention (a lazy `import.meta.glob` in `story-loader.ts`), so **adding a story is adding a folder** — no route edits. `copy.json` keeps the words out of the markup so non-coders can edit them (or sync them from SharePoint via the msgraph add-on). The `data/` folder is also the honest home for the analysis that produced the story's numbers; shipping the pipeline next to the prose is encouraged, not tolerated.
+`Index.svelte` is the contract: the `[slug]` route finds it by convention (a lazy `import.meta.glob` in `story-loader.ts`), so **adding a story is adding a folder** — no route edits. `copy.json` keeps the words out of the markup so non-coders can edit them (or sync them from SharePoint via the msgraph add-on). The `data/` folder is also the honest home for the analysis that produced the story's numbers; shipping the pipeline next to the prose is encouraged, not tolerated. How data gets there (auditable loaders, from a curl one-liner to remote functions) has [its own page](getting-data).
 
 ## How Data Flows
 

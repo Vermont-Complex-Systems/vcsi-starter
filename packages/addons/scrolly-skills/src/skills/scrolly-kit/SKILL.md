@@ -3,6 +3,16 @@ name: scrolly-kit
 description: Core craft for building good scrollytelling stories with @the-vcsi/scrolly-kit — the token system, scroll-index reactivity, mobile-first sizing, story theming, and SSR safety. Load this whenever writing or editing a story, a step visualization, or copy.json in a scrolly-kit project, even if the user doesn't name scrolly-kit. (Scaffolding/workflow lives in AGENTS.md; exact props and full CSS-variable lists live in the scrolly-kit MCP.)
 ---
 
+## Start with a conversation
+
+A story belongs to its author, not to you. Before generating anything beyond the scaffold, establish (ask when the brief doesn't say):
+
+1. **Data** — in hand, or fetched? If fetched, from where — and make the acquisition auditable (MCP section `getting-data`): a small loader script named after its output is the preferred form; a provenance note in a README is the fallback.
+2. **Scope** — how many sections, roughly how many steps? Default small: one scrolly section is a complete first deliverable.
+3. **Direction** — what claim or arc does the author want? Stick to their numbers and their framing; don't embellish with facts they didn't provide.
+
+Then build the smallest reviewable slice, show it, and check in before expanding. Getting carried away is the failure mode: a beautiful six-section story nobody asked for is worse than one good section the author steered.
+
 ## Content is data, not markup
 
 Story prose lives in `copy.json` as an array of `{ type, value }` items (`type`: `markdown | html | math | code | component`) — not hardcoded in the component. Render plain prose with `RenderContent`:
