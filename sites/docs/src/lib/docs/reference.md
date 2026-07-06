@@ -379,6 +379,18 @@ Use `:global()` only when targeting classes on elements **inside imported compon
 }
 ```
 
+### Where a Style Belongs
+
+Match the reach of the change to where you write it:
+
+| The change affects | Where it goes |
+|---|---|
+| The whole site (brand color, fonts, spacing feel) | Token overrides in `src/lib/styles/app.css` — one `:root` line recolors every page and story |
+| A pattern reused across pages | A shared component, or a class in `app.css` |
+| One page or one story only | That component's own `<style>` block (Svelte scopes it automatically), still consuming tokens inside |
+
+The two failure modes are mirror images: editing `app.css` (or worse, a token default) to fix one page leaks the change everywhere, and hand-copying the same `<style>` rules into a third component means the pattern wanted to be shared — promote it instead of pasting it.
+
 ### How text styling cascades
 
 Inheritable text properties (`font-family`, `font-size`, `line-height`, `color`) are set **once on `body`**, and everything inherits them. So styling a container works the way you'd expect:

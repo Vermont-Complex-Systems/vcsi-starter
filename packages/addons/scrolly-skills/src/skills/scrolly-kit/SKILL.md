@@ -86,6 +86,8 @@ Reach for a token before inventing a value. The full global catalog (`--vcsi-spa
 
 Inheritable text properties are set once on `body` and cascade: set `font-size`/`color`/`line-height` on a container and its children follow. Only headings (token-sized), code (`em`-sized), blockquotes (`1.1em`), and tables (`0.875em`) carry their own sizes.
 
+Match where you write a style to how far it reaches: whole-site changes are token overrides in `src/lib/styles/app.css`; one-off styling for a single page or story lives in that component's own `<style>` block (Svelte scopes it), still consuming tokens. Never edit `app.css` or a token default to fix one page — and if you're copying the same local styles into a third place, promote them to a shared component or an `app.css` class instead.
+
 ## Layouts own space; components fill it — design mobile-first
 
 The layout classes (`.split-layout`, `.fullscreen-layout`, `.triple-layout`, `.dashboard-layout`) set dimensions with `vh`/`vw`/`%`. Your chart component must **not** — it fills with `100%`, `inherit`, or a bound size. A `vh`/`vw` inside a component fights the layout and breaks containment.
