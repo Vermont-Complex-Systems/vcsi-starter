@@ -100,6 +100,7 @@ Sidebar + main, no scrolly mechanics — for interactive explorers. Add `.sideba
 | `.dashboard-layout` | `clientWidth` only | fixed or `auto` |
 
 - Never use `vh`/`vw` inside a chart component.
+- Pacing: `--vcsi-step-height` (default 90vh, one step per screen) sets reading rhythm — comfortable for 3-6 substantial steps; drop toward 40-60vh for many short steps so the story does not drag.
 - Add `overflow: hidden` on containers to prevent blowout.
 - For `height: 100%` to work, every ancestor needs an explicit height.
 

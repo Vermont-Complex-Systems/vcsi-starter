@@ -46,7 +46,7 @@ scrolly-story-1/
 
 ## How Data Flows
 
-1. **`stories.csv` is the registry.** One row per story (slug, title, author, date, tags). The home page renders its cards from it.
+1. **`stories.csv` is the registry.** One row per story (slug, title, author, date, tags). The home page renders its cards from it. It is plain CSV: wrap any field containing a comma in double quotes, or the columns shift.
 2. **`svelte.config.js` reads the CSVs at build time** to generate the prerender entry list — that's how `adapter-static` knows `/my-story` exists without a server.
 3. **`story.remote.ts`** (a SvelteKit remote function, prerendered) hands the `[slug]` page its metadata row and `copy.json`; `story-loader.ts` hands it the component. The page renders whatever the pair returns.
 

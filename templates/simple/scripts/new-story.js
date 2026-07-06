@@ -246,7 +246,7 @@ const scrollyPlotMinimal = `<script>
 	}
 
 	text {
-		fill: var(--vcsi-color-text, #333);
+		fill: currentColor;
 	}
 </style>
 `;
@@ -369,13 +369,13 @@ const scrollyPlotDetailed = `<!--
 	}
 
 	text {
-		fill: var(--vcsi-color-text, #333);
+		fill: currentColor;
 	}
 
 	.caption {
 		margin-top: 1rem;
 		font-size: 0.875rem;
-		color: var(--vcsi-color-text-muted, #666);
+		color: var(--vcsi-muted, #666);
 	}
 
 	@keyframes bounce {
