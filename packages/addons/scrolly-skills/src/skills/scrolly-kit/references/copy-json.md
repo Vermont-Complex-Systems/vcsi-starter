@@ -29,7 +29,7 @@ Each item is `{ type, value }`:
 | `html` | raw HTML, inserted directly | — |
 | `math` | centered KaTeX expression | — |
 | `code` | syntax-highlighted block | `language`, `highlightLines` (e.g. `"1-3,5"`) |
-| `component` | a Svelte component by name | — (see below) |
+| `component` | a Svelte component by name | — (RenderContent only, see below; `ScrollyContent` steps don't render `component` items) |
 
 Render a text section with `RenderContent`, scrolly steps with `ScrollyContent`:
 

@@ -29,17 +29,17 @@
   <text class="t-step" x="164" y="105" text-anchor="middle" style="fill:#333333">Active step</text>
   <text class="mono t-tag" x="278" y="70" text-anchor="end" style="fill:#9a9a9a">active</text>
   <rect x="40" y="150" width="248" height="48" rx="6" fill="#f5f5f5"/>
-  <text class="t-step" x="164" y="179" text-anchor="middle" style="fill:#cccccc">Inactive step</text>
+  <text class="t-step" x="164" y="179" text-anchor="middle" style="fill:#6d6d6d">Inactive step</text>
   <text class="mono t-tag" x="278" y="144" text-anchor="end" style="fill:#c4c4c4">inactive</text>
 
   <!-- Dark theme panel (fixed dark colors) -->
   <rect x="330" y="34" width="292" height="182" rx="8" fill="#1a1a1a"/>
   <text class="t-panel" x="348" y="58" style="fill:#999999">Dark theme</text>
-  <rect x="352" y="76" width="248" height="48" rx="6" fill="#2a2a2a" filter="url(#stsh)"/>
-  <text class="t-step" x="476" y="105" text-anchor="middle" style="fill:#e8e8e8">Active step</text>
+  <rect x="352" y="76" width="248" height="48" rx="6" fill="#43484c" filter="url(#stsh)"/>
+  <text class="t-step" x="476" y="105" text-anchor="middle" style="fill:#f2f2f2">Active step</text>
   <text class="mono t-tag" x="590" y="70" text-anchor="end" style="fill:#777777">active</text>
-  <rect x="352" y="150" width="248" height="48" rx="6" fill="#222222"/>
-  <text class="t-step" x="476" y="179" text-anchor="middle" style="fill:#666666">Inactive step</text>
+  <rect x="352" y="150" width="248" height="48" rx="6" fill="#24262a"/>
+  <text class="t-step" x="476" y="179" text-anchor="middle" style="fill:#9aa0a4">Inactive step</text>
   <text class="mono t-tag" x="590" y="144" text-anchor="end" style="fill:#5a5a5a">inactive</text>
 
   <!-- caption -->

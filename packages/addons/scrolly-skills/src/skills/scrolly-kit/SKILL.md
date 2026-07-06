@@ -70,7 +70,7 @@ To *customize*, **override** a token on a scope rather than writing a competing 
 
 Reach for a token before inventing a value. The full global catalog (`--vcsi-space-*`, `--vcsi-radius-*`, fonts, colors, transitions) is the MCP's `tokens` section (`get-documentation tokens`); layout- and component-specific tokens (`--vcsi-panel-*`, `--vcsi-step-*`, …) live beside their layout in the `reference` section.
 
-Inheritable text properties are set once on `body` and cascade: set `font-size`/`color`/`line-height` on a container and its children follow. Only headings (token-sized), code (`em`-sized), and blockquotes carry their own sizes.
+Inheritable text properties are set once on `body` and cascade: set `font-size`/`color`/`line-height` on a container and its children follow. Only headings (token-sized), code (`em`-sized), blockquotes (`1.1em`), and tables (`0.875em`) carry their own sizes.
 
 ## Layouts own space; components fill it — design mobile-first
 

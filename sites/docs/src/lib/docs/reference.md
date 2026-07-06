@@ -287,10 +287,10 @@ Step boxes work the same across every layout. These variables control their colo
 
 | Variable | Light | Dark | Description |
 |----------|-------|------|-------------|
-| `--vcsi-story-step-bg` | #fff | #2a2a2a | Active step background |
-| `--vcsi-story-step-fg` | #333 | #e8e8e8 | Active step text color |
-| `--vcsi-story-step-bg-inactive` | #f5f5f5 | #222 | Inactive step background |
-| `--vcsi-story-step-fg-inactive` | #ccc | #666 | Inactive step text color |
+| `--vcsi-story-step-bg` | #fff | #43484c | Active step background |
+| `--vcsi-story-step-fg` | #333 | #f2f2f2 | Active step text color |
+| `--vcsi-story-step-bg-inactive` | #f5f5f5 | #24262a | Inactive step background |
+| `--vcsi-story-step-fg-inactive` | gray-600 | #9aa0a4 | Inactive step text color (WCAG AA on its background) |
 | `--vcsi-step-box-shadow` | 1px 1px 10px rgba(0,0,0,0.2) | 1px 1px 10px rgba(0,0,0,0.2) | Step box shadow |
 | `--vcsi-step-max-width` | 600px | 600px | Maximum width of step box |
 | `--vcsi-step-padding` | 1rem | 1rem | Padding inside step box |
