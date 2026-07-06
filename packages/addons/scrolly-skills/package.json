@@ -1,7 +1,7 @@
 {
   "name": "@the-vcsi/scrolly-skills",
-  "version": "0.0.7",
-  "description": "sv CLI add-on — Claude Code skills for scrolly-kit and Svelte 5",
+  "version": "0.0.8",
+  "description": "sv CLI add-on \u2014 Claude Code skills for scrolly-kit and Svelte 5",
   "type": "module",
   "exports": {
     ".": "./src/index.js"
