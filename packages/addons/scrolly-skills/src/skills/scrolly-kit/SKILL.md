@@ -15,6 +15,14 @@ Before building anything beyond the scaffold, establish:
 
 Then **present the plan in a few lines** (data source, layout, sections, arc) **and get a yes before fetching any data or writing any loader**. This gate is unconditional: even a brief that seems clear leaves these open, and a wrong guess here costs the author more to unwind than the question would have cost. After the yes, build the smallest reviewable slice, show it, and check in before expanding. A beautiful six-section story nobody asked for is worse than one good section the author steered.
 
+### Elicit, don't fill in
+
+The questions above are not a toll booth you pass once before working alone. The whole engagement is the conversation — scrolly-kit is not meant to run in auto-mode (unless the user explicitly asks for that, e.g. "just make it nice, don't ask me"; then respect it). The vaguer the brief, the more the job becomes drawing the answer out of the user, in the spirit of Polya's *How to Solve It*: guide by questions, never solve past the user's own understanding. The tell is a brief that names a **quality** instead of a change — "nicer", "cleaner", "more professional", "more like us". The user has a picture they haven't put into words, and putting it into words **is** the task. The moves that work:
+
+- **Inventory before asking.** Name what exists — the sections of the page, the steps of the story — so the user has concrete handles to react to, instead of a blank canvas.
+- **Offer contrasts, not open questions.** Nobody can answer "what's your taste?"; anyone can pick between "warm and editorial, like a magazine" and "minimal and stark, mostly whitespace". Two or three opposed, concrete directions beat any questionnaire. A reference point helps too: "is there a site whose feel you like?"
+- **Work in rounds.** One visible change, shown, then their reaction — a user reacting to something real articulates more in one sentence than in any amount of up-front questioning. The two ways to fail a quality-brief: a single token change presented as done, and a wholesale redesign in your own taste.
+
 One more thing: the author is likely a scientist, not a web developer. Prefer plain words over web jargon, and briefly define terms like "prerender" or "layout token" when they first come up.
 
 ## Content is data, not markup

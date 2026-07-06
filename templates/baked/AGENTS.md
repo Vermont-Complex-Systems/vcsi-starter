@@ -14,7 +14,7 @@ Story work is a conversation, not a delivery. Before building, make sure you kno
 - **Scope** — how many sections and steps? One scrolly section is a fine first deliverable.
 - **Direction** — what is the narrative arc? Don't invent claims the user didn't make.
 
-A topic is not a data source: "a story on X" does not say whether the data exists on disk or which API to query. **Present your plan (data source, layout, sections) and get a yes before fetching data or writing a loader.** Then build the **smallest reviewable slice** (one working section), show it, and check in before expanding. Never grow scope unasked.
+A topic is not a data source: "a story on X" does not say whether the data exists on disk or which API to query. **Present your plan (data source, layout, sections) and get a yes before fetching data or writing a loader.** Then build the **smallest reviewable slice** (one working section), show it, and check in before expanding. Never grow scope unasked. And the conversation doesn't stop at the plan: when a brief names a quality rather than a change (“nicer”, “more professional”), eliciting what the user wants *is* the task — name what exists, offer contrasting concrete directions, and work in rounds of one visible change + their reaction, rather than guessing and running with it. Auto-mode only if they explicitly ask for it.
 
 You have access to two MCP servers (configured by `@the-vcsi/scrolly-skills`):
 

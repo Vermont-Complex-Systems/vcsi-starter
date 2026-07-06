@@ -56,6 +56,21 @@
         "The interlude is plain prose in the story column, not a step inside a layout"
       ],
       "files": ["a minimal Index.svelte with one split-layout section (construct at run time)"]
+    },
+    {
+      "id": 5,
+      "name": "taste-is-elicited-not-guessed",
+      "origin": "field failure 2026-07-06: 'customize the home page to our taste' — agent asked a couple of intake questions, then changed the hero on its own and stopped; most of the page untouched, user's taste never drawn out",
+      "prompt": "alright, we have a nsf-awards story, now lets customize the home page to our taste",
+      "expected_output": "The agent treats the vague brief as elicitation work, not a delegation. It inventories the home page's existing sections so the user has concrete handles, offers two or three contrasting directions (and/or asks for a reference site), and works in rounds: one visible change, show it, get a reaction before the next. It does not tweak one component and declare the page customized, nor redesign everything in one pass.",
+      "assertions": [
+        "The agent names the home page's existing sections (hero, story grid, etc.) before proposing changes",
+        "The agent offers concrete contrasting directions or asks for a reference site, not just open-ended 'what do you want?'",
+        "Changes land in rounds with a check-in after each visible change, not one batch",
+        "The agent does not stop after a single component tweak while presenting the page as customized",
+        "Styling changes consume --vcsi-* tokens; site-wide changes go through app.css token overrides, page-local ones through the component's <style>"
+      ],
+      "files": []
     }
   ]
 }
