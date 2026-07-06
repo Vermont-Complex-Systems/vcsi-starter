@@ -39,7 +39,7 @@
         <img src={kitLogo} class="docs-nav-logo docs-nav-logo-desktop" alt="ScrollyKit Logo" />
         <img src={kitLogoMobile} class="docs-nav-logo docs-nav-logo-mobile" alt="ScrollyKit Logo" />
       </a>
-      <a href="{base}/docs/changelog" class="docs-nav-version">v0.2.1</a>
+      <a href="{base}/docs/changelog" class="docs-nav-version">v0.2.2</a>
     </div>
     <ul class="docs-nav-links">
       <li class="nav-link-item"><a href="{base}/docs/reference" aria-current={$page.url.pathname === base + '/docs/reference' ? 'page' : undefined}>Styling</a></li>
