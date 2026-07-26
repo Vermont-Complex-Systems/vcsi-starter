@@ -1,14 +1,8 @@
-import { getStory } from '$lib/story.remote.js';
 import { loadStoryComponent } from '$lib/story-loader.js';
 
-// Fetching here (not via top-level `await` in +page.svelte) keeps the page
-// component synchronous — an async page component hydrates out of sync with
-// its SSR output and triggers hydration_mismatch on every story.
+// The load function only handles the routing concern:
+// resolve the right component for this slug (unknown slugs 404 in story-loader).
+// Data fetching lives in story.remote.ts, awaited by the page component.
 export async function load({ params }) {
-	const [component, { story, copyData }] = await Promise.all([
-		loadStoryComponent(params.slug),
-		getStory(params.slug)
-	]);
-
-	return { component, slug: params.slug, story, copyData };
+	return { component: await loadStoryComponent(params.slug), slug: params.slug };
 }
