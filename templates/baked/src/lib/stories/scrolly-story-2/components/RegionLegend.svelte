@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { ScaleOrdinal } from 'd3';
 
-    let { regions, colorScale, selectedRegions = $bindable(), innerWidth, isMobile = false }: {
+    let { regions, colorScale, selectedRegions, innerWidth, isMobile = false }: {
         regions: string[];
         colorScale: ScaleOrdinal<string, string>;
         selectedRegions: Set<string>;
@@ -21,9 +21,11 @@
     }
 
     function toggleRegion(region: string) {
-        selectedRegions = selectedRegions.has(region)
-            ? new Set([...selectedRegions].filter(r => r !== region))
-            : new Set([...selectedRegions, region]);
+        if (selectedRegions.has(region)) {
+            selectedRegions.delete(region);
+        } else {
+            selectedRegions.add(region);
+        }
     }
 
 </script>

@@ -2,9 +2,10 @@
     /* =====================================================
      * Imports
      * =================================================== */
-    import { scaleLinear, scaleLog, scaleOrdinal, scaleSqrt } from 'd3';
+    import { extent, scaleLinear, scaleLog, scaleOrdinal, scaleSqrt } from 'd3';
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
+    import { SvelteSet } from 'svelte/reactivity';
 
     import ChartTooltip from './ChartTooltip.svelte';
     import RegressionLines from './RegressionLines.svelte';
@@ -20,7 +21,24 @@
     let { scrollyIndex } = $props();
 
     /* =====================================================
-     * 1. Viewport & layout signals
+     * 1. Static configuration
+     * =================================================== */
+    const years = [2001, 2007, 2013, 2020, 2022];
+
+    const xVariables = [
+        { value: 'democracy', label: 'Electoral Democracy Index', domain: [0, 1], scale: 'linear' },
+        { value: 'gdp', label: 'GDP per Capita', domain: [200, 150000], scale: 'log' }
+    ];
+
+    const regions = [...new Set(allData.map(d => d.owid_region))];
+
+    const colorScale = scaleOrdinal()
+        .domain(regions)
+        .range(['#e15759', '#f28e2c', '#4e79a7', '#76b7b2', '#59a14f', '#edc949']);
+
+
+    /* =====================================================
+     * 2. Viewport & layout state
      * =================================================== */
     let width = $state(800);
     let height = $state(600);
@@ -31,8 +49,12 @@
     // On mobile, make chart square by using width as height
     let chartHeight = $derived(isMobile ? width : height);
 
+    // Desktop-only breathing room: the drawing surface gives up this much
+    // height (and the plot area half of it), which nudges the chart down
+    // and keeps it clear of the screen edges. Zero on mobile.
+    let verticalClearance = $derived(isMobile ? 0 : 200);
+
     // Responsive margins - tighter on mobile
-    let navHeight = $derived(isMobile ? 0 : 200);
     let margin = $derived(isMobile
         ? { top: 40, right: 20, bottom: 50, left: 50 }
         : { top: 60, right: 40, bottom: 70, left: 70 }
@@ -43,40 +65,36 @@
     );
 
     let innerHeight = $derived(
-        chartHeight - margin.top - margin.bottom - navHeight / 2
+        chartHeight - margin.top - margin.bottom - verticalClearance / 2
     );
 
 
     /* =====================================================
-     * 2. User-controlled state (UI inputs)
+     * 3. User-controlled state (UI inputs)
      * =================================================== */
     let selectedXVar = $state('democracy');
-    let selectedRegions = $state(new Set());
     let usePopulationSize = $state(true);
     let hoveredCountry = $state(null);
 
-
-    /* =====================================================
-     * Static configuration
-     * =================================================== */
-    const years = [2001, 2007, 2013, 2020, 2022];
-
-    const xVariables = [
-        { value: 'democracy', label: 'Electoral Democracy Index', domain: [0, 1], scale: 'linear' },
-        { value: 'gdp', label: 'GDP per Capita', domain: [200, 150000], scale: 'log' }
-    ];
+    // SvelteSet so the legend's .add()/.delete() calls trigger updates
+    // ($state does not make a plain Set reactive)
+    const selectedRegions = new SvelteSet();
 
 
     /* =====================================================
-     * 3. Derived configuration signals
+     * 4. Derived configuration
      * =================================================== */
-    let currentYear = $derived(years[scrollyIndex ?? 0]);
+    // Clamp so extra scrolly steps hold the last year instead of
+    // going out of bounds and emptying the chart
+    let currentYear = $derived(years[Math.min(scrollyIndex ?? 0, years.length - 1)]);
 
     let xConfig = $derived(xVariables.find(v => v.value === selectedXVar));
 
+    let isLogScale = $derived(xConfig.scale === 'log');
+
 
     /* =====================================================
-     * 4. Data filtering pipeline
+     * 5. Data filtering pipeline
      * =================================================== */
     let currentData = $derived(
         allData.filter(d =>
@@ -95,64 +113,46 @@
 
 
     /* =====================================================
-     * 5. Encodings & derived metrics & Scales
+     * 6. X-scale & size encoding
      * =================================================== */
-    const regions = [...new Set(allData.map(d => d.owid_region))];
-
-    const colorScale = scaleOrdinal()
-        .domain(regions)
-        .range(['#e15759', '#f28e2c', '#4e79a7', '#76b7b2', '#59a14f', '#edc949']);
-
     let radiusScale = $derived(
         scaleSqrt()
             .domain([0, 1.4e9])
             .range(isMobile ? [2, 18] : [3, 30])
     );
 
-
     let xScale = $derived(
-        xConfig.scale === 'log'
-            ? scaleLog()
-                .domain(xConfig.domain)
-                .range([0, innerWidth])
-            : scaleLinear()
-                .domain(xConfig.domain)
-                .range([0, innerWidth])
+        (isLogScale ? scaleLog() : scaleLinear())
+            .domain(xConfig.domain)
+            .range([0, innerWidth])
     );
 
     let xTicks = $derived(
-        xConfig.scale === 'log'
+        isLogScale
             ? (isMobile ? [500, 5000, 50000] : [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000])
             : (isMobile ? [0, 0.5, 1.0] : [0, 0.2, 0.4, 0.6, 0.8, 1.0])
     );
 
 
     /* =====================================================
-     * 6. Y-scale (data → extent → tween → scale)
+     * 7. Y-scale (data → extent → tween → scale)
      * =================================================== */
     let lifeExpExtent = $derived.by(() => {
         const data = filteredData.length > 0 ? filteredData : currentData;
         if (data.length === 0) return [40, 90];
 
-        return [
-            Math.floor(Math.min(...data.map(d => d.life_expectancy))) - 5,
-            Math.ceil(Math.max(...data.map(d => d.life_expectancy))) + 5
-        ];
+        const [min, max] = extent(data, d => d.life_expectancy);
+        return [Math.floor(min) - 5, Math.ceil(max) + 5];
     });
 
-    const yMin = Tween.of(
-        () => lifeExpExtent[0],
-        { duration: 800, easing: cubicOut }
-    );
-
-    const yMax = Tween.of(
-        () => lifeExpExtent[1],
+    const yDomain = Tween.of(
+        () => lifeExpExtent,
         { duration: 800, easing: cubicOut }
     );
 
     let yScale = $derived(
         scaleLinear()
-            .domain([yMin.current, yMax.current])
+            .domain(yDomain.current)
             .range([innerHeight, 0])
     );
 
@@ -160,7 +160,7 @@
 
 
     /* =====================================================
-     * 7. Tooltip derived state
+     * 8. Tooltip derived state
      * =================================================== */
     let hoveredData = $derived(
         hoveredCountry
@@ -171,9 +171,15 @@
 
 
 <div class="chart-container" bind:clientWidth={width} bind:clientHeight={height}>
-    <svg viewBox={`0 0 ${width} ${chartHeight-navHeight}`}>
-        
-        <!-- Small hack to deal with Tweening axes ventring above and below the chart... -->
+    <svg viewBox={`0 0 ${width} ${chartHeight - verticalClearance}`}>
+
+        <!--
+            The y-axis animates while its ticks stay put, so mid-transition
+            some ticks fall outside the plot. These clips let gridlines and
+            tick labels slide out of view instead of spilling over the chart.
+            (The ids are global to the page — fine here, where only one
+            chart renders at a time.)
+        -->
         <defs>
             <clipPath id="chart-area">
                 <rect x={0} y={0} width={innerWidth} height={innerHeight} />
@@ -184,11 +190,11 @@
         </defs>
 
         <g transform={`translate(${margin.left},${margin.top})`}>
-            <XAxis {xScale} {innerWidth} {innerHeight} ticks={xTicks} label={xConfig.label} isLogScale={xConfig.scale === 'log'} />
+            <XAxis {xScale} {innerWidth} {innerHeight} ticks={xTicks} label={xConfig.label} {isLogScale} />
             <YAxis {yScale} {innerWidth} {innerHeight} ticks={yTicks} label="Life Expectancy (years)" />
 
             {#if !isMobile || (selectedRegions.size >= 1 && selectedRegions.size <= 3)}
-                <RegressionLines data={filteredData} {xScale} {yScale} {colorScale} isLogScale={xConfig?.scale === 'log'}/>
+                <RegressionLines data={filteredData} {xScale} {yScale} {colorScale} {isLogScale} />
             {/if}
 
             <ScatterDots
@@ -201,15 +207,12 @@
                 bind:hoveredCountry
             />
 
-            <!-- Year label -->
             <text
+                class="year-label"
                 x={isMobile ? innerWidth / 2 : margin.left + 35}
                 y={isMobile ? innerHeight / 2 : 30}
-                text-anchor={isMobile ? "middle" : "end"}
+                text-anchor={isMobile ? 'middle' : 'end'}
                 font-size={isMobile ? 72 : 48}
-                font-weight="700"
-                fill="#ccc"
-                opacity="0.3"
             >
                 {currentYear}
             </text>
@@ -217,7 +220,7 @@
 
         <!-- Region legend -->
         <g transform={`translate(${margin.left + 20}, 20)`}>
-            <RegionLegend {regions} {colorScale} bind:selectedRegions {innerWidth} {isMobile} />
+            <RegionLegend {regions} {colorScale} {selectedRegions} {innerWidth} {isMobile} />
         </g>
 
     </svg>
@@ -242,8 +245,8 @@
         {yScale}
         {margin}
         {width}
-        xLabel={xConfig?.label}
-        isLogScale={xConfig?.scale === 'log'}
+        xLabel={xConfig.label}
+        {isLogScale}
     />
 {/if}
 
@@ -278,7 +281,7 @@
         right: 2.5rem;
         gap: 1rem;
         display: flex;
-        align-items: center; 
+        align-items: center;
         z-index: 10;
     }
 
@@ -286,14 +289,16 @@
         padding: 0 12px;
         height: 30px;
         font-size: 13px;
-        border-radius: 4px;
-        border: 1px solid #555;
-        background: #2a2a2a;
-        color: #fff;
+        border-radius: var(--vcsi-radius-sm);
+        border: 1px solid var(--vcsi-border);
+        background: var(--vcsi-bg);
+        color: var(--vcsi-fg);
         cursor: pointer;
     }
 
-    text {
-        fill: #333;
+    .year-label {
+        fill: var(--vcsi-muted);
+        font-weight: 700;
+        opacity: 0.3;
     }
 </style>

@@ -1,35 +1,44 @@
 <script>
-    let {
-        data, 
-        xScale, 
-        yScale, 
-        colorScale, 
-        radiusScale, 
-        usePopulationSize = false, 
-        hoveredCountry = $bindable()
-    } = $props();
+	let {
+		data,
+		xScale,
+		yScale,
+		colorScale,
+		radiusScale,
+		usePopulationSize = false,
+		hoveredCountry = $bindable(null)
+	} = $props();
 
+	const DEFAULT_RADIUS = 6;
 </script>
 
-{#each data as d (d.entity)}
-    <circle
-        cx={xScale(d.x_value)}
-        cy={yScale(d.life_expectancy)}
-        r={usePopulationSize && d.population ? radiusScale(d.population) : 6}
-        fill={colorScale(d.owid_region)}
-        opacity={hoveredCountry === d.entity ? 1 : 0.7}
-        stroke={hoveredCountry === d.entity ? '#333' : 'white'}
-        stroke-width={hoveredCountry === d.entity ? 2 : 0.5}
-        style="transition: cx 0.8s ease-in-out, cy 0.8s ease-in-out, r 0.4s ease-out;"
-        role="graphics-symbol"
-        aria-label={d.entity}
-        onmouseenter={() => hoveredCountry = d.entity}
-        onmouseleave={() => hoveredCountry = null}
-    />
+{#each data as country (country.entity)}
+	{@const hovered = hoveredCountry === country.entity}
+	{@const r = usePopulationSize && country.population
+		? radiusScale(country.population)
+		: DEFAULT_RADIUS}
+
+	<circle
+		cx={xScale(country.x_value)}
+		cy={yScale(country.life_expectancy)}
+		{r}
+		fill={colorScale(country.owid_region)}
+		opacity={hovered ? 1 : 0.7}
+		stroke={hovered ? '#333' : 'white'}
+		stroke-width={hovered ? 2 : 0.5}
+		role="graphics-symbol"
+		aria-label={country.entity}
+		onmouseenter={() => (hoveredCountry = country.entity)}
+		onmouseleave={() => (hoveredCountry = null)}
+	/>
 {/each}
 
 <style>
-    circle {
-        cursor: pointer;
-    }
+	circle {
+		cursor: pointer;
+		transition:
+			cx 0.8s ease-in-out,
+			cy 0.8s ease-in-out,
+			r 0.4s ease-out;
+	}
 </style>
