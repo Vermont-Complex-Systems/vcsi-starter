@@ -52,6 +52,12 @@ scrolly-story-1/
 
 So publishing a story is: `npm run new-story my-slug`, fill in `Index.svelte` and `copy.json`, add the row to `stories.csv`. Everything else follows by convention.
 
+### Hiding a work in progress
+
+Set a row's `ishidden` column to `true` and the story disappears from the site: `getStories` filters it out of every listing, and `svelte.config.js` drops it from the prerender entries, so no page is emitted for it at all. Clear the value to publish.
+
+This is how you keep a half-finished story in the repo without putting it on the web. The files stay where they are; only the row changes. Because the last internal story can be hidden, leaving `/[slug]` with nothing to prerender, the static templates set `handleUnseenRoutes: 'ignore'` so an empty list is not a build error.
+
 ## Pages and Listings
 
 Pages (home, about, and whatever the site grows) are template-local Svelte the user owns, styled with the `.page` container and tokens. The home page is `src/routes/(app)/+page.svelte`, delegating to components in `$lib/components/` (`Home.svelte`, `StoryGrid.svelte`): customizing it is ordinary editing, no new patterns.

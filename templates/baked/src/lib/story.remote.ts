@@ -31,9 +31,15 @@ export interface Story {
   externalUrl: string;
   tags: string;
   level: string;
+  /** "true" in stories.csv keeps the story out of every listing. */
+  ishidden: boolean;
 }
 
-const stories = storiesData as Story[];
+// CSV values arrive as strings, so coerce the hidden flag once here.
+const stories: Story[] = (storiesData as any[]).map((d) => ({
+  ...d,
+  ishidden: d.ishidden === 'true'
+}));
 
 // Glob for copy data - eager since it's small JSON
 // https://vite.dev/guide/features#glob-import
@@ -44,7 +50,7 @@ const copyModules = import.meta.glob<{ default: Record<string, unknown> }>(
 
 // Query for getting all stories
 export const getStories = prerender(async () => {
-  return stories;
+  return stories.filter((s) => !s.ishidden);
 });
 
 // Query for getting a single story by slug

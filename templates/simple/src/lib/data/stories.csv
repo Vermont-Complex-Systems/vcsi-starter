@@ -1,2 +1,2 @@
-slug,title,description,author,date,externalUrl,tags
-example-story-1,Example Story 1,Description,Author Name,2026-02-18,,Tags
+slug,title,description,author,date,externalUrl,tags,ishidden
+example-story-1,Example Story 1,Description,Author Name,2026-02-18,,Tags,
