@@ -18,6 +18,17 @@ const options = defineAddonOptions()
   })
   .build();
 
+// sv.file hands us the file's current contents, or nothing when it does not
+// exist yet. Everything this add-on writes is edited afterwards: appSettings.js
+// carries the siteId, fetch-assets.js carries ASSET_FOLDERS, and either fetch
+// script may be tuned per site. So a re-run must leave an existing file alone.
+//
+// `sv add` scaffolds a project; it does not update one. To adopt a newer
+// version of these scripts, diff this package's templates against your copy and
+// port the change deliberately.
+const keepExisting = (generated) => (content) =>
+  content && content.trim() ? content : generated;
+
 export default defineAddon({
   id: '@the-vcsi/msgraph',
   shortDescription: 'Microsoft Graph / SharePoint integration for fetching story content',
@@ -25,14 +36,14 @@ export default defineAddon({
 
   run: ({ sv, options: opts }) => {
     // Create the fetch script
-    sv.file('scripts/fetch-msgraph.js', () => FETCH_SCRIPT);
+    sv.file('scripts/fetch-msgraph.js', keepExisting(FETCH_SCRIPT));
 
     // Pull binary assets (headshots, logos) out of the same SharePoint site
-    sv.file('scripts/fetch-assets.js', () => ASSETS_SCRIPT);
+    sv.file('scripts/fetch-assets.js', keepExisting(ASSETS_SCRIPT));
 
     // Create app settings config with user-provided siteId
     const appSettings = APP_SETTINGS.replace(/__SITE_ID__/g, opts.siteId || 'YOUR_SITE_ID');
-    sv.file('src/appSettings.js', () => appSettings);
+    sv.file('src/appSettings.js', keepExisting(appSettings));
 
     // Append to .env.example (or create if doesn't exist)
     sv.file('.env.example', (content) => {
@@ -67,6 +78,7 @@ export default defineAddon({
     'Get credentials from Azure Portal > App registrations',
     'Run npm install',
     'Run npm run fetch:sharepoint to pull story copy',
-    'Run npm run fetch:headshots to pull images (edit ASSET_FOLDERS first)'
+    'Run npm run fetch:headshots to pull images (edit ASSET_FOLDERS first)',
+    'Re-running this add-on keeps any of these files you already have'
   ]
 });

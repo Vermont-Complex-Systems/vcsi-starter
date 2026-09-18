@@ -15,6 +15,12 @@ You'll be prompted for your SharePoint site ID. The add-on creates:
 - `src/appSettings.js` -- Azure AD config
 - `.env.example` -- Credential template
 
+Running this a second time is safe: any of those files you already have is left
+untouched, because you will have edited them (the site ID in `appSettings.js`,
+the folder mapping in `fetch-assets.js`). `sv add` sets a project up; it does not
+update one. To pick up a newer version of these scripts, compare this add-on's
+templates with your copies and move the change across yourself.
+
 ## Usage
 
 After configuring your `.env` with Azure credentials, run:
