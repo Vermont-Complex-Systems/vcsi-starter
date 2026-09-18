@@ -70,3 +70,14 @@ h1, h2, h3, h4, h5, h6 {
     scroll-behavior: auto !important;
   }
 }
+
+/* 12. Contain the scrollbar-width overhang from full-viewport layouts.
+   .full-bleed and .fullscreen-layout use width:100vw, and 100vw INCLUDES the
+   vertical scrollbar — so on any page tall enough to scroll they overflow the
+   viewport by the scrollbar's width, leaving a permanent horizontal scrollbar.
+   Clip (not hidden) trims that overhang WITHOUT turning <html> into a scroll
+   container, so the split-layout's position:sticky panels keep sticking to the
+   viewport (same reasoning as the mobile split-layout rule in layouts.css). */
+html {
+  overflow-x: clip;
+}

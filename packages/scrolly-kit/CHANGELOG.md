@@ -2,6 +2,12 @@
 
 All notable changes to `@the-vcsi/scrolly-kit`. Follows [Keep a Changelog](https://keepachangelog.com/) and, from 0.1.0 on, semver.
 
+## [0.2.3] - 2026-09-18
+
+### Fixed
+
+- **Full-viewport layouts no longer leave a permanent horizontal scrollbar.** `.full-bleed` and `.fullscreen-layout` size with `width: 100vw`, and `100vw` includes the vertical scrollbar, so any page tall enough to scroll overflowed the viewport by the scrollbar's width. `reset.css` now sets `html { overflow-x: clip }`. `clip` rather than `hidden` is deliberate: `hidden` would turn `<html>` into a scroll container and break the `position: sticky` panels in `.split-layout` (the same reasoning as the mobile split-layout rule in `layouts.css`).
+
 ## [0.2.2] - 2026-07-06
 
 ### Fixed
